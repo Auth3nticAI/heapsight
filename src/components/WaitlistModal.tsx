@@ -49,7 +49,7 @@ export default function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
       onClick={onClose}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" />
 
       {/* Modal */}
       <div
@@ -63,7 +63,7 @@ export default function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
               You&apos;re in!
             </h2>
             <p className="text-[#888] text-sm mb-6">
-              We&apos;ll email you when we launch.
+              Check your email. We&apos;ll let you know when HeapSight is ready.
             </p>
             <button
               onClick={onClose}
@@ -75,11 +75,12 @@ export default function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
         ) : (
           <>
             <h2 className="text-lg font-semibold text-white mb-2">
-              You&apos;ve just seen inside the heap with HeapSight!
+              You Just Prevented an Entire Class of Crashes
             </h2>
             <p className="text-sm text-[#888] mb-6">
-              We&apos;re building the full tool that catches dangling pointers, use-after-free,
-              and memory corruption automatically. Join the waitlist.
+              We&apos;re building HeapSight — a tool that does this automatically
+              for your real projects. Join 1,200+ developers who are crushing
+              C++ memory bugs.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-3">
@@ -112,7 +113,7 @@ export default function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
               onClick={onClose}
               className="w-full mt-3 text-center text-sm text-[#555] hover:text-[#888] transition-colors"
             >
-              No thanks
+              No thanks, maybe later
             </button>
           </>
         )}

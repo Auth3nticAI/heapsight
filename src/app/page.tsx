@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import Link from "next/link";
 import GameCanvas from "@/components/GameCanvas";
-import MemoryArena, { MemoryPhase } from "@/components/MemoryArena";
+import HeapArena, { HeapPhase } from "@/components/HeapArena";
 import CodeDisplay from "@/components/CodeDisplay";
 import ReplayController from "@/components/ReplayController";
 import WaitlistModal from "@/components/WaitlistModal";
@@ -26,7 +27,7 @@ export default function Home() {
   const isReplaying = appState === "replaying";
   const gameSpeed = isReplaying ? 0.25 : 1.0;
 
-  const memoryPhase: MemoryPhase = (() => {
+  const heapPhase: HeapPhase = (() => {
     switch (appState) {
       case "attract":
         return "running";
@@ -71,11 +72,11 @@ export default function Home() {
 
   const handleFixIt = useCallback(() => {
     setAppState("fixed");
-    // Show waitlist modal after 4s of clean running
+    // Show waitlist modal after 3s of clean running
     fixTimerRef.current = setTimeout(() => {
       setAppState("waitlist");
       setShowModal(true);
-    }, 4000);
+    }, 3000);
   }, []);
 
   const handleCloseModal = useCallback(() => {
@@ -95,7 +96,7 @@ export default function Home() {
       case "attract":
       case "crashing":
         return {
-          text: "SHOW ME WHY",
+          text: "SHOW ME WHY THIS IS CRASHING",
           onClick: handleShowMeWhy,
           visible: true,
           color: "bg-warning text-black hover:bg-warning/90",
@@ -103,7 +104,7 @@ export default function Home() {
         };
       case "diagnosed":
         return {
-          text: "FIX IT",
+          text: "FIX IT WITH ONE CLICK",
           onClick: handleFixIt,
           visible: true,
           color: "bg-primary text-black hover:bg-primary/90",
@@ -120,18 +121,13 @@ export default function Home() {
       <header className="border-b border-[#1a1a2e] px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-semibold text-white">
+            <h1 className="text-xl font-semibold text-white">
               {appState === "fixed" || appState === "waitlist"
                 ? "HeapSight: Crash eliminated."
-                : "HeapSight: See Inside Your Heap. Fix Crashes in 18 Seconds."}
+                : "HeapSight"}
             </h1>
-            <p className="text-xs text-[#666] font-mono mt-0.5">
-              {appState === "attract" && "Watch the SEGFAULT. Then find out why."}
-              {appState === "crashing" && "use-after-free detected at targetLock->position"}
-              {appState === "replaying" && "HeapSight replaying crash sequence at 0.25x..."}
-              {appState === "diagnosed" && "Dangling pointer found. Ready to fix."}
-              {(appState === "fixed" || appState === "waitlist") &&
-                "targetLock nullified before delete. No more SEGFAULT."}
+            <p className="text-xs text-[#888] font-mono mt-0.5">
+              See Your Heap Come Alive. Fix Crashes in 18 Seconds.
             </p>
           </div>
 
@@ -150,18 +146,49 @@ export default function Home() {
         </div>
       </header>
 
+      {/* Hero section */}
+      <div className="max-w-6xl mx-auto px-6 pt-6 pb-2">
+        <h2 className="text-2xl lg:text-3xl font-bold text-white mb-1">
+          {isFixed
+            ? "Clean! No leaks. No crashes."
+            : "See Why Your Code Crashes. Fix It in 18 Seconds."}
+        </h2>
+        <p className="text-sm text-[#666] mb-4">
+          {appState === "attract" && "Watch your C++ heap come alive. No more mysterious segfaults."}
+          {appState === "crashing" && "use-after-free detected at targetLock->position"}
+          {appState === "replaying" && "HeapSight replaying crash sequence at 0.25x..."}
+          {appState === "diagnosed" && "Dangling pointer found. Ready to fix."}
+          {(appState === "fixed" || appState === "waitlist") &&
+            "targetLock nullified before delete. No more SEGFAULT."}
+        </p>
+      </div>
+
       {/* Main content */}
-      <div className="max-w-6xl mx-auto px-6 py-6">
+      <div className="max-w-6xl mx-auto px-6 pb-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left column: Game + CTA */}
           <div className="flex flex-col items-center gap-4">
-            <GameCanvas
-              isFixed={isFixed}
-              isPaused={false}
-              onCrash={handleCrash}
-              onReset={handleReset}
-              speed={gameSpeed}
-            />
+            <div className="relative">
+              <GameCanvas
+                isFixed={isFixed}
+                isPaused={false}
+                onCrash={handleCrash}
+                onReset={handleReset}
+                speed={gameSpeed}
+              />
+
+              {/* "0 LEAKS / 0 CRASHES" badge overlay when fixed */}
+              {isFixed && (
+                <div className="absolute top-3 right-3 flex gap-2">
+                  <span className="px-2 py-1 bg-primary/20 border border-primary/40 rounded text-[10px] font-mono text-primary">
+                    0 LEAKS
+                  </span>
+                  <span className="px-2 py-1 bg-primary/20 border border-primary/40 rounded text-[10px] font-mono text-primary">
+                    0 CRASHES
+                  </span>
+                </div>
+              )}
+            </div>
 
             {/* CTA Button */}
             {ctaConfig.visible && (
@@ -179,9 +206,17 @@ export default function Home() {
             )}
 
             {isFixed && (
-              <p className="text-xs text-primary/60 font-mono animate-pulse">
-                Game running clean. No crashes detected.
-              </p>
+              <>
+                <p className="text-xs text-primary/60 font-mono animate-pulse">
+                  Game running clean. No crashes detected.
+                </p>
+                <Link
+                  href="/signup"
+                  className="mt-2 inline-block px-6 py-2.5 bg-primary text-black font-semibold text-sm rounded-lg hover:bg-primary/90 transition-colors"
+                >
+                  Start Learning C++ &rarr;
+                </Link>
+              </>
             )}
           </div>
 
@@ -195,10 +230,10 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Memory Arena */}
+        {/* Heap Arena */}
         <div className="mt-6">
-          <MemoryArena
-            phase={memoryPhase}
+          <HeapArena
+            phase={heapPhase}
             elapsedTime={isReplaying ? replayTime : appState === "crashing" ? 6.5 : 5.0}
             showPointers={
               appState === "crashing" ||

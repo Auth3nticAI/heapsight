@@ -5,12 +5,12 @@ import {
   getBlocksAtTime,
   getFixedBlocks,
   BlockState,
-} from "@/lib/memory-sim";
+} from "@/lib/heap-sim";
 
-export type MemoryPhase = "idle" | "running" | "crash" | "diagnosed" | "fixed";
+export type HeapPhase = "idle" | "running" | "crash" | "diagnosed" | "fixed";
 
-interface MemoryArenaProps {
-  phase: MemoryPhase;
+interface HeapArenaProps {
+  phase: HeapPhase;
   elapsedTime: number;
   showPointers: boolean;
 }
@@ -31,11 +31,11 @@ const STATE_BORDER: Record<BlockState, string> = {
   corrupted: "#333333",
 };
 
-export default function MemoryArena({
+export default function HeapArena({
   phase,
   elapsedTime,
   showPointers,
-}: MemoryArenaProps) {
+}: HeapArenaProps) {
   const blocks = useMemo(() => {
     if (phase === "fixed") return getFixedBlocks();
     if (phase === "idle") return getBlocksAtTime(0);
@@ -49,11 +49,16 @@ export default function MemoryArena({
     <div className="w-full">
       <div className="flex items-center gap-2 mb-3">
         <h3 className="text-sm font-mono text-[#666] uppercase tracking-wider">
-          Heap Memory
+          Live Heap Visualization
         </h3>
         {phase === "crash" && (
           <span className="text-xs font-mono text-danger animate-pulse">
             CORRUPTION DETECTED
+          </span>
+        )}
+        {phase === "diagnosed" && (
+          <span className="text-xs font-mono text-warning">
+            DANGLING POINTER — You freed this memory but still tried to use it
           </span>
         )}
         {phase === "fixed" && (

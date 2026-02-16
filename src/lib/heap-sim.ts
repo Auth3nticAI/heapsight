@@ -5,13 +5,13 @@ export type BlockState =
   | "dangling"
   | "corrupted";
 
-export interface MemoryBlock {
+export interface HeapBlock {
   id: number;
   label: string;
   state: BlockState;
 }
 
-export interface MemEvent {
+export interface HeapEvent {
   time: number;
   blockIndex: number;
   action: "alloc" | "free" | "access" | "corrupt";
@@ -20,8 +20,8 @@ export interface MemEvent {
 
 const BLOCK_COUNT = 32;
 
-// Pre-scripted timeline of memory events for the crash scenario
-export const CRASH_TIMELINE: MemEvent[] = [
+// Pre-scripted timeline of heap events for the crash scenario
+export const CRASH_TIMELINE: HeapEvent[] = [
   // T=0.0s: Initial allocations
   { time: 0.0, blockIndex: 0, action: "alloc", label: "Player" },
   { time: 0.0, blockIndex: 1, action: "alloc", label: "Enemy_0" },
@@ -36,7 +36,7 @@ export const CRASH_TIMELINE: MemEvent[] = [
   { time: 2.5, blockIndex: 8, action: "alloc", label: "Enemy_4" },
   { time: 3.0, blockIndex: 9, action: "alloc", label: "Bullet_3" },
   { time: 3.0, blockIndex: 10, action: "alloc", label: "Particle_0" },
-  // T=3.5: targetLock assigned
+  // T=3.5: targetLock assigned → block 14
   { time: 3.5, blockIndex: 11, action: "alloc", label: "targetLock*" },
   { time: 3.5, blockIndex: 12, action: "alloc", label: "Enemy_5" },
   { time: 4.0, blockIndex: 13, action: "alloc", label: "Bullet_4" },
@@ -54,7 +54,7 @@ export const CRASH_TIMELINE: MemEvent[] = [
   { time: 6.1, blockIndex: 12, action: "corrupt", label: "CORRUPTED" },
 ];
 
-export function createInitialBlocks(): MemoryBlock[] {
+export function createInitialBlocks(): HeapBlock[] {
   return Array.from({ length: BLOCK_COUNT }, (_, i) => ({
     id: i,
     label: `0x${(0x7fff0000 + i * 64).toString(16)}`,
@@ -62,7 +62,7 @@ export function createInitialBlocks(): MemoryBlock[] {
   }));
 }
 
-export function getBlocksAtTime(time: number): MemoryBlock[] {
+export function getBlocksAtTime(time: number): HeapBlock[] {
   const blocks = createInitialBlocks();
 
   for (const event of CRASH_TIMELINE) {
@@ -92,7 +92,7 @@ export function getBlocksAtTime(time: number): MemoryBlock[] {
   return blocks;
 }
 
-export function getFixedBlocks(): MemoryBlock[] {
+export function getFixedBlocks(): HeapBlock[] {
   const blocks = createInitialBlocks();
 
   for (const event of CRASH_TIMELINE) {
