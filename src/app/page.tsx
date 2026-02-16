@@ -122,13 +122,13 @@ export default function Home() {
           <div>
             <h1 className="text-lg font-semibold text-white">
               {appState === "fixed" || appState === "waitlist"
-                ? "Crash eliminated."
-                : "Your game just crashed."}
+                ? "HeapSight: Crash eliminated."
+                : "HeapSight: See Inside Your Heap. Fix Crashes in 18 Seconds."}
             </h1>
             <p className="text-xs text-[#666] font-mono mt-0.5">
               {appState === "attract" && "Watch the SEGFAULT. Then find out why."}
               {appState === "crashing" && "use-after-free detected at targetLock->position"}
-              {appState === "replaying" && "Replaying crash sequence at 0.25x..."}
+              {appState === "replaying" && "HeapSight replaying crash sequence at 0.25x..."}
               {appState === "diagnosed" && "Dangling pointer found. Ready to fix."}
               {(appState === "fixed" || appState === "waitlist") &&
                 "targetLock nullified before delete. No more SEGFAULT."}

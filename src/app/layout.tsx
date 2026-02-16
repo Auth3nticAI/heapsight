@@ -13,9 +13,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Crash Demo — See Why Your Game Crashed",
+  title: "HeapSight — See Your Heap Clearly",
   description:
-    "Interactive demo: watch a C++ game crash, diagnose the dangling pointer, and fix it with one click.",
+    "Visual C++ memory debugger demo. Watch crashes, fix in seconds.",
 };
 
 export default function RootLayout({

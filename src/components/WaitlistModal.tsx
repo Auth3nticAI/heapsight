@@ -75,10 +75,10 @@ export default function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
         ) : (
           <>
             <h2 className="text-lg font-semibold text-white mb-2">
-              You just fixed a class of crashes.
+              You&apos;ve just seen inside the heap with HeapSight!
             </h2>
             <p className="text-sm text-[#888] mb-6">
-              We&apos;re building a tool that catches dangling pointers, use-after-free,
+              We&apos;re building the full tool that catches dangling pointers, use-after-free,
               and memory corruption automatically. Join the waitlist.
             </p>
 
