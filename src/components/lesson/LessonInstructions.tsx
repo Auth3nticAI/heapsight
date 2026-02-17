@@ -1,11 +1,12 @@
 "use client";
 
 import { useMemo } from "react";
-import type { Lesson } from "@/types/lesson";
+import type { LessonPart } from "@/types/lesson";
 import { useLessonStore } from "@/store/lesson-store";
 
 interface LessonInstructionsProps {
-  lesson: Lesson;
+  part: LessonPart;
+  concepts: string[];
 }
 
 // Simple markdown-to-HTML for lesson instructions
@@ -15,11 +16,10 @@ function renderMarkdown(md: string): string {
     .replace(/```(\w+)?\n([\s\S]*?)```/g, (_m, _lang, code) => {
       return `<pre class="bg-[#0d0d1a] border border-[#1a1a2e] rounded-lg p-3 my-2 overflow-x-auto"><code class="text-xs font-mono text-[#e0e0e0]">${escapeHtml(code.trim())}</code></pre>`;
     })
-    // Inline code
-    .replace(
-      /`([^`]+)`/g,
-      '<code class="bg-[#1a1a2e] text-primary px-1.5 py-0.5 rounded text-xs font-mono">$1</code>'
-    )
+    // Inline code (escaped to prevent XSS)
+    .replace(/`([^`]+)`/g, (_m, code) => {
+      return `<code class="bg-[#1a1a2e] text-primary px-1.5 py-0.5 rounded text-xs font-mono">${escapeHtml(code)}</code>`;
+    })
     // Headers
     .replace(
       /^### (.+)$/gm,
@@ -57,26 +57,27 @@ function escapeHtml(str: string): string {
 }
 
 export default function LessonInstructions({
-  lesson,
+  part,
+  concepts,
 }: LessonInstructionsProps) {
   const activeHint = useLessonStore((s) => s.activeHint);
   const showNextHint = useLessonStore((s) => s.showNextHint);
 
   const instructionsHtml = useMemo(
-    () => renderMarkdown(lesson.instructions),
-    [lesson.instructions]
+    () => renderMarkdown(part.instructions),
+    [part.instructions]
   );
 
-  const hasMoreHints = activeHint < lesson.hints.length - 1;
+  const hasMoreHints = activeHint < part.hints.length - 1;
 
   return (
     <div className="h-full flex flex-col rounded-lg border border-[#1a1a2e] bg-surface overflow-hidden">
       <div className="flex items-center justify-between px-3 py-1.5 bg-[#0d0d1a] border-b border-[#1a1a2e]">
         <span className="text-[10px] font-mono text-[#555] uppercase tracking-wider">
-          Instructions
+          {part.type === "robot_builder" ? "Robot Builder" : part.type === "game_builder" ? "Game Builder" : "Instructions"}
         </span>
         <div className="flex items-center gap-2">
-          {lesson.concepts.map((c) => (
+          {concepts.map((c) => (
             <span
               key={c}
               className="text-[9px] font-mono bg-primary/10 text-primary px-1.5 py-0.5 rounded"
@@ -96,7 +97,7 @@ export default function LessonInstructions({
       <div className="border-t border-[#1a1a2e] p-3">
         {activeHint >= 0 && (
           <div className="space-y-2 mb-2">
-            {lesson.hints.slice(0, activeHint + 1).map((hint, i) => (
+            {part.hints.slice(0, activeHint + 1).map((hint, i) => (
               <div
                 key={i}
                 className="text-xs font-mono text-warning bg-warning/10 border border-warning/20 rounded p-2"

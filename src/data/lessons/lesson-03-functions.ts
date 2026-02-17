@@ -7,7 +7,11 @@ export const lesson03: Lesson = {
   order: 3,
   xpReward: 100,
   tier: "free",
-  instructions: `# Functions
+  concepts: ["function definition", "parameters", "return values", "function calls"],
+  part1: {
+    title: "Concept: Functions",
+    type: "concept",
+    instructions: `# Functions
 
 Functions let you organize code into reusable blocks.
 
@@ -40,7 +44,7 @@ Remaining HP: 850
 \`\`\`
 
 Use \`baseDmg = 50\`, \`multiplier = 3\`, and \`maxHP = 1000\`.`,
-  starterCode: `#include <iostream>
+    starterCode: `#include <iostream>
 using namespace std;
 
 // Write your functions here
@@ -51,7 +55,7 @@ int main() {
     return 0;
 }
 `,
-  solutionCode: `#include <iostream>
+    solutionCode: `#include <iostream>
 using namespace std;
 
 int calculateDamage(int baseDmg, int multiplier) {
@@ -72,17 +76,116 @@ int main() {
     return 0;
 }
 `,
-  tests: [
-    {
-      id: "t1",
-      description: "Output should show damage and remaining HP",
-      expectedOutput: "Damage dealt: 150\nRemaining HP: 850\n",
-    },
-  ],
-  hints: [
-    "Define `calculateDamage` before `main()` — it takes two `int` params and returns their product.",
-    "Define `calculateHP` — it takes `maxHP` and `damage` and returns the difference.",
-    "In `main()`: call `calculateDamage(50, 3)`, store the result, then pass it to `calculateHP(1000, damage)`.",
-  ],
-  concepts: ["function definition", "parameters", "return values", "function calls"],
+    tests: [
+      {
+        id: "t1",
+        description: "Output should show damage and remaining HP",
+        expectedOutput: "Damage dealt: 150\nRemaining HP: 850\n",
+      },
+    ],
+    hints: [
+      "Define `calculateDamage` before `main()` — it takes two `int` params and returns their product.",
+      "Define `calculateHP` — it takes `maxHP` and `damage` and returns the difference.",
+      "In `main()`: call `calculateDamage(50, 3)`, store the result, then pass it to `calculateHP(1000, damage)`.",
+    ],
+    estimatedMinutes: 5,
+  },
+  part2: {
+    title: "Game: Spawn Functions",
+    type: "game_builder",
+    instructions: `# Game Builder: Functions for Entities
+
+Let's use functions to create game entities! Writing a function to output entity protocol lines makes your code cleaner and reusable.
+
+## Printing Entities with Functions
+\`\`\`cpp
+void spawnEntity(string id, string type, int x, int y, int w, int h) {
+    cout << "ENTITY|" << id << "|" << type << "|"
+         << x << "|" << y << "|" << w << "|" << h << endl;
+}
+\`\`\`
+
+A \`void\` function doesn't return a value — it just does something (like print).
+
+## Your Task
+1. Write a \`void spawnEntity(...)\` function that outputs an entity line
+2. Write an \`int calcDamage(int base, int mult)\` function that returns \`base * mult\`
+3. Use them to spawn a player, an enemy, and show damage
+
+Expected output:
+\`\`\`
+ENTITY|hero|player|180|200|24|24
+ENTITY|boss|enemy|300|80|30|30
+GAME_MESSAGE|Boss takes 120 damage!
+SCORE|120
+\`\`\`
+
+Use \`calcDamage(40, 3)\` for the damage value.`,
+    starterCode: `#include <iostream>
+#include <string>
+using namespace std;
+
+// Write your spawnEntity function here
+
+// Write your calcDamage function here
+
+int main() {
+    // Spawn player and boss
+
+    // Calculate and display damage
+
+    return 0;
+}
+`,
+    solutionCode: `#include <iostream>
+#include <string>
+using namespace std;
+
+void spawnEntity(string id, string type, int x, int y, int w, int h) {
+    cout << "ENTITY|" << id << "|" << type << "|"
+         << x << "|" << y << "|" << w << "|" << h << endl;
+}
+
+int calcDamage(int base, int mult) {
+    return base * mult;
+}
+
+int main() {
+    spawnEntity("hero", "player", 180, 200, 24, 24);
+    spawnEntity("boss", "enemy", 300, 80, 30, 30);
+
+    int dmg = calcDamage(40, 3);
+    cout << "GAME_MESSAGE|Boss takes " << dmg << " damage!" << endl;
+    cout << "SCORE|" << dmg << endl;
+
+    return 0;
+}
+`,
+    tests: [
+      {
+        id: "g1",
+        description: "Should spawn a player entity",
+        expectedOutput: "ENTITY\\|hero\\|player\\|180\\|200\\|24\\|24",
+        isPattern: true,
+      },
+      {
+        id: "g2",
+        description: "Should spawn a boss enemy",
+        expectedOutput: "ENTITY\\|boss\\|enemy\\|300\\|80\\|30\\|30",
+        isPattern: true,
+      },
+      {
+        id: "g3",
+        description: "Should show damage message with calculated value",
+        expectedOutput: "GAME_MESSAGE\\|Boss takes 120 damage!",
+        isPattern: true,
+      },
+    ],
+    hints: [
+      "The `spawnEntity` function should be `void` since it just prints — no return value needed.",
+      "Chain the parameters with `|` separators in the `cout` statement.",
+      "Call `calcDamage(40, 3)` to get 120, then use that in the GAME_MESSAGE output.",
+    ],
+    estimatedMinutes: 7,
+  },
 };

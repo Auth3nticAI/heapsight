@@ -78,10 +78,17 @@ pre[class*="language-"] {
   border-left: 3px solid #00ff88;
 }
 
-/* Scrollbar styling */
+/* Scrollbar styling — wider on mobile for touch */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
+}
+
+@media (min-width: 640px) {
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
 }
 
 ::-webkit-scrollbar-track {
@@ -95,4 +102,64 @@ pre[class*="language-"] {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+/* Mobile touch targets */
+@media (max-width: 640px) {
+  button,
+  a[role="button"] {
+    min-height: 44px;
+  }
+}
+
+/* Responsive code font size */
+@media (max-width: 640px) {
+  code[class*="language-"],
+  pre[class*="language-"] {
+    font-size: 14px;
+  }
+}
+
+/* Focus states for keyboard navigation */
+button:focus-visible,
+a:focus-visible,
+[role="tab"]:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid #00ff88;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Safe area insets for notched devices */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Bottom navigation spacing for mobile */
+@media (max-width: 767px) {
+  .has-bottom-nav {
+    padding-bottom: 5.5rem;
+  }
+}
+
+/* Shimmer overlay for progress bars */
+.shimmer-overlay {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 100%
+  );
 }

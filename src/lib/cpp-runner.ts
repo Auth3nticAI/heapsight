@@ -15,17 +15,42 @@ export interface RunResult {
   allPassed: boolean;
 }
 
-export async function runCppCode(
-  code: string,
-  tests: LessonTest[]
-): Promise<RunResult> {
+// ---------------------------------------------------------------------------
+// Backend: Judge0 (server-side GCC compilation via /api/compile)
+// ---------------------------------------------------------------------------
+async function compileWithJudge0(code: string): Promise<{ output: string; errors: string[] }> {
+  const res = await fetch("/api/compile", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ source_code: code }),
+  });
+
+  if (res.status === 401) {
+    return { output: "", errors: ["Please sign in to run code."] };
+  }
+  if (res.status === 429) {
+    return { output: "", errors: ["Rate limit reached. Please wait a minute before running again."] };
+  }
+  if (!res.ok) {
+    return { output: "", errors: ["Compilation service unavailable. Please try again later."] };
+  }
+
+  const data = await res.json();
+  return {
+    output: data.output ?? "",
+    errors: data.errors ?? [],
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Backend: JSCPP (browser-side JS interpreter — fallback)
+// ---------------------------------------------------------------------------
+async function compileWithJSCPP(code: string): Promise<{ output: string; errors: string[] }> {
   const errors: string[] = [];
   let output = "";
 
   try {
-    // Dynamic import to avoid SSR issues
     const JSCPP = (await import("JSCPP")).default;
-
     const outputChunks: string[] = [];
 
     JSCPP.run(code, "", {
@@ -40,10 +65,8 @@ export async function runCppCode(
 
     output = outputChunks.join("");
   } catch (err: unknown) {
-    const message =
-      err instanceof Error ? err.message : String(err);
+    const message = err instanceof Error ? err.message : String(err);
 
-    // Parse JSCPP error messages for friendlier display
     if (message.includes("Undeclared")) {
       errors.push(`Compilation Error: ${message}`);
     } else if (message.includes("Syntax")) {
@@ -53,15 +76,42 @@ export async function runCppCode(
     } else {
       errors.push(`Error: ${message}`);
     }
+  }
 
+  return { output, errors };
+}
+
+// ---------------------------------------------------------------------------
+// Main entry — selects backend, then runs tests client-side
+// ---------------------------------------------------------------------------
+export async function runCppCode(
+  code: string,
+  tests: LessonTest[]
+): Promise<RunResult> {
+  const backend = process.env.NEXT_PUBLIC_CPP_BACKEND ?? "jscpp";
+
+  const { output, errors } =
+    backend === "judge0"
+      ? await compileWithJudge0(code)
+      : await compileWithJSCPP(code);
+
+  if (errors.length > 0) {
     return { output, errors, testResults: [], allPassed: false };
   }
 
-  // Run tests against output
+  // Run tests against output (identical logic for both backends)
   const trimmedOutput = output.trim();
   const testResults: TestResult[] = tests.map((test) => {
     const expected = test.expectedOutput.trim();
-    const passed = trimmedOutput === expected;
+    let passed: boolean;
+
+    if (test.isPattern) {
+      const regex = new RegExp(expected);
+      passed = regex.test(trimmedOutput);
+    } else {
+      passed = trimmedOutput === expected;
+    }
+
     return {
       testId: test.id,
       description: test.description,

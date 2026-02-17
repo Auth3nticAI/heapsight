@@ -16,7 +16,7 @@ export default function LessonOutput() {
         </span>
         {isRunning && (
           <span className="text-[10px] font-mono text-primary animate-pulse">
-            Running...
+            Compiling...
           </span>
         )}
       </div>

@@ -2,6 +2,18 @@ export interface LessonTest {
   id: string;
   description: string;
   expectedOutput: string;
+  isPattern?: boolean;
+}
+
+export interface LessonPart {
+  title: string;
+  type: "concept" | "game_builder" | "robot_builder";
+  instructions: string;
+  starterCode: string;
+  solutionCode: string;
+  tests: LessonTest[];
+  hints: string[];
+  estimatedMinutes: number;
 }
 
 export interface Lesson {
@@ -11,22 +23,23 @@ export interface Lesson {
   order: number;
   xpReward: number;
   tier: "free" | "pro";
-  instructions: string;
-  starterCode: string;
-  solutionCode: string;
-  tests: LessonTest[];
-  hints: string[];
   concepts: string[];
+  part1: LessonPart;
+  part2: LessonPart;
 }
 
 export type LessonStatus = "locked" | "available" | "in_progress" | "completed";
+export type PartStatus = "not_started" | "in_progress" | "completed";
 
 export interface LessonProgress {
   id: string;
   userId: string;
   lessonId: string;
   status: LessonStatus;
-  userCode: string | null;
+  part1Status: PartStatus;
+  part2Status: PartStatus;
+  part1UserCode: string | null;
+  part2UserCode: string | null;
   attempts: number;
   completedAt: string | null;
 }
@@ -36,5 +49,6 @@ export interface UserProfile {
   tier: "free" | "pro";
   totalXp: number;
   currentStreak: number;
+  selectedGameTemplate: string | null;
   createdAt: string;
 }

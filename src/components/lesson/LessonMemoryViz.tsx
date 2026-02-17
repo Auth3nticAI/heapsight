@@ -55,7 +55,7 @@ const TYPE_COLORS: Record<MemorySlot["type"], { bg: string; border: string }> = 
 };
 
 export default function LessonMemoryViz() {
-  const code = useLessonStore((s) => s.currentCode);
+  const code = useLessonStore((s) => s.currentPart === 1 ? s.part1Code : s.part2Code);
 
   const slots = useMemo(() => extractMemoryFromCode(code), [code]);
 
@@ -71,7 +71,7 @@ export default function LessonMemoryViz() {
       </div>
 
       <div className="flex-1 p-3 overflow-y-auto">
-        <div className="grid grid-cols-4 gap-1.5">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-1.5">
           {slots.map((slot, i) => {
             const colors = TYPE_COLORS[slot.type];
             return (
@@ -84,7 +84,7 @@ export default function LessonMemoryViz() {
                 }}
               >
                 <span
-                  className="text-[8px] font-mono leading-tight text-center break-all px-0.5"
+                  className="text-[10px] sm:text-[8px] font-mono leading-tight text-center break-all px-0.5"
                   style={{
                     color: slot.type === "empty" ? "#444" : "#000",
                   }}
@@ -93,7 +93,7 @@ export default function LessonMemoryViz() {
                 </span>
                 {slot.type !== "empty" && (
                   <span
-                    className="text-[7px] font-mono mt-0.5"
+                    className="text-[9px] sm:text-[7px] font-mono mt-0.5"
                     style={{ color: "#000" }}
                   >
                     {slot.value}
@@ -116,7 +116,7 @@ export default function LessonMemoryViz() {
                 className="w-2.5 h-2.5 rounded-sm"
                 style={{ backgroundColor: color }}
               />
-              <span className="text-[9px] font-mono text-[#555]">
+              <span className="text-[10px] font-mono text-[#666]">
                 {label}
               </span>
             </div>
