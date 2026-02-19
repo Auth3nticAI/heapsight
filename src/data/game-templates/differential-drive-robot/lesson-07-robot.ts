@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson07Robot: GameLessonVariant = {
-  lessonId: "07-loops",
+  lessonId: "07-spawn-wave-loop",
 
   instructions: `# Robot Builder: Efficient Path Passing
 

@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson07SimpleRpg: GameLessonVariant = {
-  lessonId: "07-loops",
+  lessonId: "07-spawn-wave-loop",
 
   instructions: `# Encounter Generator — Loop-Spawned Enemies\n\nIn data-driven RPGs, encounters are generated procedurally. A **for loop** can spawn multiple enemies at calculated positions, with stats that vary by index.\n\n## Objectives\n- Render a warrior entity as the player character\n- Use a for loop to spawn 4 goblin enemies\n- Each goblin's x position and HP vary based on its index\n- Display a summary message with total enemies spawned\n\n## Enemy Placement Formula\n- Goblin \`i\` (0-based): id = \`"goblin" + (i+1)\`, x = \`80 + i * 70\`, y = \`160\`, size = \`18x18\`\n- Goblin HP = \`20 + i * 10\` (so 20, 30, 40, 50)\n\n## Output Protocol\n- \`ENTITY|id|type|x|y|width|height|health\` — render each character\n- \`GAME_MESSAGE|text\` — encounter summary\n- \`SCORE|value\` — total enemy HP`,
 

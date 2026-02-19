@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson14Platformer: GameLessonVariant = {
-  lessonId: "14-headers",
+  lessonId: "14-dynamic-arrays",
   instructions: `# Game Architecture — Forward-Declared Update Functions\n\nA platformer game loop has three distinct phases that run every frame:\n1. **Physics** — apply gravity, update velocities and positions\n2. **State** — check conditions, update player state (grounded, jumping, etc.)\n3. **Render** — output all entities to the screen\n\nIn C++, you can **forward-declare** functions before \`main()\` and define them afterward. This keeps your game loop clean: \`main()\` reads like a high-level blueprint while implementation details live below.\n\n## Your Task\n\n1. Forward-declare three functions before \`main()\`:\n   - \`void updatePhysics()\` — prints physics update info\n   - \`void updateState()\` — prints state transition info\n   - \`void renderScene()\` — outputs entities, score, and a message\n2. In \`main()\`, call them in order: physics, state, render\n3. Define each function after \`main()\`\n\n## Protocol Reminder\n- \`ENTITY|id|type|x|y|width|height\`\n- \`GAME_MESSAGE|text\`\n- \`SCORE|value\``,
   starterCode: `#include <iostream>
 #include <string>

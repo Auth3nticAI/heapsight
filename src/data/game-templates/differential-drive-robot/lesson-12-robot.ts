@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson12Robot: GameLessonVariant = {
-  lessonId: "12-input",
+  lessonId: "12-extract-components-header",
 
   instructions: `# Robot Builder: Sensor Callback
 

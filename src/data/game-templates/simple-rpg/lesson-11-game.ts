@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson11SimpleRpg: GameLessonVariant = {
-  lessonId: "11-strings",
+  lessonId: "11-component-structs",
 
   instructions: `# Item Registry — String-Keyed Item Database\n\nData-driven RPGs store items in registries where each item has a **string name**, stats, and a formatted display. String manipulation lets you build rich item descriptions for inventory screens.\n\n## Objectives\n- Create 3 items with string names and stat bonuses\n- Build a formatted display string for each: \`"1x Iron Sword (ATK+5)"\`\n- Use string concatenation and \`to_string()\` to format item entries\n- Display the full inventory and render the warrior\n\n## Items\n| Name | Stat | Bonus | Qty |\n|------|------|-------|-----|\n| Iron Sword | ATK | +5 | 1 |\n| Oak Shield | DEF | +3 | 1 |\n| Health Herb | HP | +10 | 2 |\n\n## Output Protocol\n- \`ENTITY|id|type|x|y|width|height\` — render the warrior\n- \`GAME_MESSAGE|text\` — display each formatted item line\n- \`SCORE|value\` — total number of items`,
 

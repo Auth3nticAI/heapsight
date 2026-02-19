@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson25SimpleRpg: GameLessonVariant = {
-  lessonId: "25-final-polish",
+  lessonId: "25-milestone-playable-loop",
 
   instructions: `# Complete RPG — Full Data-Driven Integration\n\nThis is the **capstone lesson**. You will build a complete RPG scene that combines every concept from the course into one cohesive data-driven game.\n\n## What You'll Build\n\n- A **warrior** with full stats (HP, ATK, DEF, Level, XP)\n- **Two enemies** (Goblin and Skeleton) with their own stats\n- An **inventory** with a Sword (weapon) and a Potion (consumable)\n- **Combat simulation**: equip sword for ATK buff, attack enemies, use potion to heal\n- **Scoring**: total damage dealt plus bonus for surviving\n\n## Concepts Combined\n\n- Structs for entities and items (Lessons 4, 20)\n- Functions for game logic (Lessons 3, 20)\n- Dynamic data flow: stats drive combat, items modify stats (Lesson 21)\n- Proper resource lifecycle (Lessons 22-23)\n- Correct formulas and loop bounds (Lesson 24)\n\n## Output Protocol\n\n- \`ENTITY|id|type|x|y|width|height\` for all game objects\n- \`GAME_MESSAGE|text\` for narration and combat log\n- \`SCORE|value\` for final score\n- \`GAME_OVER\` when the scene concludes`,
 

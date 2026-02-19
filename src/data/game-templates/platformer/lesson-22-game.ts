@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson22Platformer: GameLessonVariant = {
-  lessonId: "22-memory-leaks",
+  lessonId: "22-error-handling-v0",
   instructions: `# Level Cleanup — Dynamic Platform Deallocation\n\nWhen a player transitions between levels, the old level's platforms must be **deallocated** to prevent memory leaks. In C++, any memory allocated with \`new\` must be freed with \`delete\`. Forgetting to delete causes a **memory leak** — the program holds onto memory it no longer uses.\n\n## Concepts\n- Dynamic memory allocation with \`new\` for level data\n- Proper deallocation with \`delete\` to prevent memory leaks\n- Level transition pattern: allocate -> render -> deallocate\n- Tracking allocation/deallocation count for leak detection\n\n## Your Task\n1. Allocate 3 platform positions dynamically using \`new int[2]\` (each stores x, y)\n2. Platform data: plat1 at (0, 240), plat2 at (100, 200), plat3 at (220, 180)\n3. Render each platform as an entity (all size 80x16, type "platform")\n4. Render the player at (50, 216) size 16x24\n5. Delete all 3 dynamically allocated arrays\n6. Track allocations and deallocations — output a message confirming cleanup\n\n## Protocol Reminder\n\`\`\`\nENTITY|id|type|x|y|width|height\nGAME_MESSAGE|text\nSCORE|value\n\`\`\``,
   starterCode: `#include <iostream>
 #include <string>

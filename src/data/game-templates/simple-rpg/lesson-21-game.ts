@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson21SimpleRpg: GameLessonVariant = {
-  lessonId: "21-save-load",
+  lessonId: "21-checkpoint-save-load",
 
   instructions: `# Save System — RPG State Serialization\n\nEvery RPG needs a **save system**. Players expect to quit and resume with all their progress intact. This lesson teaches you to **serialize** complex game state into a structured text format, then **deserialize** it back and verify correctness.\n\n## What You'll Build\n\n- A player with stats (HP, ATK, level, XP)\n- An inventory with multiple items\n- A quest progress tracker\n- A save function that writes all state to \`SAVE|\` lines\n- A load function that reads the data back and verifies it\n\n## Key Concepts\n\n- **Serialization**: converting structs to a string format\n- **Deserialization**: parsing strings back into structs\n- **State verification**: confirming loaded state matches saved state\n\n## Output Protocol\n\n- \`ENTITY|id|type|x|y|width|height\` for the player\n- \`GAME_MESSAGE|text\` for save/load status\n- \`SCORE|value\` for verification result`,
 

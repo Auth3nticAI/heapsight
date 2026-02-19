@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson15Platformer: GameLessonVariant = {
-  lessonId: "15-collision",
+  lessonId: "15-multi-system-tick",
   instructions: `# Platform Collision — AABB Ground Detection\n\nIn a platformer, the most critical collision is **ground detection**: is the player standing on a platform? We use **AABB (Axis-Aligned Bounding Box)** overlap testing.\n\nTwo rectangles overlap when:\n- Player's right edge > Platform's left edge\n- Player's left edge < Platform's right edge\n- Player's bottom edge > Platform's top edge\n- Player's top edge < Platform's bottom edge\n\nWhen the player collides from above (player's bottom was above or at platform's top), we **snap** the player's y so they stand on top and set \`onGround = true\`.\n\n## Your Task\n\n1. Define a struct with x, y, width, height fields\n2. Write \`bool checkAABB()\` that returns true if two rects overlap\n3. Create a player at (50, 170) size 16x24 and a platform at (0, 190) size 380x20\n4. If collision detected and player came from above, snap player y to sit on platform and set onGround = true\n5. Output the entities and a message about the collision result\n\n## Protocol Reminder\n- \`ENTITY|id|type|x|y|width|height\`\n- \`GAME_MESSAGE|text\``,
   starterCode: `#include <iostream>
 #include <string>

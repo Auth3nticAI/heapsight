@@ -76,11 +76,11 @@ export default function LessonInstructions({
         <span className="text-[10px] font-mono text-[#555] uppercase tracking-wider">
           {part.type === "robot_builder" ? "Robot Builder" : part.type === "game_builder" ? "Game Builder" : "Instructions"}
         </span>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 overflow-x-auto max-w-[60%] scrollbar-none">
           {concepts.map((c) => (
             <span
               key={c}
-              className="text-[9px] font-mono bg-primary/10 text-primary px-1.5 py-0.5 rounded"
+              className="text-[9px] font-mono bg-primary/10 text-primary px-1.5 py-0.5 rounded whitespace-nowrap shrink-0"
             >
               {c}
             </span>
@@ -110,7 +110,7 @@ export default function LessonInstructions({
         {hasMoreHints && (
           <button
             onClick={showNextHint}
-            className="text-xs font-mono text-[#555] hover:text-warning transition-colors"
+            className="text-xs font-mono text-[#555] hover:text-warning transition-colors min-h-[44px] py-2"
           >
             {activeHint < 0 ? "Need a hint?" : "Show another hint"}
           </button>

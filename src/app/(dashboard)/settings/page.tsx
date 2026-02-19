@@ -4,7 +4,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-browser";
 import Link from "next/link";
-import { ALL_LESSONS } from "@/data/lessons";
+import { ALL_SPACE_SHOOTER_LESSONS } from "@/data/lessons";
+import { ALL_RPG_LESSONS } from "@/data/lessons/rpg-index";
+import { ALL_PLATFORMER_LESSONS } from "@/data/lessons/platformer-index";
+import { ALL_ROBOT_LESSONS } from "@/data/lessons/robot-index";
 
 // ─── Inline SVG Icons ──────────────────────────────────────────────────────
 
@@ -266,6 +269,11 @@ export default function SettingsPage() {
   }
 
   const isRobotPath = template === "differential_drive_robot";
+  const pathLessonCount =
+    template === "simple_rpg" ? ALL_RPG_LESSONS.length :
+    template === "platformer" ? ALL_PLATFORMER_LESSONS.length :
+    template === "differential_drive_robot" ? ALL_ROBOT_LESSONS.length :
+    ALL_SPACE_SHOOTER_LESSONS.length;
 
   return (
     <>
@@ -307,7 +315,7 @@ export default function SettingsPage() {
                     <ZapIcon className="h-3.5 w-3.5 text-[#fbbf24]" />
                     <span className="text-xs font-mono font-bold text-[#fbbf24]">{totalXp.toLocaleString()} XP</span>
                     <span className="text-[#2a2a3e]">&middot;</span>
-                    <span className="text-xs font-mono text-[#888]">{completedCount}/{ALL_LESSONS.length} lessons</span>
+                    <span className="text-xs font-mono text-[#888]">{completedCount}/{pathLessonCount} lessons</span>
                   </div>
                 </div>
                 {tier === "pro" && (
@@ -326,7 +334,7 @@ export default function SettingsPage() {
                   type="email"
                   value={email}
                   disabled
-                  className="w-full bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg px-4 py-3 text-sm font-mono text-[#666] cursor-not-allowed"
+                  className="w-full bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg px-4 py-3 text-base sm:text-sm font-mono text-[#666] cursor-not-allowed"
                 />
                 <p className="text-[9px] font-mono text-[#555]">
                   Email cannot be changed. Your display name is derived from your email.
@@ -377,7 +385,7 @@ export default function SettingsPage() {
                       type={showNewPassword ? "text" : "password"}
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="w-full bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg px-4 py-3 text-sm font-mono text-white placeholder-[#555] focus:border-primary/50 focus:outline-none transition-colors pr-12"
+                      className="w-full bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg px-4 py-3 text-base sm:text-sm font-mono text-white placeholder-[#555] focus:border-primary/50 focus:outline-none transition-colors pr-12"
                       placeholder="Enter new password"
                     />
                     <button
@@ -404,7 +412,7 @@ export default function SettingsPage() {
                       type={showConfirmPassword ? "text" : "password"}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg px-4 py-3 text-sm font-mono text-white placeholder-[#555] focus:border-primary/50 focus:outline-none transition-colors pr-12"
+                      className="w-full bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg px-4 py-3 text-base sm:text-sm font-mono text-white placeholder-[#555] focus:border-primary/50 focus:outline-none transition-colors pr-12"
                       placeholder="Confirm new password"
                     />
                     <button
@@ -489,7 +497,7 @@ export default function SettingsPage() {
                   <button
                     key={item.id}
                     onClick={() => scrollToSection(item.id)}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-xs font-mono transition-colors ${
+                    className={`w-full text-left px-3 py-2.5 rounded-lg text-xs font-mono transition-colors min-h-[44px] ${
                       activeSection === item.id
                         ? "bg-primary/10 text-primary"
                         : "text-[#888] hover:text-white hover:bg-[#111118]"

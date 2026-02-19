@@ -45,12 +45,12 @@ export default function LevelUpCelebration({
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center pointer-events-none">
-      <div className="bg-gradient-to-br from-[#7c3aed] to-[#4f46e5] text-white px-12 py-8 rounded-3xl shadow-2xl animate-bounce_in border-4 border-[#a78bfa]">
+      <div className="bg-gradient-to-br from-[#7c3aed] to-[#4f46e5] text-white px-8 sm:px-12 py-6 sm:py-8 rounded-3xl shadow-2xl animate-bounce_in border-4 border-[#a78bfa] mx-4">
         <div className="text-center">
           {/* Star icon */}
-          <div className="text-6xl mb-4 animate-pulse_subtle">&#10024;</div>
-          <h2 className="text-5xl font-bold mb-2">Level {level}!</h2>
-          <p className="text-2xl text-purple-200 mb-4">{title}</p>
+          <div className="text-5xl sm:text-6xl mb-4 animate-pulse_subtle">&#10024;</div>
+          <h2 className="text-4xl sm:text-5xl font-bold mb-2">Level {level}!</h2>
+          <p className="text-xl sm:text-2xl text-purple-200 mb-4">{title}</p>
           <div className="bg-[#1a1040]/50 rounded-lg px-6 py-3">
             <p className="text-sm text-purple-200 font-mono">
               You&apos;re getting stronger!

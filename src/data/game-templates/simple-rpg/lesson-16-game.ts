@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson16SimpleRpg: GameLessonVariant = {
-  lessonId: "16-game-loop",
+  lessonId: "16-entity-manager-class",
 
   instructions: `# Turn System — Combat Round Simulation
 

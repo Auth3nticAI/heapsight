@@ -1,0 +1,478 @@
+HEAPSIGHT — Naming Conventions Scan
+Generated: 2026-02-18
+Scanned: src/ (all .ts, .tsx files)
+========================================================
+
+1. FILE NAMING CONVENTIONS
+========================================================
+
+Pattern: kebab-case exclusively for all source files.
+No PascalCase or snake_case filenames observed in src/.
+
+LESSON FILES
+  Format: lesson-{NN}-{slug}.ts  (zero-padded 2-digit number + kebab slug)
+  Examples:
+    lesson-01-boot-the-system.ts
+    lesson-25-milestone-playable-loop.ts
+    lesson-100-milestone-release.ts
+
+RPG LESSON FILES
+  Format: lesson-rpg-{NN}-{slug}.ts
+  Examples:
+    lesson-rpg-01-boot-dungeon.ts
+    lesson-rpg-25-milestone-25.ts
+    lesson-rpg-100-release-v1.ts
+
+PLATFORMER LESSON FILES
+  Format: lesson-platformer-{NN}-{slug}.ts
+  Examples:
+    lesson-platformer-01-boot-window.ts
+    lesson-platformer-50-milestone-50.ts
+    lesson-platformer-100-release-v1.ts
+
+ROBOT LESSON FILES
+  Format: lesson-robot-{NN}-{slug}.ts
+  Examples:
+    lesson-robot-01-render-robot.ts
+    lesson-robot-08-control-loop.ts
+    lesson-robot-100-release-v1.ts
+
+GAME VARIANT FILES (game-templates/)
+  Format: lesson-{NN}-game.ts         (space-shooter, platformer)
+  Format: lesson-{NN}-robot.ts        (differential-drive-robot)
+  Format: lesson-{NN}-rpg.ts          (simple-rpg — old orphaned variants)
+  Examples:
+    lesson-01-game.ts
+    lesson-25-game.ts
+    lesson-01-robot.ts
+    lesson-25-robot.ts
+
+INDEX FILES
+  index.ts                            (root barrel export per directory)
+  rpg-index.ts                        (RPG path-specific index)
+  platformer-index.ts                 (platformer path-specific index)
+  robot-index.ts                      (robot path-specific index)
+
+REACT COMPONENT FILES
+  PascalCase .tsx:
+    GameCanvas.tsx
+    LessonEditor.tsx
+    HintSystem.tsx
+    AIErrorExplainer.tsx
+    GamePreviewCanvas.tsx
+    RobotPreviewCanvas.tsx
+    PartProgressIndicator.tsx
+    ConfettiCelebration.tsx
+    LevelUpCelebration.tsx
+    AchievementUnlocked.tsx
+    PathSwitcher.tsx
+    UpgradeBanner.tsx
+    LeaderboardPreview.tsx
+
+LIB / UTILITY FILES
+  kebab-case .ts:
+    game-engine.ts
+    cpp-runner.ts
+    game-protocol.ts
+    robot-protocol.ts
+    heap-sim.ts
+    streak-manager.ts
+    rate-limit.ts
+    daily-goal.ts
+    achievement-manager.ts
+    supabase-browser.ts
+    supabase-server.ts
+
+TYPE FILES
+  kebab-case .ts:
+    lesson.ts
+    game.ts
+    robot.ts
+    jscpp.d.ts
+
+STORE FILES
+  kebab-case .ts:
+    lesson-store.ts
+
+NEXT.JS CONVENTION FILES
+  page.tsx       (all route segments)
+  layout.tsx     (layout wrappers)
+  route.ts       (API handlers)
+  middleware.ts  (edge middleware)
+
+MIGRATION FILES
+  Mixed: numeric prefix or descriptive kebab:
+    003-lesson-enhancements.sql
+    004-stripe-fields.sql
+    add-dynamic-lessons-schema.sql
+    seed-achievements.sql
+
+PROTOCOL FILES
+  Protocol definitions live in:
+    src/lib/protocols/space-shooter-protocol.ts
+    src/lib/protocols/rpg-protocol.ts
+    src/lib/protocols/platformer-protocol.ts
+    src/lib/robot-protocol.ts          (pre-protocols/ split)
+    src/lib/game-protocol.ts           (pre-protocols/ split)
+
+
+2. FOLDER NAMING CONVENTIONS
+========================================================
+
+All folders: lowercase kebab-case.
+
+  src/app/(dashboard)/               Next.js route group (parentheses)
+  src/app/lesson/[id]/               Next.js dynamic segment (brackets)
+  src/app/api/ai-tutor/
+  src/app/api/polar/
+  src/components/community/
+  src/components/dashboard/
+  src/components/feedback/
+  src/components/layout/
+  src/components/lesson/
+  src/components/mobile/
+  src/data/game-templates/
+  src/data/game-templates/space-shooter/
+  src/data/game-templates/simple-rpg/
+  src/data/game-templates/platformer/
+  src/data/game-templates/differential-drive-robot/
+  src/data/lessons/
+  src/lib/protocols/
+  src/migrations/
+  src/store/
+  src/types/
+
+Template IDs in game_templates DB column use snake_case:
+  space_shooter
+  simple_rpg
+  platformer
+  differential_drive_robot
+
+
+3. TYPE AND INTERFACE NAMING
+========================================================
+
+Pattern: PascalCase for all TypeScript interfaces and type aliases.
+
+INTERFACES (src/types/lesson.ts, src/types/game.ts, src/types/robot.ts)
+  Lesson
+  LessonPart
+  LessonTest
+  LessonProgress
+  UserProfile
+  GameLessonVariant
+  GameTemplateInfo
+  GameFrame
+  GameEntity
+  GameState
+  Entity
+  Particle
+  LessonStore                         (src/store/lesson-store.ts)
+  RobotFrame                          (src/types/robot.ts — confirmed referenced)
+
+TYPE ALIASES (union literals / simple aliases)
+  GameTemplate        = "space_shooter" | "platformer" | "simple_rpg" | "differential_drive_robot"
+  TemplateCategory    = "game" | "robot"
+  GamePhase           = "playing" | "crashing" | "frozen"
+  LessonStatus        = "locked" | "available" | "in_progress" | "completed"
+  PartStatus          = "not_started" | "in_progress" | "completed"
+
+INLINE UNION LITERALS (fields directly typed in interfaces)
+  tier:       "free" | "pro"
+  difficulty: "beginner" | "intermediate" | "advanced"
+  type:       "concept" | "game_builder" | "robot_builder"
+
+Note: No enums found — all enum-like types use union string literals.
+
+
+4. FUNCTION NAMING CONVENTIONS
+========================================================
+
+Pattern: camelCase for all exported and local functions.
+React hooks follow the use* prefix convention.
+
+LESSON INDEX FUNCTIONS (per path)
+  getSpaceShooterLessonById(id: string): Lesson | undefined
+  getNextSpaceShooterLesson(currentId: string): Lesson | undefined
+  getRPGLessonById(id: string): Lesson | undefined
+  getNextRPGLesson(currentId: string): Lesson | undefined
+  getPlatformerLessonById(id: string): Lesson | undefined
+  getNextPlatformerLesson(currentId: string): Lesson | undefined
+  getRobotLessonById(id: string): Lesson | undefined
+  getNextRobotLesson(currentId: string): Lesson | undefined
+
+TEMPLATE INFO FUNCTIONS
+  getTemplateInfo(id: string): GameTemplateInfo | undefined
+
+GAME ENGINE FUNCTIONS (src/lib/game-engine.ts)
+  createGameState(): GameState
+  seededRandom(seed: number): () => number     (private, non-exported)
+
+STORE ACTIONS (src/store/lesson-store.ts)
+  setCurrentPart(part: 1 | 2): void
+  setPart1Code(code: string): void
+  setPart2Code(code: string): void
+  setGameFrame(frame: GameFrame | null): void
+  setRobotFrame(frame: RobotFrame | null): void
+  setRobotFrames(frames: RobotFrame[]): void
+  setOutput(output: string): void
+  setErrors(errors: string[]): void
+  setTestResults(results: TestResult[]): void
+  setIsRunning(running: boolean): void
+  showNextHint(): void
+  markPart1Complete(): void
+  markPart2Complete(): void
+  resetLesson(part1Starter: string, part2Starter: string): void
+
+REACT HOOKS
+  useLessonStore                      (Zustand store hook, use* prefix)
+
+C++ FUNCTION NAMES (found in inline lesson code samples)
+  All camelCase with lowercase start:
+  spawnWave(int count, int startX, int spacingX, int y, int hp)
+  spawnBullet(int x, int y)
+  spawnEntity(int px, int py, int pvx, int pvy, int php, int ptype)
+  moveEnemies(int dy)
+  moveBullets(int dy)
+  movementSystem()
+  movementSystem(int count)
+  collisionSystem()
+  collisionSystem(int count)
+  cleanupSystem()
+  cleanupSystem(int count)
+  checkDamage()
+  renderState()
+  renderGrid(int camX, int camY)
+  countAlive(bool alive[], int size)
+  findFreeSlot(bool alive[], int size)
+  worldToScreenX(int wx, int camX)
+  worldToScreenY(int wy, int camY)
+  runReleaseChecklist()
+  printReleaseManifest()
+
+
+5. CONSTANT NAMING CONVENTIONS
+========================================================
+
+Pattern: SCREAMING_SNAKE_CASE for all module-level constants.
+
+TypeScript constants:
+  ALL_SPACE_SHOOTER_LESSONS           (src/data/lessons/index.ts)
+  ALL_RPG_LESSONS                     (src/data/lessons/rpg-index.ts)
+  ALL_PLATFORMER_LESSONS              (src/data/lessons/platformer-index.ts)
+  ALL_ROBOT_LESSONS                   (src/data/lessons/robot-index.ts)
+  GAME_TEMPLATES                      (src/data/templates-info.ts)
+  TEMPLATE_LESSON_COUNTS              (src/app/(dashboard)/paths/page.tsx)
+  CANVAS_W, CANVAS_H                  (src/lib/game-engine.ts)
+  CRASH_TIME, CRASH_DURATION, TOTAL_CYCLE  (src/lib/game-engine.ts)
+
+C++ constants in lesson code:
+  POOL_SIZE = 32                      (entity pool size)
+  MAX = 10                            (compact pool size)
+  SCREEN_W = 20, SCREEN_H = 10       (ASCII grid dimensions)
+  VIEW_W = 200, VIEW_H = 100         (world viewport)
+
+
+6. EXPORTED SYMBOL NAMING — LESSON OBJECTS
+========================================================
+
+The lesson export symbol name depends on which path the lesson belongs to:
+
+Space Shooter (src/data/lessons/lesson-NN-*.ts):
+  export const lessonNN: Lesson = { ... }
+  Examples: lesson01, lesson02, lesson25, lesson100
+  Note: no path prefix in symbol name
+
+RPG (src/data/lessons/lesson-rpg-NN-*.ts):
+  export const lessonRPGNN: Lesson = { ... }
+  Examples: lessonRPG01, lessonRPG25, lessonRPG100
+  Note: RPG in all-caps (not Rpg)
+
+Platformer (src/data/lessons/lesson-platformer-NN-*.ts):
+  export const lessonPlatformerNN: Lesson = { ... }
+  Examples: lessonPlatformer01, lessonPlatformer25, lessonPlatformer100
+
+Robot (src/data/lessons/lesson-robot-NN-*.ts):
+  export const lessonRobotNN: Lesson = { ... }
+  Examples: lessonRobot01, lessonRobot25, lessonRobot100
+
+Game Variants (space-shooter):
+  export const lessonNNSpaceShooter: GameLessonVariant = { ... }
+  Examples: lesson01SpaceShooter, lesson25SpaceShooter
+
+Game Variants (simple-rpg SS overlay):
+  export const lessonNNSimpleRpg: GameLessonVariant = { ... }
+  Examples: lesson01SimpleRpg, lesson25SimpleRpg
+
+Game Variants (differential-drive-robot):
+  export const lessonNNRobot: GameLessonVariant = { ... }
+  Examples: lesson01Robot, lesson25Robot
+
+Game Variants (platformer):
+  export const lessonNNPlatformer: GameLessonVariant = { ... }   (inferred)
+
+
+7. LESSON ID STRING FORMAT
+========================================================
+
+The `id` field inside the Lesson object (used for routing / lookup):
+
+Space Shooter:    "{NN}-{slug}"
+  "01-boot-the-system"
+  "25-milestone-playable-loop"
+  "50-milestone-playable"
+  "100-milestone-release"
+
+RPG:              "rpg-{NN}-{slug}"
+  "rpg-01-boot-dungeon"
+  "rpg-25-milestone-25"
+  "rpg-50-milestone-50"
+  "rpg-100-release-v1"
+
+Platformer:       "platformer-{NN}-{slug}"    (inferred from filename pattern)
+  "platformer-01-boot-window"
+
+Robot:            "robot-{NN}-{slug}"          (inferred from filename pattern)
+  "robot-01-render-robot"
+
+Note: Space Shooter IDs do NOT have a "space-shooter-" prefix.
+All other paths prefix the ID with the path key.
+
+
+8. GAME VARIANT REGISTRY KEY FORMAT
+========================================================
+
+Keys used in the variant Record<string, GameLessonVariant> map:
+
+Space Shooter (simpleRpgVariants SS overlay):
+  "{NN}-{slug}"  — same as lesson ID
+  "01-boot-the-system"
+  "25-milestone-playable-loop"
+
+Old RPG variants (now orphaned, still in simple-rpg/):
+  "rpg-{NN}-{slug}"
+  "rpg-01-boot-system"       (old IDs, no longer match current lesson IDs)
+
+Note: variant keys must exactly match lesson.id for the lookup to succeed.
+
+
+9. NAMESPACES
+========================================================
+
+No TypeScript namespaces used.
+No module namespacing pattern beyond directory-based import paths.
+Path alias "@/" maps to src/ (configured in tsconfig.json).
+
+
+10. TOP 50 TYPE NAMES FOUND
+========================================================
+
+TypeScript interfaces & type aliases (from direct file reads):
+ 1. Lesson
+ 2. LessonPart
+ 3. LessonTest
+ 4. LessonProgress
+ 5. LessonStatus
+ 6. LessonStore
+ 7. PartStatus
+ 8. UserProfile
+ 9. GameLessonVariant
+10. GameTemplateInfo
+11. GameTemplate
+12. TemplateCategory
+13. GameFrame
+14. GameEntity
+15. GameState
+16. GamePhase
+17. Entity
+18. Particle
+19. RobotFrame
+20. TestResult                         (referenced in lesson-store.ts)
+21. StatsData                          (local in progress/page.tsx)
+
+C++ structs / classes found in lesson code:
+  (No explicit struct/class declarations found in sampled lessons — all code is
+   procedural using SoA arrays. Struct usage begins in later lessons, UNKNOWN
+   exact names until those files are read.)
+
+
+11. TOP 50 FUNCTION NAMES FOUND
+========================================================
+
+TypeScript (from direct file reads):
+ 1. getSpaceShooterLessonById
+ 2. getNextSpaceShooterLesson
+ 3. getRPGLessonById
+ 4. getNextRPGLesson
+ 5. getPlatformerLessonById
+ 6. getNextPlatformerLesson
+ 7. getRobotLessonById
+ 8. getNextRobotLesson
+ 9. getTemplateInfo
+10. createGameState
+11. seededRandom
+12. setCurrentPart
+13. setPart1Code
+14. setPart2Code
+15. setGameFrame
+16. setRobotFrame
+17. setRobotFrames
+18. setOutput
+19. setErrors
+20. setTestResults
+21. setIsRunning
+22. showNextHint
+23. markPart1Complete
+24. markPart2Complete
+25. resetLesson
+26. useLessonStore
+
+C++ functions found in lesson starter/solution code:
+27. spawnWave
+28. spawnBullet
+29. spawnEntity
+30. moveEnemies
+31. moveBullets
+32. movementSystem
+33. collisionSystem
+34. cleanupSystem
+35. checkDamage
+36. renderState
+37. renderGrid
+38. countAlive
+39. findFreeSlot
+40. worldToScreenX
+41. worldToScreenY
+42. runReleaseChecklist
+43. printReleaseManifest
+
+
+12. OBSERVATIONS & ANOMALIES
+========================================================
+
+1. INCONSISTENT PREFIX: Space Shooter lesson IDs don't have a path prefix ("01-boot")
+   while all other paths do ("rpg-01-boot", "platformer-01-boot", "robot-01-boot").
+   This was a legacy design decision — Space Shooter was the first path built.
+
+2. ORPHANED FILES: src/data/game-templates/simple-rpg/lesson-01-rpg.ts through
+   lesson-50-rpg.ts exist on disk but are no longer imported by index.ts.
+   Their variant keys ("rpg-01-boot-system") don't match current lesson IDs.
+
+3. MIXED CAPITALIZATION IN SYMBOL NAMES: RPG abbreviation is all-caps in TypeScript
+   symbol names (lessonRPG01, ALL_RPG_LESSONS, getRPGLessonById) but lowercase
+   in file names (lesson-rpg-01.ts) and folder names (simple-rpg/).
+
+4. GAME TEMPLATE FOLDER vs DB COLUMN DISCREPANCY:
+   Folder name:   simple-rpg/     (kebab-case)
+   DB column:     simple_rpg      (snake_case)
+   TypeScript ID: "simple_rpg"    (snake_case)
+
+5. ROBOT: Folder is "differential-drive-robot/", DB value is
+   "differential_drive_robot", but lesson files use the shorter "robot" prefix
+   (lesson-robot-01.ts). Robot variant files in game-templates use "-robot.ts" suffix.
+
+6. C++ STYLE: All embedded C++ code uses snake_case for variables/arrays
+   (enemy_x, enemy_alive, ship_hp) and camelCase for function names
+   (spawnWave, checkDamage). This matches a common C++ game dev style, not strict
+   Google C++ Style Guide (which uses PascalCase for functions).
+========================================================

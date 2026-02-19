@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson10Platformer: GameLessonVariant = {
-  lessonId: "10-dynamic-memory",
+  lessonId: "10-entity-pool-v0",
   instructions: `# Dynamic Level — Runtime Platform Creation
 
 ## Project: Platformer FSM — Dynamic Memory for Level Data

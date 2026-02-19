@@ -173,7 +173,7 @@ export default function Leaderboard() {
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`px-3 py-1.5 text-xs font-mono rounded-lg border transition-colors min-h-[36px] ${
+            className={`px-3 py-1.5 text-xs font-mono rounded-lg border transition-colors min-h-[44px] ${
               tab === t.id
                 ? "bg-primary/10 text-primary border-primary/30"
                 : "bg-[#1a1a2e] text-[#888] border-[#2a2a3e] hover:border-[#3a3a4e]"

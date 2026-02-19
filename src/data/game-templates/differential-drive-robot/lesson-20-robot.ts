@@ -71,7 +71,7 @@ int main() {
 }`;
 
 export const lesson20Robot: GameLessonVariant = {
-  lessonId: "20-effects",
+  lessonId: "20-spatial-buckets-v0",
 
   instructions: `# Robot Builder: Target Database
 

@@ -56,7 +56,7 @@ int main() {
 }`;
 
 export const lesson19Robot: GameLessonVariant = {
-  lessonId: "19-difficulty",
+  lessonId: "19-game-states-v0",
 
   instructions: `# Robot Builder: Concurrent Sensor Processing
 

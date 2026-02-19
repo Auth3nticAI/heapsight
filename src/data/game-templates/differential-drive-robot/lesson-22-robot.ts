@@ -69,7 +69,7 @@ int main() {
 }`;
 
 export const lesson22Robot: GameLessonVariant = {
-  lessonId: "22-memory-leaks",
+  lessonId: "22-error-handling-v0",
 
   instructions: `# Robot Builder: Environment Mapper
 

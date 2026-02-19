@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson08Platformer: GameLessonVariant = {
-  lessonId: "08-conditionals",
+  lessonId: "08-combat-rules",
   instructions: `# State Transitions — Player State Machine
 
 ## Project: Platformer FSM — Core State Logic

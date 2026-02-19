@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson06SimpleRpg: GameLessonVariant = {
-  lessonId: "06-arrays",
+  lessonId: "06-soa-enemies",
 
   instructions: `# Inventory System — Item Storage Arrays\n\nIn data-driven RPGs, **parallel arrays** act as lightweight data tables. Each array column stores one attribute of a game item, and the row index ties them together.\n\n## Objectives\n- Declare three parallel arrays: \`names[]\`, \`quantities[]\`, and \`values[]\`\n- Store 3 inventory items across these arrays\n- Loop through the arrays to display each item via \`GAME_MESSAGE\`\n- Calculate and display the total gold value\n- Render the warrior entity who carries this inventory\n\n## Output Protocol\n- \`ENTITY|id|type|x|y|width|height\` — render the warrior\n- \`GAME_MESSAGE|text\` — display each item and the total\n- \`SCORE|value\` — total inventory gold value`,
 

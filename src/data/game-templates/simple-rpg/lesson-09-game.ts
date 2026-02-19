@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson09SimpleRpg: GameLessonVariant = {
-  lessonId: "09-references",
+  lessonId: "09-component-mutation",
 
   instructions: `# Stat Modification — Buff System by Reference\n\nIn RPG buff/debuff systems, functions modify character stats **in-place**. C++ references let you pass a stat variable directly so the function changes the original value — no copies, no return values needed.\n\n## Objectives\n- Write \`applyBuff(int& stat, int amount)\` that adds \`amount\` to \`stat\`\n- Write \`applyDebuff(int& stat, int amount)\` that subtracts \`amount\` from \`stat\` (minimum 0)\n- Apply a +15 strength buff to the warrior\n- Apply a -10 defense debuff to the goblin\n- Render both entities and show messages\n\n## Output Protocol\n- \`ENTITY|id|type|x|y|width|height|health\` — render characters\n- \`GAME_MESSAGE|text\` — describe buff/debuff effects\n- \`SCORE|value\` — total stat change applied`,
 

@@ -109,7 +109,9 @@ export async function runCppCode(
       const regex = new RegExp(expected);
       passed = regex.test(trimmedOutput);
     } else {
-      passed = trimmedOutput === expected;
+      passed = trimmedOutput.split("\n").some(
+        (line) => line.trim() === expected
+      );
     }
 
     return {

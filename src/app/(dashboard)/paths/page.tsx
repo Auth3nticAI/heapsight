@@ -3,8 +3,40 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase-browser";
 import { useRouter } from "next/navigation";
-import { ALL_LESSONS } from "@/data/lessons";
+import { ALL_SPACE_SHOOTER_LESSONS } from "@/data/lessons";
+import { ALL_RPG_LESSONS } from "@/data/lessons/rpg-index";
+import { ALL_PLATFORMER_LESSONS } from "@/data/lessons/platformer-index";
+import { ALL_ROBOT_LESSONS } from "@/data/lessons/robot-index";
+
+const TEMPLATE_LESSON_COUNTS: Record<string, number> = {
+  space_shooter: ALL_SPACE_SHOOTER_LESSONS.length,
+  platformer: ALL_PLATFORMER_LESSONS.length,
+  simple_rpg: ALL_RPG_LESSONS.length,
+  differential_drive_robot: ALL_ROBOT_LESSONS.length,
+};
 import PaywallModal from "@/components/PaywallModal";
+import { getPathDifficulty } from "@/data/templates-info";
+
+const MAX_STARS = 4;
+
+function DifficultyStars({ level }: { level: number }) {
+  return (
+    <span className="inline-flex items-center gap-0.5">
+      {Array.from({ length: MAX_STARS }, (_, i) => (
+        <svg
+          key={i}
+          className={`h-3.5 w-3.5 ${i < level ? "text-[#fbbf24]" : "text-[#2a2a3e]"}`}
+          viewBox="0 0 24 24"
+          fill={i < level ? "currentColor" : "none"}
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
+      ))}
+    </span>
+  );
+}
 
 function ShuffleIcon({ className }: { className?: string }) {
   return (
@@ -160,8 +192,6 @@ export default function PathsPage() {
     );
   }
 
-  const totalLessons = ALL_LESSONS.length;
-
   return (
     <>
       <header className="border-b border-[#1a1a2e] px-4 sm:px-6 py-4">
@@ -198,6 +228,7 @@ export default function PathsPage() {
           {PATHS.map((path) => {
             const isCurrent = path.id === currentPath;
             const progress = pathProgress[path.id] || 0;
+            const totalLessons = TEMPLATE_LESSON_COUNTS[path.id] ?? 100;
             const progressPct = Math.round((progress / totalLessons) * 100);
             const isLocked = userTier === "free" && !isCurrent && currentPath !== null;
 
@@ -210,7 +241,7 @@ export default function PathsPage() {
                     ? `bg-gradient-to-br ${path.color} ${path.border} ring-2 ring-primary/30`
                     : isLocked
                     ? "bg-surface border-[#1a1a2e] opacity-60"
-                    : `bg-surface border-[#2a2a3e] hover:${path.border}`
+                    : "bg-surface border-[#2a2a3e] hover:border-[#4a4a5e]"
                   }
                 `}
               >
@@ -233,7 +264,19 @@ export default function PathsPage() {
                 {/* Content */}
                 <div className="text-3xl mb-3">{path.icon}</div>
                 <h3 className="text-base font-bold text-white mb-0.5">{path.name}</h3>
-                <p className={`text-[10px] font-mono ${path.accent} mb-3`}>{path.paradigm}</p>
+                <p className={`text-[10px] font-mono ${path.accent} mb-1`}>{path.paradigm}</p>
+
+                {/* Difficulty */}
+                {(() => {
+                  const diff = getPathDifficulty(path.id);
+                  return (
+                    <div className="flex items-center gap-2 mb-3">
+                      <DifficultyStars level={diff.level} />
+                      <span className="text-[9px] font-mono text-[#888]">{diff.label}</span>
+                    </div>
+                  );
+                })()}
+
                 <p className="text-xs text-[#888] mb-4 leading-relaxed">{path.description}</p>
 
                 {/* Skills */}

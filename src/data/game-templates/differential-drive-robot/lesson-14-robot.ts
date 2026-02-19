@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson14Robot: GameLessonVariant = {
-  lessonId: "14-headers",
+  lessonId: "14-dynamic-arrays",
 
   instructions: `# Robot Builder: Runtime Configuration
 

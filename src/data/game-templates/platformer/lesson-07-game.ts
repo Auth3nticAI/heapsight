@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson07Platformer: GameLessonVariant = {
-  lessonId: "07-loops",
+  lessonId: "07-spawn-wave-loop",
   instructions: `# Coin Spawner — Loop-Generated Collectibles
 
 ## Project: Platformer FSM — Procedural Level Generation

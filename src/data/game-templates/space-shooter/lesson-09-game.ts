@@ -1,63 +1,82 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson09SpaceShooter: GameLessonVariant = {
-  lessonId: "09-references",
-  instructions: `# Damage System — Component Mutation by Reference
+  lessonId: "09-component-mutation",
+  instructions: `# Damage Function Copies HP — Array Never Changes
 
-## Project: Space Shooter ECS — In-Place Component Updates
+Your damage function takes hp by value. It subtracts. It clamps. It returns. The array slot is identical to before the call. The copy was destroyed on function exit. Nothing dies.
 
-**What you're building:** A damage system function that modifies entity health components in-place using references — showing how ECS systems mutate component data without copying.
+## What Breaks Without This
 
-## ECS Concept: Systems Modify Components In-Place
+Every call to \`applyDamage(int hp, int damage)\` copies the int from the array into a local variable. The subtraction modifies the local. The local is destroyed when the function returns. The health array is untouched. The render loop draws every enemy at full hp. Your damage system is a no-op.
 
-In ECS, systems don't return new data — they **modify components directly**. In C++, we use references to achieve this:
+## The Fix
 
-\`\`\`
-void applyDamage(int& hp, int dmg) {
-    hp -= dmg;           // modifies the original component
-    if (hp < 0) hp = 0;  // clamp to zero
-}
-\`\`\`
+References give direct access to data. No copying. The function modifies the original. This is how systems operate on component arrays.
 
-The \`&\` means the function operates on the **actual component data** in the array, not a copy. This is how real ECS systems work — they process component arrays in-place for maximum performance.
+A system function takes a reference to the data array and modifies it directly. No copies. No return values for bulk operations. The movement system takes \`enemy_y[]\` and adds speed to every element. The damage system takes \`enemy_hp[]\` and subtracts damage. One function call mutates the entire array in place. This is how ECS systems work.
+
+You need two system functions:
+
+**moveSystem** \u2014 takes \`enemy_y[]\`, count, and speed. Loops all enemies. Adds speed to each \`enemy_y[i]\`. Arrays decay to pointers in C++, so they are already passed by reference. One call advances the entire formation.
+
+**damageSystem** \u2014 takes \`enemy_hp[]\`, \`enemy_alive[]\`, count, targetIdx, and damage. Subtracts damage from \`enemy_hp[targetIdx]\`. Clamps to 0. If hp hits 0, sets \`enemy_alive[targetIdx] = false\`. Direct mutation. No return value needed.
 
 ## Your Task
 
-1. Write a function \`void applyDamage(int& hp, int dmg)\` that subtracts damage and clamps to 0
-2. Create 3 enemies with component arrays:
-   - posX = {100, 200, 300}, posY = {60, 60, 60}
-   - health = {80, 50, 80}
-   - width=20, height=20
-3. Output all entities BEFORE damage with \`GAME_MESSAGE|--- Before Damage ---\`
-4. Apply 35 damage to enemy 0 (health: 80 -> 45)
-5. Apply 60 damage to enemy 1 (health: 50 -> 0, clamped)
-6. Output \`GAME_MESSAGE|--- After Damage ---\`
-7. Output all entities AFTER damage (including dead ones with health 0)
-8. Output \`SCORE|95\` (total damage dealt: 35 + 60)`,
+1. Write \`moveSystem(int enemy_y[], int count, int speed)\` \u2014 add speed to every enemy_y
+2. Write \`damageSystem(int enemy_hp[], bool enemy_alive[], int count, int targetIdx, int damage)\` \u2014 damage, clamp, kill
+3. 5 enemies spawn at x=60,120,180,240,300 y=40 hp=30
+4. Run moveSystem with speed=20 (all enemies move to y=60)
+5. Kill enemy 1 and enemy 3 with 35 damage each via damageSystem
+6. Add 100 score per kill
+7. Render only alive enemies using ENTITY protocol
+8. Output HUD, message, and score
+
+## Beginner Trap
+
+**Common Mistake:** Writing \`void damageSystem(int enemy_hp, ...)\` instead of \`void damageSystem(int enemy_hp[], ...)\`.
+A single int parameter copies one value. An array parameter gives you the actual array. For individual \`int\` params, you need \`&\`. For arrays, the \`[]\` syntax already passes the pointer.
+
+## Elite Insight
+
+In production ECS, systems receive pointers to entire component arrays and iterate them in tight loops. The movement system touches only position data. The damage system touches only hp and alive data. No entity knows about both. This separation is what makes ECS cache-friendly and parallelizable.
+
+## Cross-Path Echo
+
+The RPG path uses references to mutate inventory quantities in place. The Platformer path passes velocity arrays to a gravity system. Same direct-mutation pattern everywhere.`,
   starterCode: `#include <iostream>
 using namespace std;
 
-// TODO: Write applyDamage(int& hp, int dmg)
-// Subtract dmg from hp, clamp to 0 if negative
+// TODO: Write moveSystem(int enemy_y[], int count, int speed)
+// Loop all enemies, add speed to enemy_y[i]
+
+// TODO: Write damageSystem(int enemy_hp[], bool enemy_alive[], int count, int targetIdx, int damage)
+// Subtract damage from enemy_hp[targetIdx], clamp to 0
+// If hp <= 0, set enemy_alive[targetIdx] = false
 
 int main() {
-    int posX[3] = {100, 200, 300};
-    int posY[3] = {60, 60, 60};
-    int health[3] = {80, 50, 80};
+    const int MAX = 5;
 
-    int width = 20;
-    int height = 20;
+    int enemy_x[MAX] = {60, 120, 180, 240, 300};
+    int enemy_y[MAX] = {40, 40, 40, 40, 40};
+    int enemy_hp[MAX] = {30, 30, 30, 30, 30};
+    bool enemy_alive[MAX] = {true, true, true, true, true};
 
-    // TODO: Output "--- Before Damage ---" message
-    // TODO: Render all 3 entities with current health
+    int score = 0;
 
-    // TODO: Apply 35 damage to enemy 0
-    // TODO: Apply 60 damage to enemy 1
+    // TODO: Run moveSystem with speed 20
 
-    // TODO: Output "--- After Damage ---" message
-    // TODO: Render all 3 entities with updated health
+    // TODO: Kill enemy 1 with 35 damage via damageSystem
+    // TODO: Kill enemy 3 with 35 damage via damageSystem
+    // Add 100 to score for each kill
 
-    // TODO: Output SCORE|95
+    // TODO: Render only alive enemies
+    // ENTITY|eN|enemy|x|y|22|22|hp
+
+    cout << "HUD|HP:100|SCORE:" << score << "|LIVES:3" << endl;
+    cout << "GAME_MESSAGE|Systems active: 3 enemies surviving" << endl;
+    cout << "SCORE|" << score << endl;
 
     return 0;
 }
@@ -65,92 +84,115 @@ int main() {
   solutionCode: `#include <iostream>
 using namespace std;
 
-void applyDamage(int& hp, int dmg) {
-    hp -= dmg;
-    if (hp < 0) hp = 0;
+void moveSystem(int enemy_y[], int count, int speed) {
+    for (int i = 0; i < count; i++) {
+        enemy_y[i] += speed;
+    }
+}
+
+void damageSystem(int enemy_hp[], bool enemy_alive[], int count, int targetIdx, int damage) {
+    enemy_hp[targetIdx] -= damage;
+    if (enemy_hp[targetIdx] < 0) enemy_hp[targetIdx] = 0;
+    if (enemy_hp[targetIdx] <= 0) enemy_alive[targetIdx] = false;
 }
 
 int main() {
-    int posX[3] = {100, 200, 300};
-    int posY[3] = {60, 60, 60};
-    int health[3] = {80, 50, 80};
+    const int MAX = 5;
 
-    int width = 20;
-    int height = 20;
+    int enemy_x[MAX] = {60, 120, 180, 240, 300};
+    int enemy_y[MAX] = {40, 40, 40, 40, 40};
+    int enemy_hp[MAX] = {30, 30, 30, 30, 30};
+    bool enemy_alive[MAX] = {true, true, true, true, true};
 
-    cout << "GAME_MESSAGE|--- Before Damage ---" << endl;
-    for (int i = 0; i < 3; i++) {
-        cout << "ENTITY|enemy" << i << "|enemy|"
-             << posX[i] << "|" << posY[i] << "|"
-             << width << "|" << height << "|"
-             << health[i] << endl;
+    int score = 0;
+
+    // Movement system: all enemies move down
+    moveSystem(enemy_y, MAX, 20);
+
+    // Damage system: kill enemy 1 and enemy 3
+    damageSystem(enemy_hp, enemy_alive, MAX, 1, 35);
+    score += 100;
+    damageSystem(enemy_hp, enemy_alive, MAX, 3, 35);
+    score += 100;
+
+    // Render system: only alive enemies
+    for (int i = 0; i < MAX; i++) {
+        if (enemy_alive[i]) {
+            cout << "ENTITY|e" << i << "|enemy|"
+                 << enemy_x[i] << "|" << enemy_y[i]
+                 << "|22|22|" << enemy_hp[i] << endl;
+        }
     }
 
-    applyDamage(health[0], 35);
-    applyDamage(health[1], 60);
+    cout << "HUD|HP:100|SCORE:" << score << "|LIVES:3" << endl;
+    cout << "GAME_MESSAGE|Systems active: 3 enemies surviving" << endl;
+    cout << "SCORE|" << score << endl;
 
-    cout << "GAME_MESSAGE|--- After Damage ---" << endl;
-    for (int i = 0; i < 3; i++) {
-        cout << "ENTITY|enemy" << i << "|enemy|"
-             << posX[i] << "|" << posY[i] << "|"
-             << width << "|" << height << "|"
-             << health[i] << endl;
-    }
-
-    cout << "SCORE|95" << endl;
     return 0;
 }
 `,
   tests: [
-    { id: "g1", description: "Should show before-damage message", expectedOutput: "GAME_MESSAGE\\|--- Before Damage ---", isPattern: true },
-    { id: "g2", description: "Enemy0 should have 80 health before damage", expectedOutput: "ENTITY\\|enemy0\\|enemy\\|100\\|60\\|20\\|20\\|80", isPattern: true },
-    { id: "g3", description: "Should show after-damage message", expectedOutput: "GAME_MESSAGE\\|--- After Damage ---", isPattern: true },
-    { id: "g4", description: "Enemy0 should have 45 health after damage", expectedOutput: "ENTITY\\|enemy0\\|enemy\\|100\\|60\\|20\\|20\\|45", isPattern: true },
-    { id: "g5", description: "Enemy1 should have 0 health (clamped) after damage", expectedOutput: "ENTITY\\|enemy1\\|enemy\\|200\\|60\\|20\\|20\\|0", isPattern: true },
-    { id: "g6", description: "Enemy2 should remain at 80 health", expectedOutput: "ENTITY\\|enemy2\\|enemy\\|300\\|60\\|20\\|20\\|80", isPattern: true },
-    { id: "g7", description: "Should show total damage as score", expectedOutput: "SCORE\\|95", isPattern: true },
+    { id: "g1", description: "Enemy0 should be at y=60 after moveSystem", expectedOutput: "ENTITY\\|e0\\|enemy\\|60\\|60\\|22\\|22\\|30", isPattern: true },
+    { id: "g2", description: "Enemy1 should NOT render (killed by damageSystem)", expectedOutput: "^(?!.*ENTITY\\|e1\\|)", isPattern: true },
+    { id: "g3", description: "Enemy2 should survive at y=60", expectedOutput: "ENTITY\\|e2\\|enemy\\|180\\|60\\|22\\|22\\|30", isPattern: true },
+    { id: "g4", description: "Enemy3 should NOT render (killed by damageSystem)", expectedOutput: "^(?!.*ENTITY\\|e3\\|)", isPattern: true },
+    { id: "g5", description: "Enemy4 should survive at y=60", expectedOutput: "ENTITY\\|e4\\|enemy\\|300\\|60\\|22\\|22\\|30", isPattern: true },
+    { id: "g6", description: "Should show 3 enemies surviving", expectedOutput: "GAME_MESSAGE\\|Systems active: 3 enemies surviving", isPattern: true },
+    { id: "g7", description: "Score should be 200", expectedOutput: "SCORE\\|200", isPattern: true },
   ],
   hints: [
-    "The `&` in `int& hp` means the function modifies the original variable, not a copy.",
-    "Clamp with: `if (hp < 0) hp = 0;` — health shouldn't go negative.",
-    "Call it like: `applyDamage(health[0], 35);` — passing the array element directly.",
+    "Arrays are passed by pointer in C++. `void moveSystem(int enemy_y[], int count, int speed)` already modifies the original array \u2014 no `&` needed.",
+    "In damageSystem: `enemy_hp[targetIdx] -= damage;` then clamp, then check if dead: `if (enemy_hp[targetIdx] <= 0) enemy_alive[targetIdx] = false;`",
+    "Render loop: `if (enemy_alive[i])` gates the ENTITY output. Dead enemies are skipped entirely.",
   ],
   accumulatedCode: `#include <iostream>
 using namespace std;
 
-void applyDamage(int& hp, int dmg) {
-    hp -= dmg;
-    if (hp < 0) hp = 0;
+// --- System functions (L9: reference-based mutation) ---
+void moveSystem(int enemy_y[], int count, int speed) {
+    for (int i = 0; i < count; i++) {
+        enemy_y[i] += speed;
+    }
+}
+
+void damageSystem(int enemy_hp[], bool enemy_alive[], int count, int targetIdx, int damage) {
+    enemy_hp[targetIdx] -= damage;
+    if (enemy_hp[targetIdx] < 0) enemy_hp[targetIdx] = 0;
+    if (enemy_hp[targetIdx] <= 0) enemy_alive[targetIdx] = false;
 }
 
 int main() {
-    int posX[3] = {100, 200, 300};
-    int posY[3] = {60, 60, 60};
-    int health[3] = {80, 50, 80};
+    // --- SoA component arrays (L6) ---
+    const int MAX = 5;
+    int enemy_x[MAX] = {60, 120, 180, 240, 300};
+    int enemy_y[MAX] = {40, 40, 40, 40, 40};
+    int enemy_hp[MAX] = {30, 30, 30, 30, 30};
+    bool enemy_alive[MAX] = {true, true, true, true, true};
 
-    int width = 20;
-    int height = 20;
+    int score = 0;
 
-    cout << "GAME_MESSAGE|--- Before Damage ---" << endl;
-    for (int i = 0; i < 3; i++) {
-        cout << "ENTITY|enemy" << i << "|enemy|"
-             << posX[i] << "|" << posY[i] << "|"
-             << width << "|" << height << "|"
-             << health[i] << endl;
+    // --- Movement system (L7: loops + L9: references) ---
+    moveSystem(enemy_y, MAX, 20);
+
+    // --- Damage system (L9: in-place mutation) ---
+    damageSystem(enemy_hp, enemy_alive, MAX, 1, 35);
+    score += 100;
+    damageSystem(enemy_hp, enemy_alive, MAX, 3, 35);
+    score += 100;
+
+    // --- Render system (L8: conditional filtering) ---
+    for (int i = 0; i < MAX; i++) {
+        if (enemy_alive[i]) {
+            cout << "ENTITY|e" << i << "|enemy|"
+                 << enemy_x[i] << "|" << enemy_y[i]
+                 << "|22|22|" << enemy_hp[i] << endl;
+        }
     }
 
-    applyDamage(health[0], 35);
-    applyDamage(health[1], 60);
+    cout << "HUD|HP:100|SCORE:" << score << "|LIVES:3" << endl;
+    cout << "GAME_MESSAGE|Systems active: 3 enemies surviving" << endl;
+    cout << "SCORE|" << score << endl;
 
-    cout << "GAME_MESSAGE|--- After Damage ---" << endl;
-    for (int i = 0; i < 3; i++) {
-        cout << "ENTITY|enemy" << i << "|enemy|"
-             << posX[i] << "|" << posY[i] << "|"
-             << width << "|" << height << "|"
-             << health[i] << endl;
-    }
-
-    cout << "SCORE|95" << endl;
     return 0;
 }
 `,

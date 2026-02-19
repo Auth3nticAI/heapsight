@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson17Platformer: GameLessonVariant = {
-  lessonId: "17-entity-management",
+  lessonId: "17-ids-and-free-list",
   instructions: `# Level Entities — Managing Platforms, Coins, Hazards\n\nA platformer level contains many entity types: platforms to stand on, coins to collect, and hazards to avoid. Each entity needs a **status flag** — is it alive? Has it been collected?\n\nUsing struct arrays with status flags lets you manage entities efficiently:\n- Platforms are always \`alive\` (static geometry)\n- Coins have a \`collected\` flag — once collected, they stop rendering\n- Hazards have an \`active\` flag — they can be deactivated\n\n## Your Task\n\n1. Define structs for Platform, Coin, and Hazard with status flags\n2. Create arrays: 2 platforms, 3 coins, 1 hazard\n3. Mark coin at index 1 as collected (simulating pickup)\n4. Render only alive/uncollected/active entities\n5. Show the score from collected coins and a summary message\n\n## Protocol Reminder\n- \`ENTITY|id|type|x|y|width|height\`\n- \`GAME_MESSAGE|text\`\n- \`SCORE|value\``,
   starterCode: `#include <iostream>
 #include <string>

@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson20Platformer: GameLessonVariant = {
-  lessonId: "20-effects",
+  lessonId: "20-spatial-buckets-v0",
   instructions: `# Jump Effects — State-Triggered Particles\n\nWhen a platformer character lands after a jump, dust particles should appear at the player's feet. This visual feedback is **triggered by a state transition** — specifically, when the player's FSM moves from the \`falling\` state to the \`idle\` state.\n\n## Concepts\n- Finite State Machines (FSM) for player states: idle, jumping, falling\n- State transitions as event triggers\n- Spawning transient particle entities on landing\n\n## Your Task\n1. Define an enum for player states: IDLE, JUMPING, FALLING\n2. Simulate a jump sequence: idle -> jumping -> falling -> idle\n3. When the transition from FALLING to IDLE occurs (landing), spawn **3 dust particle entities** at offsets below the player:\n   - dust1 at (playerX - 8, playerY + 24) size 6x6\n   - dust2 at (playerX, playerY + 24) size 6x6\n   - dust3 at (playerX + 8, playerY + 24) size 6x6\n4. Render the player entity at position (100, 200) size 16x24\n5. Output a GAME_MESSAGE about landing\n6. Output the SCORE\n\n## Protocol Reminder\n\`\`\`\nENTITY|id|type|x|y|width|height\nGAME_MESSAGE|text\nSCORE|value\n\`\`\``,
   starterCode: `#include <iostream>
 #include <string>

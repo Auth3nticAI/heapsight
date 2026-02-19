@@ -105,11 +105,11 @@ export default function ProTeaser({
           className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-[#a855f7] to-[#6366f1] hover:from-[#9333ea] hover:to-[#4f46e5] text-white font-semibold px-5 py-3.5 rounded-xl transition-all shadow-lg shadow-[#a855f7]/20 min-h-[48px] touch-manipulation"
         >
           <SparklesIcon className="h-5 w-5" />
-          <span className="text-sm">Unlock All 100+ Lessons &mdash; $67 One-Time</span>
+          <span className="text-sm">Unlock All Lessons &mdash; $29/mo</span>
         </Link>
 
         <p className="text-[9px] text-center text-[#a855f7]/60 font-mono mt-2">
-          No subscription. Lifetime access. All 4 paths.
+          Or $199/year (save 43%). Cancel anytime.
         </p>
       </div>
     </div>

@@ -4,7 +4,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-browser";
 import Link from "next/link";
-import { ALL_LESSONS } from "@/data/lessons";
+import { ALL_SPACE_SHOOTER_LESSONS } from "@/data/lessons";
+import { ALL_RPG_LESSONS } from "@/data/lessons/rpg-index";
+import { ALL_PLATFORMER_LESSONS } from "@/data/lessons/platformer-index";
+import { ALL_ROBOT_LESSONS } from "@/data/lessons/robot-index";
 import { getLevelInfo } from "@/lib/lesson-metadata";
 
 // ─── Inline SVG Icons ──────────────────────────────────────────────────────
@@ -147,7 +150,12 @@ export default function AccountPage() {
 
   const displayName = profile.email.split("@")[0] || "User";
   const levelInfo = getLevelInfo(profile.totalXp);
-  const freeCount = ALL_LESSONS.filter((l) => l.tier === "free").length;
+  const pathLessons =
+    profile.template === "simple_rpg" ? ALL_RPG_LESSONS :
+    profile.template === "platformer" ? ALL_PLATFORMER_LESSONS :
+    profile.template === "differential_drive_robot" ? ALL_ROBOT_LESSONS :
+    ALL_SPACE_SHOOTER_LESSONS;
+  const freeCount = pathLessons.filter((l) => l.tier === "free").length;
   const isRobotPath = profile.template === "differential_drive_robot";
 
   return (
@@ -212,12 +220,12 @@ export default function AccountPage() {
           </div>
 
           {/* Stats Row */}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
             <div className="p-3 rounded-lg bg-[#0a0a0f] border border-[#1a1a2e] text-center">
               <div className="flex items-center justify-center gap-1 mb-1">
                 <ZapIcon className="h-3.5 w-3.5 text-[#fbbf24]" />
               </div>
-              <p className="text-base font-bold text-white font-mono">{profile.totalXp.toLocaleString()}</p>
+              <p className="text-sm sm:text-base font-bold text-white font-mono">{profile.totalXp.toLocaleString()}</p>
               <p className="text-[8px] font-mono text-[#666] uppercase">Total XP</p>
             </div>
             <div className="p-3 rounded-lg bg-[#0a0a0f] border border-[#1a1a2e] text-center">
@@ -231,7 +239,7 @@ export default function AccountPage() {
               <div className="flex items-center justify-center gap-1 mb-1">
                 <span className="text-sm">{"\u2713"}</span>
               </div>
-              <p className="text-base font-bold text-white font-mono">{profile.completedCount}/{ALL_LESSONS.length}</p>
+              <p className="text-base font-bold text-white font-mono">{profile.completedCount}/{pathLessons.length}</p>
               <p className="text-[8px] font-mono text-[#666] uppercase">Lessons</p>
             </div>
           </div>

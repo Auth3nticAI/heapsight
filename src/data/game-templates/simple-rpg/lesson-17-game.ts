@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson17SimpleRpg: GameLessonVariant = {
-  lessonId: "17-entity-management",
+  lessonId: "17-ids-and-free-list",
 
   instructions: `# Party Management — Multi-Character Arrays
 

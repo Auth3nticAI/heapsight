@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson10SimpleRpg: GameLessonVariant = {
-  lessonId: "10-dynamic-memory",
+  lessonId: "10-entity-pool-v0",
 
   instructions: `# Party System — Dynamic Character Allocation\n\nRPG party members often join and leave at runtime. **Dynamic memory** with \`new\` and \`delete\` lets you create characters on the heap when they join the party and clean them up when they leave.\n\n## Objectives\n- Define a \`PartyMember\` struct with name, role, hp, x, y fields\n- Use \`new\` to dynamically allocate a warrior and a mage\n- Render both party members as entities\n- Display a party summary message\n- Clean up with \`delete\` to prevent memory leaks\n\n## Output Protocol\n- \`ENTITY|id|type|x|y|width|height|health\` — render party members\n- \`GAME_MESSAGE|text\` — party info\n- \`SCORE|value\` — total party HP`,
 

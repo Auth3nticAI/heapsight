@@ -52,7 +52,7 @@ int main() {
 }`;
 
 export const lesson21Robot: GameLessonVariant = {
-  lessonId: "21-save-load",
+  lessonId: "21-checkpoint-save-load",
 
   instructions: `# Robot Builder: PID Follower
 

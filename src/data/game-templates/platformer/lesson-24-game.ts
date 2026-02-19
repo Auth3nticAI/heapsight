@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson24Platformer: GameLessonVariant = {
-  lessonId: "24-debugging",
+  lessonId: "24-lambdas-for-queries",
   instructions: `# Physics Bugs — Fix 3 State Machine Errors\n\nThis lesson gives you a **buggy** platformer physics simulation. The code has 3 bugs that break the player's jump sequence. Your job is to find and fix all 3 so the physics work correctly.\n\n## The 3 Bugs\n1. **Wrong gravity sign**: Gravity should pull the player DOWN (increase y), but it's subtracting instead of adding\n2. **Missing ground check**: The ground collision check compares y to the wrong value, so the player falls through the floor\n3. **Wrong state transition**: When landing, the code transitions to JUMPING instead of IDLE\n\n## Expected Behavior (after fixes)\n- Player starts at y=200 in IDLE state\n- Player jumps: velocity = -15, state = JUMPING\n- Gravity adds +5 each frame (3 frames simulated)\n- Frame 1: y = 200 + (-15) = 185, velocity = -10, state = JUMPING\n- Frame 2: y = 185 + (-10) = 175, velocity = -5, state = JUMPING\n- Frame 3: y = 175 + (-5) = 170, velocity = 0, state switches to FALLING\n- Frame 4: y = 170 + 0 = 170, velocity = 5, state = FALLING\n- Frame 5: y = 170 + 5 = 175, velocity = 10, state = FALLING\n- Ground is at y=200. After frame 5 y=175, still above ground. Continue:\n- Frame 6: y = 175 + 10 = 185, velocity = 15, state = FALLING\n- Frame 7: y = 185 + 15 = 200, velocity = 20 -> ground hit! y clamped to 200, state = IDLE\n- Render the final player position and output the final state\n\n## Protocol Reminder\n\`\`\`\nENTITY|id|type|x|y|width|height\nGAME_MESSAGE|text\nSCORE|value\n\`\`\``,
   starterCode: `#include <iostream>
 #include <string>

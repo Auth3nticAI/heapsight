@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson11Robot: GameLessonVariant = {
-  lessonId: "11-strings",
+  lessonId: "11-component-structs",
 
   instructions: `# Robot Builder: Telemetry Publisher
 

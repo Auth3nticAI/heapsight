@@ -1,0 +1,423 @@
+HEAPSIGHT — Repository File Tree
+Generated: 2026-02-18
+Excluded: node_modules, .git, .next, dist, build, out, coverage, .turbo, .cache
+Depth: up to 6
+Paths relative to repo root (crash-demo/)
+========================================================
+
+ROOT
+├── .eslintrc.json
+├── .gitignore
+├── next-env.d.ts
+├── package.json
+├── postcss.config.mjs
+├── project-plan.md
+├── README.md
+└── tsconfig.json
+
+src/
+├── middleware.ts
+│
+├── app/
+│   ├── favicon.ico
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── (dashboard)/
+│   │   ├── layout.tsx
+│   │   ├── account/page.tsx
+│   │   ├── leaderboard/page.tsx
+│   │   ├── learn/page.tsx
+│   │   ├── paths/page.tsx
+│   │   ├── practice/page.tsx
+│   │   ├── progress/page.tsx
+│   │   ├── settings/page.tsx
+│   │   └── upgrade/
+│   │       ├── page.tsx
+│   │       └── success/page.tsx
+│   ├── api/
+│   │   ├── ai-tutor/explain-error/route.ts
+│   │   ├── checkout/subscribe/route.ts
+│   │   ├── compile/route.ts
+│   │   └── polar/
+│   │       ├── portal/route.ts
+│   │       └── webhook/route.ts
+│   ├── fonts/
+│   │   ├── GeistMonoVF.woff
+│   │   └── GeistVF.woff
+│   ├── lesson/[id]/page.tsx
+│   ├── login/page.tsx
+│   ├── onboarding/page.tsx
+│   ├── reset-password/page.tsx
+│   ├── signup/page.tsx
+│   └── update-password/page.tsx
+│
+├── components/
+│   ├── AuthNav.tsx
+│   ├── CodeDisplay.tsx
+│   ├── GameCanvas.tsx
+│   ├── HeapArena.tsx
+│   ├── PaywallModal.tsx
+│   ├── ReplayController.tsx
+│   ├── community/
+│   │   └── Leaderboard.tsx
+│   ├── dashboard/
+│   │   ├── ContinueFAB.tsx
+│   │   ├── LeaderboardPreview.tsx
+│   │   ├── PathSwitcher.tsx
+│   │   ├── ProTeaser.tsx
+│   │   ├── StreakDisplay.tsx
+│   │   └── UpgradeBanner.tsx
+│   ├── feedback/
+│   │   ├── AchievementUnlocked.tsx
+│   │   ├── ConfettiCelebration.tsx
+│   │   ├── EnhancedConfetti.tsx
+│   │   └── LevelUpCelebration.tsx
+│   ├── layout/
+│   │   └── Sidebar.tsx
+│   ├── lesson/
+│   │   ├── AIErrorExplainer.tsx
+│   │   ├── GamePreviewCanvas.tsx
+│   │   ├── HintSystem.tsx
+│   │   ├── LessonEditor.tsx
+│   │   ├── LessonInstructions.tsx
+│   │   ├── LessonMemoryViz.tsx
+│   │   ├── LessonOutput.tsx
+│   │   ├── PartProgressIndicator.tsx
+│   │   └── RobotPreviewCanvas.tsx
+│   └── mobile/
+│       ├── BottomNav.tsx
+│       └── DashboardBottomNav.tsx
+│
+├── data/
+│   ├── code-snippets.ts
+│   ├── templates-info.ts
+│   ├── game-templates/
+│   │   ├── index.ts
+│   │   ├── differential-drive-robot/      [26 files]
+│   │   │   ├── index.ts
+│   │   │   ├── lesson-titles.ts
+│   │   │   ├── lesson-01-robot.ts
+│   │   │   ├── lesson-02-robot.ts
+│   │   │   │   ... (lesson-03 through lesson-24)
+│   │   │   └── lesson-25-robot.ts
+│   │   ├── platformer/                    [26 files]
+│   │   │   ├── index.ts
+│   │   │   ├── lesson-01-game.ts
+│   │   │   ├── lesson-02-game.ts
+│   │   │   │   ... (lesson-03 through lesson-24)
+│   │   │   └── lesson-25-game.ts
+│   │   ├── simple-rpg/                    [76 files]
+│   │   │   ├── index.ts
+│   │   │   ├── lesson-01-game.ts          [SS-variant 01-25]
+│   │   │   │   ... (lesson-02 through lesson-24-game)
+│   │   │   ├── lesson-25-game.ts
+│   │   │   ├── lesson-01-rpg.ts           [old RPG variants 01-50, orphaned]
+│   │   │   │   ... (lesson-02 through lesson-49-rpg)
+│   │   │   └── lesson-50-rpg.ts
+│   │   └── space-shooter/                 [101 files]
+│   │       ├── index.ts
+│   │       ├── lesson-01-game.ts
+│   │       ├── lesson-02-game.ts
+│   │       │   ... (lesson-03 through lesson-99)
+│   │       └── lesson-100-game.ts
+│   └── lessons/
+│       ├── index.ts                       (Space Shooter index)
+│       ├── platformer-index.ts
+│       ├── robot-index.ts
+│       ├── rpg-index.ts
+│       │
+│       │  -- Space Shooter lessons (100 files) --
+│       ├── lesson-01-boot-the-system.ts
+│       ├── lesson-02-player-stats.ts
+│       ├── lesson-03-bullet-math.ts
+│       ├── lesson-04-hit-or-miss.ts
+│       ├── lesson-05-damage-function.ts
+│       ├── lesson-06-soa-enemies.ts
+│       ├── lesson-07-spawn-wave-loop.ts
+│       ├── lesson-08-combat-rules.ts
+│       ├── lesson-09-component-mutation.ts
+│       ├── lesson-10-entity-pool-v0.ts
+│       ├── lesson-11-component-structs.ts
+│       ├── lesson-12-extract-components-header.ts
+│       ├── lesson-13-inheritance-trap.ts
+│       ├── lesson-14-dynamic-arrays.ts
+│       ├── lesson-15-multi-system-tick.ts
+│       ├── lesson-16-entity-manager-class.ts
+│       ├── lesson-17-ids-and-free-list.ts
+│       ├── lesson-18-save-snapshot-v0.ts
+│       ├── lesson-19-game-states-v0.ts
+│       ├── lesson-20-spatial-buckets-v0.ts
+│       ├── lesson-21-checkpoint-save-load.ts
+│       ├── lesson-22-error-handling-v0.ts
+│       ├── lesson-23-thread-awareness-v0.ts
+│       ├── lesson-24-lambdas-for-queries.ts
+│       ├── lesson-25-milestone-playable-loop.ts
+│       ├── lesson-26-pointers-data-access.ts
+│       ├── lesson-27-heap-stack-demo.ts
+│       ├── lesson-28-raii-first-pass.ts
+│       ├── lesson-29-unique-ptr-ownership.ts
+│       ├── lesson-30-pool-allocator.ts
+│       ├── lesson-31-template-component-access.ts
+│       ├── lesson-32-type-safe-ids.ts
+│       ├── lesson-33-data-layout-optimization.ts
+│       ├── lesson-34-allocator-awareness.ts
+│       ├── lesson-35-milestone-500-bullets.ts
+│       ├── lesson-36-fixed-timestep.ts
+│       ├── lesson-37-movement-system.ts
+│       ├── lesson-38-spawn-system.ts
+│       ├── lesson-39-damage-system-v2.ts
+│       ├── lesson-40-cleanup-system.ts
+│       ├── lesson-41-collision-basics.ts
+│       ├── lesson-42-system-extraction.ts
+│       ├── lesson-43-data-driven-enemies.ts
+│       ├── lesson-44-debug-overlay.ts
+│       ├── lesson-45-milestone-stable-core.ts
+│       ├── lesson-46-render-protocol.ts
+│       ├── lesson-47-sprite-mapping.ts
+│       ├── lesson-48-input-system.ts
+│       ├── lesson-49-camera-screen-space.ts
+│       ├── lesson-50-milestone-playable.ts
+│       ├── lesson-51-spread-shot.ts
+│       ├── lesson-52-fire-rate.ts
+│       ├── lesson-53-screen-bounds.ts
+│       ├── lesson-54-hit-flash.ts
+│       ├── lesson-55-milestone-visual-feel.ts
+│       ├── lesson-56-collision-resolve.ts
+│       ├── lesson-57-spatial-hash.ts
+│       ├── lesson-58-wave-file-format.ts
+│       ├── lesson-59-enemy-ai-linear.ts
+│       ├── lesson-60-enemy-ai-sine.ts
+│       ├── lesson-61-target-selection.ts
+│       ├── lesson-62-powerups-data.ts
+│       ├── lesson-63-enemy-types-v2.ts
+│       ├── lesson-64-boss-intro.ts
+│       ├── lesson-65-boss-phases.ts
+│       ├── lesson-66-difficulty-curve.ts
+│       ├── lesson-67-score-system.ts
+│       ├── lesson-68-lives-respawn.ts
+│       ├── lesson-69-level-complete.ts
+│       ├── lesson-70-milestone-gameplay-loop.ts
+│       ├── lesson-71-background-loading.ts
+│       ├── lesson-72-job-style-update.ts
+│       ├── lesson-73-determinism.ts
+│       ├── lesson-74-replay-log.ts
+│       ├── lesson-75-milestone-replay.ts
+│       ├── lesson-76-achievement-hooks.ts
+│       ├── lesson-77-stats-screen.ts
+│       ├── lesson-78-memory-profiling.ts
+│       ├── lesson-79-optimization-pass.ts
+│       ├── lesson-80-content-extension.ts
+│       ├── lesson-81-screen-shake.ts
+│       ├── lesson-82-particles.ts
+│       ├── lesson-83-trail-effects.ts
+│       ├── lesson-84-pause-menu.ts
+│       ├── lesson-85-milestone-advanced.ts
+│       ├── lesson-86-audio-sfx.ts
+│       ├── lesson-87-music-loop.ts
+│       ├── lesson-88-settings-menu.ts
+│       ├── lesson-89-accessibility.ts
+│       ├── lesson-90-balance-pass.ts
+│       ├── lesson-91-hud-v2.ts
+│       ├── lesson-92-title-screen.ts
+│       ├── lesson-93-config-file.ts
+│       ├── lesson-94-crash-proofing.ts
+│       ├── lesson-95-milestone-shippable.ts
+│       ├── lesson-96-build-system.ts
+│       ├── lesson-97-unit-tests.ts
+│       ├── lesson-98-readme-docs.ts
+│       ├── lesson-99-final-refactor.ts
+│       ├── lesson-100-milestone-release.ts
+│       │
+│       │  -- RPG lessons (100 files) --
+│       ├── lesson-rpg-01-boot-dungeon.ts
+│       ├── lesson-rpg-02-player-spawn.ts
+│       ├── lesson-rpg-03-movement.ts
+│       ├── lesson-rpg-04-bounds.ts
+│       ├── lesson-rpg-05-enemy-spawn.ts
+│       ├── lesson-rpg-06-attack.ts
+│       ├── lesson-rpg-07-death-loot.ts
+│       ├── lesson-rpg-08-pickup-gold.ts
+│       ├── lesson-rpg-09-data-file-v0.ts
+│       ├── lesson-rpg-10-mini-combat-loop.ts
+│       ├── lesson-rpg-11-component-structs.ts
+│       ├── lesson-rpg-12-headers-extraction.ts
+│       ├── lesson-rpg-13-inheritance-trap.ts
+│       ├── lesson-rpg-14-entity-manager.ts
+│       ├── lesson-rpg-15-free-list.ts
+│       ├── lesson-rpg-16-inventory-skeleton.ts
+│       ├── lesson-rpg-17-item-data-table.ts
+│       ├── lesson-rpg-18-equip-weapon.ts
+│       ├── lesson-rpg-19-save-gold.ts
+│       ├── lesson-rpg-20-room-transitions.ts
+│       ├── lesson-rpg-21-raw-pointer-demo.ts
+│       ├── lesson-rpg-22-manual-delete.ts
+│       ├── lesson-rpg-23-leak-trap.ts
+│       ├── lesson-rpg-24-raii-fix.ts
+│       ├── lesson-rpg-25-milestone-25.ts
+│       ├── lesson-rpg-26-unique-ptr.ts
+│       ├── lesson-rpg-27-pool-allocator.ts
+│       ├── lesson-rpg-28-heap-stack-visual.ts
+│       ├── lesson-rpg-29-deterministic-seed.ts
+│       ├── lesson-rpg-30-memory-stable.ts
+│       ├── lesson-rpg-31-event-queue.ts
+│       ├── lesson-rpg-32-observer-pattern.ts
+│       ├── lesson-rpg-33-command-pattern.ts
+│       ├── lesson-rpg-34-replay-stub.ts
+│       ├── lesson-rpg-35-pattern-milestone.ts
+│       ├── lesson-rpg-36-state-machine.ts
+│       ├── lesson-rpg-37-strategy-pattern.ts
+│       ├── lesson-rpg-38-factory-pattern.ts
+│       ├── lesson-rpg-39-component-pattern.ts
+│       ├── lesson-rpg-40-event-combat-stable.ts
+│       ├── lesson-rpg-41-loot-tables.ts
+│       ├── lesson-rpg-42-consumables.ts
+│       ├── lesson-rpg-43-status-effects.ts
+│       ├── lesson-rpg-44-npc-dialog.ts
+│       ├── lesson-rpg-45-inventory-milestone.ts
+│       ├── lesson-rpg-46-quest-data-file.ts
+│       ├── lesson-rpg-47-quest-tracker.ts
+│       ├── lesson-rpg-48-quest-rewards.ts
+│       ├── lesson-rpg-49-quest-chains.ts
+│       ├── lesson-rpg-50-milestone-50.ts
+│       ├── lesson-rpg-51-experience-system.ts
+│       ├── lesson-rpg-52-skill-points.ts
+│       ├── lesson-rpg-53-equipment-slots.ts
+│       ├── lesson-rpg-54-shop-system.ts
+│       ├── lesson-rpg-55-boss-intro.ts
+│       ├── lesson-rpg-56-boss-phases.ts
+│       ├── lesson-rpg-57-dungeon-format-v2.ts
+│       ├── lesson-rpg-58-locked-doors.ts
+│       ├── lesson-rpg-59-trap-tiles.ts
+│       ├── lesson-rpg-60-milestone-60.ts
+│       ├── lesson-rpg-61-deterministic-combat.ts
+│       ├── lesson-rpg-62-replay-logging.ts
+│       ├── lesson-rpg-63-replay-playback.ts
+│       ├── lesson-rpg-64-stats-screen.ts
+│       ├── lesson-rpg-65-achievement-hooks.ts
+│       ├── lesson-rpg-66-background-loading.ts
+│       ├── lesson-rpg-67-memory-profiling.ts
+│       ├── lesson-rpg-68-optimization-pass.ts
+│       ├── lesson-rpg-69-content-expansion.ts
+│       ├── lesson-rpg-70-milestone-70.ts
+│       ├── lesson-rpg-71-rare-items.ts
+│       ├── lesson-rpg-72-advanced-status.ts
+│       ├── lesson-rpg-73-enemy-ai-depth.ts
+│       ├── lesson-rpg-74-pathfinding.ts
+│       ├── lesson-rpg-75-milestone-75.ts
+│       ├── lesson-rpg-76-threaded-ai.ts
+│       ├── lesson-rpg-77-deterministic-thread.ts
+│       ├── lesson-rpg-78-config-file.ts
+│       ├── lesson-rpg-79-crash-proofing.ts
+│       ├── lesson-rpg-80-stability-milestone.ts
+│       ├── lesson-rpg-81-screen-shake.ts
+│       ├── lesson-rpg-82-particle-effects.ts
+│       ├── lesson-rpg-83-lighting-radius.ts
+│       ├── lesson-rpg-84-audio-event-logs.ts
+│       ├── lesson-rpg-85-polish-milestone.ts
+│       ├── lesson-rpg-86-music-system.ts
+│       ├── lesson-rpg-87-settings-menu.ts
+│       ├── lesson-rpg-88-accessibility-mode.ts
+│       ├── lesson-rpg-89-balance-pass.ts
+│       ├── lesson-rpg-90-ui-polish.ts
+│       ├── lesson-rpg-91-title-screen.ts
+│       ├── lesson-rpg-92-character-select.ts
+│       ├── lesson-rpg-93-save-persistence-v2.ts
+│       ├── lesson-rpg-94-config-persistence.ts
+│       ├── lesson-rpg-95-release-candidate.ts
+│       ├── lesson-rpg-96-build-system.ts
+│       ├── lesson-rpg-97-unit-tests.ts
+│       ├── lesson-rpg-98-readme-docs.ts
+│       ├── lesson-rpg-99-final-refactor.ts
+│       ├── lesson-rpg-100-release-v1.ts
+│       │
+│       │  -- Platformer lessons (100 files) --
+│       ├── lesson-platformer-01-boot-window.ts
+│       ├── lesson-platformer-02-gravity.ts
+│       ├── lesson-platformer-03-ground-collision-v0.ts
+│       ├── lesson-platformer-04-jump-impulse.ts
+│       ├── lesson-platformer-05-variable-jump-height.ts
+│       ├── lesson-platformer-06-tiles-array.ts
+│       ├── lesson-platformer-07-tile-collision-loop.ts
+│       ├── lesson-platformer-08-player-state-machine.ts
+│       ├── lesson-platformer-09-coyote-time.ts
+│       ├── lesson-platformer-10-mini-level-milestone.ts
+│       │   ... (lesson-platformer-11 through lesson-platformer-99)
+│       └── lesson-platformer-100-release-v1.ts
+│       │
+│       │  -- Robot lessons (100 files) --
+│       ├── lesson-robot-01-render-robot.ts
+│       ├── lesson-robot-02-pose-state.ts
+│       ├── lesson-robot-03-motion-integration.ts
+│       ├── lesson-robot-04-fixed-update.ts
+│       ├── lesson-robot-05-obstacle-collision.ts
+│       ├── lesson-robot-06-goal-point.ts
+│       ├── lesson-robot-07-distance-function.ts
+│       ├── lesson-robot-08-control-loop.ts
+│       ├── lesson-robot-09-reset.ts
+│       ├── lesson-robot-10-milestone-interactive-sim.ts
+│       │   ... (lesson-robot-11 through lesson-robot-99)
+│       └── lesson-robot-100-release-v1.ts
+│
+├── lib/
+│   ├── achievement-manager.ts
+│   ├── achievements.ts
+│   ├── analytics.ts
+│   ├── cpp-runner.ts
+│   ├── daily-goal.ts
+│   ├── game-engine.ts
+│   ├── game-protocol.ts
+│   ├── heap-sim.ts
+│   ├── polar.ts
+│   ├── rate-limit.ts
+│   ├── robot-protocol.ts
+│   ├── streak-manager.ts
+│   ├── supabase-browser.ts
+│   ├── supabase-server.ts
+│   ├── supabase.ts
+│   └── protocols/
+│       ├── platformer-protocol.ts
+│       ├── rpg-protocol.ts
+│       └── space-shooter-protocol.ts
+│
+├── migrations/
+│   ├── 003-lesson-enhancements.sql
+│   ├── 004-stripe-fields.sql
+│   ├── 005-polar-migration.sql
+│   ├── add-dynamic-lessons-schema.sql
+│   ├── add-path-progress.sql
+│   ├── add-path-to-lesson-progress.sql
+│   ├── seed-achievements.sql
+│   └── streak-enhancements.sql
+│
+├── store/
+│   └── lesson-store.ts
+│
+└── types/
+    ├── game.ts
+    ├── jscpp.d.ts
+    ├── lesson.ts
+    └── robot.ts
+
+========================================================
+FILE COUNT SUMMARY (excluding node_modules, .next, etc.)
+  Root config files:           8
+  src/app/ pages & routes:    24
+  src/components/:            25
+  src/data/game-templates/:  ~228  (26 robot + 26 platformer + 76 simple-rpg + 101 space-shooter + 1 root index)
+  src/data/lessons/:         404  (4 index files + 100 SS + 100 RPG + 100 platformer + 100 robot)
+  src/lib/:                   15 + 3 protocol files
+  src/migrations/:             8
+  src/store/:                  1
+  src/types/:                  4
+  src/middleware.ts:           1
+  docs/:                       3 (this audit)
+========================================================
+LANGUAGE DETECTION
+  TypeScript (.ts/.tsx): primary language — all src files
+  C++ (inline in .ts): embedded in lesson starterCode/solutionCode strings
+  SQL (.sql): database migrations only
+  CSS (.css): globals.css only
+  JSON (.json): config files only
+  WOFF (fonts): static assets
+========================================================

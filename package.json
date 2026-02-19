@@ -10,11 +10,13 @@
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
+    "@polar-sh/sdk": "^0.43.1",
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.95.3",
     "canvas-confetti": "^1.9.4",
+    "groq-sdk": "^0.37.0",
     "JSCPP": "^2.0.9",
     "next": "14.2.35",
     "prismjs": "^1.30.0",

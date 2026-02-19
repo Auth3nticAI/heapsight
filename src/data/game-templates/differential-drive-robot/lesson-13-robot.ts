@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson13Robot: GameLessonVariant = {
-  lessonId: "13-enums",
+  lessonId: "13-inheritance-trap",
 
   instructions: `# Robot Builder: RobotStats Structure
 

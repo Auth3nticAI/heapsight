@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson19SimpleRpg: GameLessonVariant = {
-  lessonId: "19-difficulty",
+  lessonId: "19-game-states-v0",
 
   instructions: `# Enemy Scaling — Data-Driven Difficulty Tables
 

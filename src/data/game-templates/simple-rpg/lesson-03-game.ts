@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson03SimpleRpg: GameLessonVariant = {
-  lessonId: "03-functions",
+  lessonId: "03-bullet-math",
 
   starterCode: `#include <iostream>
 using namespace std;

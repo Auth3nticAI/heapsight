@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson24SimpleRpg: GameLessonVariant = {
-  lessonId: "24-debugging",
+  lessonId: "24-lambdas-for-queries",
 
   instructions: `# Quest Bugs — Fix 3 RPG Logic Errors\n\nDebugging is a critical skill. This lesson presents RPG code with **3 bugs** that break combat and progression. Your job is to find and fix them all.\n\n## The 3 Bugs\n\n1. **Wrong damage formula**: The attack function subtracts defense from damage incorrectly, giving negative damage on strong armor\n2. **Inventory off-by-one**: The inventory display loop uses \`<=\` instead of \`<\`, accessing out-of-bounds memory\n3. **XP miscalculation**: The level-up threshold check uses \`>\` instead of \`>=\`, so a player at exactly the XP threshold never levels up\n\n## What You'll Fix\n\n- Correct the damage formula to clamp minimum damage to 1\n- Fix the inventory loop boundary\n- Fix the XP threshold comparison to use \`>=\`\n\n## Output Protocol\n\n- \`ENTITY|id|type|x|y|width|height\` for game objects\n- \`GAME_MESSAGE|text\` for combat and progression results\n- \`SCORE|value\` for total score after fixes`,
 

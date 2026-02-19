@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson15SimpleRpg: GameLessonVariant = {
-  lessonId: "15-collision",
+  lessonId: "15-multi-system-tick",
 
   instructions: `# Encounter Detection — Distance-Based Triggers
 

@@ -92,7 +92,7 @@ function LoginForm() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2.5 bg-[#0d0d1a] border border-[#2a2a3e] rounded-lg text-white text-sm font-mono placeholder:text-[#444] focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full px-3 py-2.5 bg-[#0d0d1a] border border-[#2a2a3e] rounded-lg text-white text-base sm:text-sm font-mono placeholder:text-[#444] focus:outline-none focus:border-primary/50 transition-colors"
               placeholder="you@example.com"
               required
               autoComplete="email"
@@ -116,7 +116,7 @@ function LoginForm() {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2.5 pr-10 bg-[#0d0d1a] border border-[#2a2a3e] rounded-lg text-white text-sm font-mono placeholder:text-[#444] focus:outline-none focus:border-primary/50 transition-colors"
+                className="w-full px-3 py-2.5 pr-10 bg-[#0d0d1a] border border-[#2a2a3e] rounded-lg text-white text-base sm:text-sm font-mono placeholder:text-[#444] focus:outline-none focus:border-primary/50 transition-colors"
                 placeholder="••••••••"
                 required
                 minLength={6}
@@ -141,7 +141,7 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 bg-primary text-black font-semibold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
+            className="w-full py-2.5 bg-primary text-black font-semibold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2 min-h-[44px] touch-manipulation"
           >
             {loading && (
               <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">

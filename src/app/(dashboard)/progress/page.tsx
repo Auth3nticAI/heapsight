@@ -5,7 +5,10 @@ import { createClient } from "@/lib/supabase-browser";
 import { ACHIEVEMENTS, getRarityColor, getRarityGradient } from "@/lib/achievements";
 import { getUserAchievementIds } from "@/lib/achievement-manager";
 import { getLevelInfo } from "@/lib/lesson-metadata";
-import { ALL_LESSONS } from "@/data/lessons";
+import { ALL_SPACE_SHOOTER_LESSONS } from "@/data/lessons";
+import { ALL_RPG_LESSONS } from "@/data/lessons/rpg-index";
+import { ALL_PLATFORMER_LESSONS } from "@/data/lessons/platformer-index";
+import { ALL_ROBOT_LESSONS } from "@/data/lessons/robot-index";
 import Link from "next/link";
 
 function BarChartIcon({ className }: { className?: string }) {
@@ -38,6 +41,7 @@ interface StatsData {
   currentStreak: number;
   longestStreak: number;
   totalDaysActive: number;
+  template: string | null;
 }
 
 export default function ProgressPage() {
@@ -52,7 +56,7 @@ export default function ProgressPage() {
       if (!user) return;
 
       const [profileRes, streakRes, progressRes, activityRes] = await Promise.all([
-        supabase.from("profiles").select("total_xp").eq("id", user.id).single(),
+        supabase.from("profiles").select("total_xp, selected_game_template").eq("id", user.id).single(),
         supabase.from("user_streaks").select("current_streak, longest_streak").eq("user_id", user.id).single(),
         supabase.from("lesson_progress").select("status").eq("user_id", user.id),
         supabase.from("daily_activity").select("activity_date").eq("user_id", user.id),
@@ -67,6 +71,7 @@ export default function ProgressPage() {
         currentStreak: streakRes.data?.current_streak || 0,
         longestStreak: streakRes.data?.longest_streak || 0,
         totalDaysActive: activityRes.data?.length || 0,
+        template: profileRes.data?.selected_game_template || null,
       });
       setUnlockedIds(ids);
       setLoading(false);
@@ -121,7 +126,12 @@ export default function ProgressPage() {
             },
             {
               label: "Lessons Done",
-              value: `${stats.completedLessons}/${ALL_LESSONS.length}`,
+              value: `${stats.completedLessons}/${
+                stats.template === "simple_rpg" ? ALL_RPG_LESSONS.length :
+                stats.template === "platformer" ? ALL_PLATFORMER_LESSONS.length :
+                stats.template === "differential_drive_robot" ? ALL_ROBOT_LESSONS.length :
+                ALL_SPACE_SHOOTER_LESSONS.length
+              }`,
               icon: <span className="text-xl">{"\u2713"}</span>,
               color: "border-primary/20 bg-[#0a1a12]",
             },
@@ -155,8 +165,8 @@ export default function ProgressPage() {
               </span>
               <span className="text-base font-bold text-white">{levelInfo.title}</span>
             </div>
-            <span className="text-xs font-mono text-[#888]">
-              {levelInfo.xpInLevel} / {levelInfo.xpForNext} XP to next level
+            <span className="text-xs font-mono text-[#888] shrink-0">
+              {levelInfo.xpInLevel}/{levelInfo.xpForNext} XP
             </span>
           </div>
           <div className="w-full bg-[#1a1a2e] rounded-full h-3 overflow-hidden">

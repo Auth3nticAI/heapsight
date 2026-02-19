@@ -118,7 +118,7 @@ int main() {
 }`;
 
 export const lesson23Robot: GameLessonVariant = {
-  lessonId: "23-smart-pointers",
+  lessonId: "23-thread-awareness-v0",
 
   instructions: `# Robot Builder: A* Pathfinding
 

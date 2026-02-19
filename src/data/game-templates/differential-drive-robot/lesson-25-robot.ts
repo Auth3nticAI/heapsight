@@ -175,7 +175,7 @@ int main() {
 }`;
 
 export const lesson25Robot: GameLessonVariant = {
-  lessonId: "25-final-polish",
+  lessonId: "25-milestone-playable-loop",
 
   instructions: `# Robot Builder: Autonomous Mission
 

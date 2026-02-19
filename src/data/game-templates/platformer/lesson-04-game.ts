@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson04Platformer: GameLessonVariant = {
-  lessonId: "04-structs",
+  lessonId: "04-hit-or-miss",
   starterCode: `#include <iostream>
 #include <string>
 using namespace std;

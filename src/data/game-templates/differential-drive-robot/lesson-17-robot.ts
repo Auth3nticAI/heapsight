@@ -78,7 +78,7 @@ int main() {
 }`;
 
 export const lesson17Robot: GameLessonVariant = {
-  lessonId: "17-entity-management",
+  lessonId: "17-ids-and-free-list",
 
   instructions: `# Robot Builder: Navigate with Feedback
 

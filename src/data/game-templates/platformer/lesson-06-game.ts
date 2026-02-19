@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson06Platformer: GameLessonVariant = {
-  lessonId: "06-arrays",
+  lessonId: "06-soa-enemies",
   instructions: `# Platform Layout — Position Arrays
 
 ## Project: Platformer FSM — Level Geometry in Arrays

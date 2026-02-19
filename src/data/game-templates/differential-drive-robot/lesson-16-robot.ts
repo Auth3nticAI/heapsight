@@ -53,7 +53,7 @@ int main() {
 }`;
 
 export const lesson16Robot: GameLessonVariant = {
-  lessonId: "16-game-loop",
+  lessonId: "16-entity-manager-class",
 
   instructions: `# Robot Builder: Repair Service
 

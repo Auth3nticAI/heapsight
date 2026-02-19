@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson02Platformer: GameLessonVariant = {
-  lessonId: "02-variables",
+  lessonId: "02-player-stats",
   starterCode: `#include <iostream>
 using namespace std;
 

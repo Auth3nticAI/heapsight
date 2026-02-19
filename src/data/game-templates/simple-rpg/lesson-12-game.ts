@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson12SimpleRpg: GameLessonVariant = {
-  lessonId: "12-input",
+  lessonId: "12-extract-components-header",
 
   instructions: `# Menu System — Choice-Driven Gameplay\n\nRPG menu systems read player input and dispatch to the correct game action. This is the core of **event-driven architecture** in turn-based games — the player's choice determines which code path executes.\n\n## Objectives\n- Display a combat menu with 3 options (Attack, Defend, Item)\n- Read the player's choice via \`cin\`\n- Dispatch to the correct action based on the choice\n- Display the result and render entities\n\n## Menu Options\n- **1 = Attack:** Warrior attacks goblin for 30 damage\n- **2 = Defend:** Warrior enters defensive stance, gains 10 armor\n- **3 = Item:** Warrior uses Health Potion, restores 25 HP\n\nFor testing, simulate input of **1** (Attack).\n\n## Output Protocol\n- \`ENTITY|id|type|x|y|width|height|health\` — render characters\n- \`GAME_MESSAGE|text\` — menu display and action result\n- \`SCORE|value\` — damage dealt or value of action`,
 

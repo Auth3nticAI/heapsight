@@ -100,7 +100,7 @@ int main() {
 }`;
 
 export const lesson18Robot: GameLessonVariant = {
-  lessonId: "18-score-system",
+  lessonId: "18-save-snapshot-v0",
 
   instructions: `# Robot Builder: Composition Architecture
 

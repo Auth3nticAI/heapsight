@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson22SimpleRpg: GameLessonVariant = {
-  lessonId: "22-memory-leaks",
+  lessonId: "22-error-handling-v0",
 
   instructions: `# Inventory Cleanup — Dynamic Item Deallocation\n\nIn C++, when you allocate memory with \`new\`, you **must** free it with \`delete\`. RPG inventories often create items dynamically during gameplay. If you forget to \`delete\` them when clearing the inventory, you get a **memory leak**.\n\n## What You'll Build\n\n- Dynamically allocate item structs with \`new\`\n- Store pointers in an inventory array\n- Display the inventory contents\n- Properly \`delete\` every item when clearing the inventory\n- Confirm cleanup was successful\n\n## Key Concepts\n\n- **Dynamic allocation**: \`new\` creates items on the heap\n- **Pointer arrays**: inventory holds Item* pointers\n- **Proper cleanup**: every \`new\` must have a matching \`delete\`\n- **Memory leaks**: forgetting \`delete\` wastes memory over time\n\n## Output Protocol\n\n- \`ENTITY|id|type|x|y|width|height\` for player and items\n- \`GAME_MESSAGE|text\` for inventory actions\n- \`SCORE|value\` for items properly freed`,
 

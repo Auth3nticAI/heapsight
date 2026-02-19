@@ -94,7 +94,7 @@ int main() {
 }`;
 
 export const lesson24Robot: GameLessonVariant = {
-  lessonId: "24-debugging",
+  lessonId: "24-lambdas-for-queries",
 
   instructions: `# Robot Builder: State Machine
 

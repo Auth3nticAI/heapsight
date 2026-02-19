@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson20SimpleRpg: GameLessonVariant = {
-  lessonId: "20-effects",
+  lessonId: "20-spatial-buckets-v0",
 
   instructions: `# Combat Effects — Damage Number Display\n\nIn data-driven RPGs, **visual feedback** makes combat feel satisfying. When the warrior strikes an enemy, we display **damage numbers** as entities at the combat position.\n\n## What You'll Build\n\n- A warrior attacks a goblin for base damage\n- A **critical hit check** doubles damage when a condition is met\n- Floating **damage number entities** appear at the goblin's position\n- The combat result is reported via messages and score\n\n## Key Concepts\n\n- **Data-driven combat events**: damage values drive what gets rendered\n- **Critical hits**: conditional multiplier on base damage\n- **Effect entities**: temporary visual entities spawned from combat data\n\n## Output Protocol\n\n- \`ENTITY|id|type|x|y|width|height\` for all game objects\n- \`GAME_MESSAGE|text\` for combat narration\n- \`SCORE|value\` for total damage dealt`,
 

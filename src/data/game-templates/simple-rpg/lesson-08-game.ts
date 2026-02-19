@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson08SimpleRpg: GameLessonVariant = {
-  lessonId: "08-conditionals",
+  lessonId: "08-combat-rules",
 
   instructions: `# Combat Branching — Attack, Defend, or Heal\n\nTurn-based RPGs rely on **conditional branching** to resolve player actions. Each action type triggers different game logic — dealing damage, reducing incoming damage, or restoring health.\n\n## Objectives\n- Set up a warrior (100 HP) and a goblin (40 HP)\n- Define an action variable (1=Attack, 2=Defend, 3=Heal)\n- Use if/else if/else to resolve the chosen action\n- Display the result and updated entities\n\n## Action Rules\n- **Attack (action=1):** Deal 25 damage to goblin. Goblin HP decreases.\n- **Defend (action=2):** Warrior takes reduced damage. Enemy hits for 10, but defense blocks 7, so warrior takes only 3.\n- **Heal (action=3):** Warrior restores 20 HP.\n\nFor this lesson, use **action = 1** (Attack) as the simulated choice.\n\n## Output Protocol\n- \`ENTITY|id|type|x|y|width|height|health\` — render characters with updated HP\n- \`GAME_MESSAGE|text\` — describe action result\n- \`SCORE|value\` — damage dealt or HP restored`,
 

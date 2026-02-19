@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson23Platformer: GameLessonVariant = {
-  lessonId: "23-smart-pointers",
+  lessonId: "23-thread-awareness-v0",
   instructions: `# Safe Level Loading — RAII for Level Data\n\nThe previous lesson used raw \`new\`/\`delete\` for platform data. But what if an error occurs between allocation and deallocation? The memory **leaks**. The RAII pattern (Resource Acquisition Is Initialization) solves this: wrap resources in helper functions that guarantee cleanup.\n\n## Concepts\n- RAII: tie resource lifetime to scope/function lifecycle\n- Create/destroy helper functions as a manual RAII pattern\n- Guaranteed cleanup even when errors occur\n- Encapsulating allocation + deallocation in paired functions\n\n## Your Task\n1. Write a \`createLevel\` function that allocates an array of 3 platform x-positions with \`new int[3]\` and sets them to: 0, 120, 260\n2. Write a \`destroyLevel\` function that takes the pointer and calls \`delete[]\`\n3. Write a \`renderLevel\` function that loops through 3 platforms and renders each at (x, 240) size 80x16\n4. In main: create level, render the player at (40, 216) size 16x24, render level, destroy level\n5. Output messages showing the RAII lifecycle: creation, rendering, cleanup\n\n## Protocol Reminder\n\`\`\`\nENTITY|id|type|x|y|width|height\nGAME_MESSAGE|text\nSCORE|value\n\`\`\``,
   starterCode: `#include <iostream>
 #include <string>

@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson08Robot: GameLessonVariant = {
-  lessonId: "08-conditionals",
+  lessonId: "08-combat-rules",
 
   instructions: `# Robot Builder: Dynamic Waypoint Manager
 

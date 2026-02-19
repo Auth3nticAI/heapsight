@@ -1,103 +1,103 @@
 /** Robot-specific lesson titles and descriptions for dashboard display */
 export const ROBOT_LESSON_TITLES: Record<string, { title: string; description: string }> = {
-  "01-hello-world": {
+  "01-boot-the-system": {
     title: "Boot the System",
     description: "Initialize the robot at origin and output boot diagnostics.",
   },
-  "02-variables": {
+  "02-player-stats": {
     title: "Robot Telemetry",
     description: "Declare position, heading, and battery variables for robot state.",
   },
-  "03-functions": {
+  "03-bullet-math": {
     title: "Low Battery Reflex",
     description: "Use if/else conditionals for reactive battery behavior.",
   },
-  "04-structs": {
+  "04-hit-or-miss": {
     title: "Radar Sweep",
     description: "Loop through 8 sensor angles to scan the environment.",
   },
-  "05-pointers": {
+  "05-damage-function": {
     title: "Modular Movement",
     description: "Write moveForward and turnLeft functions for an L-shaped path.",
   },
-  "06-arrays": {
+  "06-soa-enemies": {
     title: "Sensor Array",
     description: "Store 8 sensor readings in a vector and find the closest obstacle.",
   },
-  "07-loops": {
+  "07-spawn-wave-loop": {
     title: "Efficient Path Passing",
     description: "Use pointers and references to efficiently update robot state.",
   },
-  "08-conditionals": {
+  "08-combat-rules": {
     title: "Dynamic Waypoint Manager",
     description: "Manage waypoints with unique_ptr and navigate using smart pointers.",
   },
-  "09-references": {
+  "09-component-mutation": {
     title: "Multi-File Architecture",
     description: "Organize code with forward declarations and separate implementations.",
   },
-  "10-dynamic-memory": {
+  "10-entity-pool-v0": {
     title: "Robot Class",
     description: "Define a Robot class with private state and public movement methods.",
   },
-  "11-strings": {
-    title: "Telemetry Publisher",
-    description: "Simulate ROS 2 publishing with periodic telemetry output.",
+  "11-component-structs": {
+    title: "Component Structs",
+    description: "Define Position, Velocity, and Health structs for robot subsystems.",
   },
-  "12-input": {
-    title: "Sensor Callback",
-    description: "Process sensor data through callback functions with distance thresholds.",
+  "12-extract-components-header": {
+    title: "Extract Components Header",
+    description: "Move component structs to a dedicated header file.",
   },
-  "13-enums": {
-    title: "RobotStats Structure",
-    description: "Define enums and structs for multi-field robot mode tracking.",
+  "13-inheritance-trap": {
+    title: "Inheritance Trap",
+    description: "See why inheritance fails for robots, then fix with composition.",
   },
-  "14-headers": {
-    title: "Runtime Configuration",
-    description: "Load and apply config parameters that drive robot behavior.",
+  "14-dynamic-arrays": {
+    title: "Dynamic Sensor Arrays",
+    description: "Handle variable-count sensor readings with std::vector.",
   },
-  "15-collision": {
-    title: "Multi-Robot System",
-    description: "Coordinate two robots publishing state and computing distance.",
+  "15-multi-system-tick": {
+    title: "Multi-System Tick",
+    description: "Run movement, sensing, and cleanup systems each tick.",
   },
-  "16-game-loop": {
-    title: "Repair Service",
-    description: "Implement request-response patterns for simulated ROS 2 services.",
+  "16-entity-manager-class": {
+    title: "Robot Manager Class",
+    description: "Manage multiple robots through a centralized class.",
   },
-  "17-entity-management": {
-    title: "Navigate with Feedback",
-    description: "Move toward a goal with 25/50/75/100% progress milestones.",
+  "17-ids-and-free-list": {
+    title: "IDs and Free List",
+    description: "Reuse robot slots with ID-based tracking and a free list.",
   },
-  "18-score-system": {
-    title: "Composition Architecture",
-    description: "Build a robot with SensorSuite composition and PID controller inheritance.",
+  "18-save-snapshot-v0": {
+    title: "Save Snapshot",
+    description: "Save robot fleet state to a text file.",
   },
-  "19-difficulty": {
-    title: "Concurrent Sensor Processing",
-    description: "Route lidar, camera, and IMU data through separate processors.",
+  "19-game-states-v0": {
+    title: "Operation States",
+    description: "Switch between IDLE, PATROL, and MAINTENANCE modes.",
   },
-  "20-effects": {
-    title: "Target Database",
-    description: "Use std::map and std::sort to manage and prioritize targets.",
+  "20-spatial-buckets-v0": {
+    title: "Spatial Buckets",
+    description: "Bucket robots by grid region for fast neighbor lookup.",
   },
-  "21-save-load": {
-    title: "PID Follower",
-    description: "Implement a PID controller for smooth position tracking.",
+  "21-checkpoint-save-load": {
+    title: "Checkpoint Save/Load",
+    description: "Resume robot operations from a saved checkpoint file.",
   },
-  "22-memory-leaks": {
-    title: "Environment Mapper",
-    description: "Simulate SLAM by discovering cells in an occupancy grid.",
+  "22-error-handling-v0": {
+    title: "Error Handling",
+    description: "Gracefully handle missing files and corrupted sensor data.",
   },
-  "23-smart-pointers": {
-    title: "A* Pathfinding",
-    description: "Implement A* search on a 5x5 grid to navigate around obstacles.",
+  "23-thread-awareness-v0": {
+    title: "Thread Awareness",
+    description: "Run diagnostics on a background thread while robots operate.",
   },
-  "24-debugging": {
-    title: "State Machine",
-    description: "Build an FSM with PATROL, CHASE, and RETREAT states.",
+  "24-lambdas-for-queries": {
+    title: "Lambda Queries",
+    description: "Filter and sort robots using lambda expressions.",
   },
-  "25-final-polish": {
+  "25-milestone-playable-loop": {
     title: "Autonomous Mission",
-    description: "Full integration: map environment, pathfind to targets, complete mission.",
+    description: "Full integration: manage fleet, save state, and complete mission.",
   },
 };

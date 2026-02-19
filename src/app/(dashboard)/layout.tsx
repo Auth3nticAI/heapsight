@@ -84,7 +84,7 @@ export default function DashboardLayout({
         streakCount={user.streakCount}
       />
 
-      <div className="flex-1 lg:ml-64 pb-20 md:pb-0">
+      <div className="flex-1 lg:ml-64 pb-20 lg:pb-0 overflow-x-hidden">
         {children}
       </div>
 

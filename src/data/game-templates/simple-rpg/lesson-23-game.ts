@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson23SimpleRpg: GameLessonVariant = {
-  lessonId: "23-smart-pointers",
+  lessonId: "23-thread-awareness-v0",
 
   instructions: `# Safe Item Management — RAII for Game Objects\n\nIn the previous lesson, you had to manually \`delete\` every item. The **RAII** pattern (Resource Acquisition Is Initialization) automates cleanup by tying resource lifetime to object scope.\n\n## What You'll Build\n\n- A \`createItem\` helper that allocates items with \`new\`\n- An \`ItemHolder\` struct that owns an item pointer and cleans it up in a \`destroy\` method\n- A managed inventory where items are created, used, and cleaned up safely\n\n## Key Concepts\n\n- **RAII pattern**: resources are acquired in init and released in cleanup\n- **Ownership**: the ItemHolder \"owns\" the item pointer and is responsible for freeing it\n- **Safe lifecycle**: create -> use -> destroy, with no chance of forgetting cleanup\n\n## Output Protocol\n\n- \`ENTITY|id|type|x|y|width|height\` for player and items\n- \`GAME_MESSAGE|text\` for lifecycle events\n- \`SCORE|value\` for successful managed items`,
 

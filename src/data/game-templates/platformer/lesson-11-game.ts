@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson11Platformer: GameLessonVariant = {
-  lessonId: "11-strings",
+  lessonId: "11-component-structs",
   instructions: `# State Names — String-Based State Display
 
 ## Project: Platformer FSM — String State Representation

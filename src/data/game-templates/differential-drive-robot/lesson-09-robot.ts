@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson09Robot: GameLessonVariant = {
-  lessonId: "09-references",
+  lessonId: "09-component-mutation",
 
   instructions: `# Robot Builder: Multi-File Architecture
 

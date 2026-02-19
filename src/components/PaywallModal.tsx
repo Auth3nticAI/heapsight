@@ -51,7 +51,7 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
 
       {/* Modal */}
       <div
-        className="relative z-10 bg-surface border border-primary/30 rounded-xl p-8 max-w-md w-full mx-4 animate-modal_in"
+        className="relative z-10 bg-surface border border-primary/30 rounded-xl p-5 sm:p-8 max-w-md w-full mx-4 animate-modal_in"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="text-center mb-6">
@@ -92,14 +92,14 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
         <button
           onClick={handleUpgrade}
           disabled={loading}
-          className="w-full py-3.5 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+          className="w-full py-3.5 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm min-h-[44px] touch-manipulation"
         >
           {loading ? "Redirecting to Stripe..." : "Unlock Everything \u2014 $67"}
         </button>
 
         <button
           onClick={onClose}
-          className="w-full mt-3 text-center text-sm text-[#555] hover:text-[#888] transition-colors"
+          className="w-full mt-3 text-center text-sm text-[#555] hover:text-[#888] transition-colors min-h-[44px] touch-manipulation"
         >
           Maybe later
         </button>

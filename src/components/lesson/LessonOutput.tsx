@@ -1,12 +1,25 @@
 "use client";
 
+import { useState } from "react";
 import { useLessonStore } from "@/store/lesson-store";
+import AIErrorExplainer from "@/components/lesson/AIErrorExplainer";
 
-export default function LessonOutput() {
+interface LessonOutputProps {
+  lessonId?: string;
+  userId?: string;
+  userTier?: "free" | "pro";
+  userCode?: string;
+}
+
+export default function LessonOutput({ lessonId, userId, userTier, userCode }: LessonOutputProps) {
   const output = useLessonStore((s) => s.output);
   const errors = useLessonStore((s) => s.errors);
   const testResults = useLessonStore((s) => s.testResults);
   const isRunning = useLessonStore((s) => s.isRunning);
+  const [testsExpanded, setTestsExpanded] = useState(true);
+
+  const passedCount = testResults.filter((t) => t.passed).length;
+  const allPassed = testResults.length > 0 && passedCount === testResults.length;
 
   return (
     <div className="h-full flex flex-col rounded-lg border border-[#1a1a2e] bg-surface overflow-hidden">
@@ -28,7 +41,7 @@ export default function LessonOutput() {
             <div className="text-[9px] font-mono text-[#555] uppercase mb-1">
               Console
             </div>
-            <pre className="text-xs font-mono text-[#e0e0e0] bg-[#0d0d1a] border border-[#1a1a2e] rounded p-2.5 whitespace-pre-wrap">
+            <pre className="text-xs font-mono text-[#e0e0e0] bg-[#0d0d1a] border border-[#1a1a2e] rounded p-2.5 whitespace-pre-wrap break-words">
               {output || (isRunning ? "..." : "")}
             </pre>
           </div>
@@ -43,55 +56,86 @@ export default function LessonOutput() {
             {errors.map((err, i) => (
               <div
                 key={i}
-                className="text-xs font-mono text-danger bg-danger/10 border border-danger/20 rounded p-2.5 mb-1"
+                className="text-xs font-mono text-danger bg-danger/10 border border-danger/20 rounded p-2.5 mb-1 break-words"
               >
                 {err}
               </div>
             ))}
+
+            {/* AI Error Explainer (Pro feature) */}
+            {lessonId && userId && userTier && userCode && (
+              <div className="mt-2">
+                <AIErrorExplainer
+                  lessonId={lessonId}
+                  userId={userId}
+                  userTier={userTier}
+                  errorMessage={errors.join("\n")}
+                  userCode={userCode}
+                />
+              </div>
+            )}
           </div>
         )}
 
-        {/* Test Results */}
+        {/* Test Results — collapsible accordion */}
         {testResults.length > 0 && (
           <div>
-            <div className="text-[9px] font-mono text-[#555] uppercase mb-1">
-              Tests
-            </div>
-            <div className="space-y-1.5">
-              {testResults.map((result) => (
-                <div
-                  key={result.testId}
-                  className={`flex items-start gap-2 text-xs font-mono p-2 rounded border ${
-                    result.passed
-                      ? "bg-primary/10 border-primary/20 text-primary"
-                      : "bg-danger/10 border-danger/20 text-danger"
-                  }`}
+            <button
+              onClick={() => setTestsExpanded(!testsExpanded)}
+              className="w-full flex items-center justify-between py-1 min-h-[44px]"
+            >
+              <span className="text-[9px] font-mono text-[#555] uppercase">
+                Tests
+              </span>
+              <div className="flex items-center gap-2">
+                <span className={`text-[10px] font-mono font-bold ${allPassed ? "text-primary" : "text-danger"}`}>
+                  {passedCount}/{testResults.length} passed
+                </span>
+                <svg
+                  className={`w-3.5 h-3.5 text-[#555] transition-transform ${testsExpanded ? "rotate-180" : ""}`}
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
                 >
-                  <span className="text-sm mt-[-1px]">
-                    {result.passed ? "\u2713" : "\u2717"}
-                  </span>
-                  <div className="flex-1">
-                    <div>{result.description}</div>
-                    {!result.passed && (
-                      <div className="mt-1 text-[10px] text-[#888]">
-                        <div>
-                          Expected:{" "}
-                          <span className="text-primary">
-                            {JSON.stringify(result.expected)}
-                          </span>
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </div>
+            </button>
+            {testsExpanded && (
+              <div className="space-y-1.5">
+                {testResults.map((result) => (
+                  <div
+                    key={result.testId}
+                    className={`flex items-start gap-2 text-xs font-mono p-2 rounded border ${
+                      result.passed
+                        ? "bg-primary/10 border-primary/20 text-primary"
+                        : "bg-danger/10 border-danger/20 text-danger"
+                    }`}
+                  >
+                    <span className="text-sm mt-[-1px]">
+                      {result.passed ? "\u2713" : "\u2717"}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="break-words">{result.description}</div>
+                      {!result.passed && (
+                        <div className="mt-1 text-[10px] text-[#888] break-words">
+                          <div>
+                            Expected:{" "}
+                            <span className="text-primary">
+                              {JSON.stringify(result.expected)}
+                            </span>
+                          </div>
+                          <div>
+                            Got:{" "}
+                            <span className="text-danger">
+                              {JSON.stringify(result.actual)}
+                            </span>
+                          </div>
                         </div>
-                        <div>
-                          Got:{" "}
-                          <span className="text-danger">
-                            {JSON.stringify(result.actual)}
-                          </span>
-                        </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

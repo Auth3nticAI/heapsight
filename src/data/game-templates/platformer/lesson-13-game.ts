@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson13Platformer: GameLessonVariant = {
-  lessonId: "13-enums",
+  lessonId: "13-inheritance-trap",
   instructions: `# Player States — Enum-Driven FSM
 
 ## Project: Platformer FSM — Type-Safe State Machine with Enums

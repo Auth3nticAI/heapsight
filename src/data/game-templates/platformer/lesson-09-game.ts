@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson09Platformer: GameLessonVariant = {
-  lessonId: "09-references",
+  lessonId: "09-component-mutation",
   instructions: `# Physics Tuning — Velocity by Reference
 
 ## Project: Platformer FSM — Reference-Based Physics

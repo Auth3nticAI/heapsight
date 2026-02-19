@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson12Platformer: GameLessonVariant = {
-  lessonId: "12-input",
+  lessonId: "12-extract-components-header",
   instructions: `# Input Buffering — Responsive Controls
 
 ## Project: Platformer FSM — Input-Driven State Machine

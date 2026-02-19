@@ -2,7 +2,10 @@
 
 import { useEffect, useCallback, useState } from "react";
 import { useParams } from "next/navigation";
-import { getLessonById, getNextLesson } from "@/data/lessons";
+import { getSpaceShooterLessonById, getNextSpaceShooterLesson } from "@/data/lessons";
+import { getRPGLessonById, getNextRPGLesson } from "@/data/lessons/rpg-index";
+import { getPlatformerLessonById, getNextPlatformerLesson } from "@/data/lessons/platformer-index";
+import { getRobotLessonById, getNextRobotLesson } from "@/data/lessons/robot-index";
 import { getGameVariant } from "@/data/game-templates";
 import { useLessonStore } from "@/store/lesson-store";
 import { runCppCode } from "@/lib/cpp-runner";
@@ -17,6 +20,7 @@ import dynamic from "next/dynamic";
 import LessonEditor from "@/components/lesson/LessonEditor";
 import LessonInstructions from "@/components/lesson/LessonInstructions";
 import LessonOutput from "@/components/lesson/LessonOutput";
+import HintSystem from "@/components/lesson/HintSystem";
 import LessonMemoryViz from "@/components/lesson/LessonMemoryViz";
 import GamePreviewCanvas from "@/components/lesson/GamePreviewCanvas";
 import PartProgressIndicator from "@/components/lesson/PartProgressIndicator";
@@ -40,7 +44,7 @@ const RobotPreviewCanvas = dynamic(
 export default function LessonPage() {
   const params = useParams();
   const lessonId = params.id as string;
-  const lesson = getLessonById(lessonId);
+  const lesson = getSpaceShooterLessonById(lessonId) ?? getRPGLessonById(lessonId) ?? getPlatformerLessonById(lessonId) ?? getRobotLessonById(lessonId);
 
   const currentPart = useLessonStore((s) => s.currentPart);
   const part1Code = useLessonStore((s) => s.part1Code);
@@ -73,6 +77,13 @@ export default function LessonPage() {
   const [celebrationDetail, setCelebrationDetail] = useState("");
   const [unlockedAchievement, setUnlockedAchievement] = useState<Achievement | null>(null);
   const [levelUpInfo, setLevelUpInfo] = useState<{ level: number; title: string } | null>(null);
+
+  // Session & analytics tracking
+  const [sessionStartTime] = useState(Date.now());
+  const [hintsUsed, setHintsUsed] = useState(0);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [showBonusXP, setShowBonusXP] = useState(false);
+  const [bonusXPAmount, setBonusXPAmount] = useState(0);
 
   const templateInfo = userTemplate ? getTemplateInfo(userTemplate) : null;
   const isRobotTemplate = templateInfo?.category === "robot";
@@ -113,6 +124,8 @@ export default function LessonPage() {
       } = await supabase.auth.getUser();
 
       if (user) {
+        setUserId(user.id);
+
         // Load user's template and tier
         const { data: profile } = await supabase
           .from("profiles")
@@ -173,6 +186,21 @@ export default function LessonPage() {
     loadSavedCode();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lessonId]);
+
+  // Create session record on lesson start
+  useEffect(() => {
+    if (!lesson || !userId) return;
+    const supabase = createClient();
+    supabase
+      .from("lesson_sessions")
+      .insert({
+        user_id: userId,
+        lesson_id: lesson.id,
+        started_at: new Date(sessionStartTime).toISOString(),
+      })
+      .then(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, lessonId]);
 
   const handleRun = useCallback(async () => {
     if (!activePart || isRunning) return;
@@ -279,6 +307,7 @@ export default function LessonPage() {
 
     if (currentPart === 1) {
       // Complete Part 1, transition to Part 2
+      console.log("SUBMIT PART1:", { lessonId: lesson.id, path: userTemplate || "", userTemplate });
       await supabase.from("lesson_progress").upsert(
         {
           user_id: user.id,
@@ -296,7 +325,8 @@ export default function LessonPage() {
       setMobileTab("instructions"); // Show Part 2 instructions on mobile
     } else {
       // Complete Part 2 — lesson fully done
-      await supabase.from("lesson_progress").upsert(
+      console.log("SUBMIT PART2:", { lessonId: lesson.id, path: userTemplate || "", userTemplate });
+      const upsertResult = await supabase.from("lesson_progress").upsert(
         {
           user_id: user.id,
           lesson_id: lesson.id,
@@ -308,6 +338,7 @@ export default function LessonPage() {
         },
         { onConflict: "user_id,lesson_id,path" }
       );
+      console.log("UPSERT RESULT:", upsertResult);
 
       // Update accumulated game code
       if (userTemplate && gameVariant) {
@@ -349,7 +380,28 @@ export default function LessonPage() {
           origin: { y: 0.6 },
           colors: ["#10b981", "#3b82f6", "#f59e0b"],
         });
+
+        // Variable reward: 50% chance of bonus XP (10-50)
+        if (Math.random() > 0.5) {
+          const bonus = Math.floor(Math.random() * 41) + 10;
+          await supabase.rpc("increment_xp", { xp_amount: bonus });
+          setBonusXPAmount(bonus);
+          setTimeout(() => setShowBonusXP(true), 2000);
+        }
       }
+
+      // Update session record with completion data
+      supabase
+        .from("lesson_sessions")
+        .update({
+          completed_at: new Date().toISOString(),
+          time_on_part2_seconds: Math.floor((Date.now() - sessionStartTime) / 1000),
+          hints_used: hintsUsed,
+        })
+        .eq("user_id", user.id)
+        .eq("lesson_id", lesson.id)
+        .is("completed_at", null)
+        .then(() => {});
 
       // Update streak & daily goal
       const [streakResult, dailyResult] = await Promise.all([
@@ -400,7 +452,11 @@ export default function LessonPage() {
       }
 
       // Show paywall after completing last free lesson (when next is pro)
-      const next = getNextLesson(lesson.id);
+      const next =
+        userTemplate === "simple_rpg" ? getNextRPGLesson(lesson.id) :
+        userTemplate === "platformer" ? getNextPlatformerLesson(lesson.id) :
+        userTemplate === "differential_drive_robot" ? getNextRobotLesson(lesson.id) :
+        getNextSpaceShooterLesson(lesson.id);
       if (next && next.tier === "pro" && userTier === "free") {
         setShowPaywall(true);
       } else if (!next) {
@@ -433,7 +489,11 @@ export default function LessonPage() {
   }
 
   const allPassed = testResults.length > 0 && testResults.every((t) => t.passed);
-  const nextLesson = getNextLesson(lesson.id);
+  const nextLesson =
+    userTemplate === "simple_rpg" ? getNextRPGLesson(lesson.id) :
+    userTemplate === "platformer" ? getNextPlatformerLesson(lesson.id) :
+    userTemplate === "differential_drive_robot" ? getNextRobotLesson(lesson.id) :
+    getNextSpaceShooterLesson(lesson.id);
   const lessonFullyComplete = part1Completed && part2Completed;
 
   // Show robot-specific title when on robot path
@@ -524,10 +584,24 @@ export default function LessonPage() {
 
         {/* Panels: mobile = single active panel | desktop = 2x2 grid */}
         <div className="flex-1 min-h-0 flex flex-col lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-2 p-2">
-          {/* Instructions */}
-          <div className={`min-h-0 overflow-hidden ${mobileTab === "instructions" ? "flex-1" : "hidden"} lg:block`}>
+          {/* Instructions + DB Hint System */}
+          <div className={`min-h-0 overflow-hidden flex flex-col ${mobileTab === "instructions" ? "flex-1" : "hidden"} lg:block`}>
             {activePart && (
-              <LessonInstructions part={activePart} concepts={lesson.concepts} />
+              <div className="h-full flex flex-col">
+                <div className="flex-1 min-h-0">
+                  <LessonInstructions part={activePart} concepts={lesson.concepts} />
+                </div>
+                {userId && lesson && (
+                  <div className="shrink-0 p-2">
+                    <HintSystem
+                      lessonId={lesson.id}
+                      userId={userId}
+                      sessionStartTime={sessionStartTime}
+                      onHintUsed={() => setHintsUsed((h) => h + 1)}
+                    />
+                  </div>
+                )}
+              </div>
             )}
           </div>
 
@@ -547,15 +621,23 @@ export default function LessonPage() {
             )}
           </div>
 
-          {/* Output */}
+          {/* Output + AI Error Explainer */}
           <div className={`min-h-0 overflow-hidden ${mobileTab === "output" ? "flex-1" : "hidden"} lg:block`}>
-            <LessonOutput />
+            <LessonOutput
+              lessonId={lesson?.id}
+              userId={userId || undefined}
+              userTier={userTier}
+              userCode={activeCode}
+            />
           </div>
         </div>
       </div>
 
-      {/* Action bar */}
-      <div className="border-t border-[#1a1a2e] px-3 sm:px-4 py-2 sm:py-2.5 shrink-0">
+      {/* Action bar — safe-area-inset for notch phones */}
+      <div
+        className="border-t border-[#1a1a2e] px-3 sm:px-4 py-2 sm:py-2.5 shrink-0"
+        style={{ paddingBottom: "max(0.5rem, env(safe-area-inset-bottom, 0.5rem))" }}
+      >
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <button
@@ -669,6 +751,28 @@ export default function LessonPage() {
           title={levelUpInfo.title}
           onClose={() => setLevelUpInfo(null)}
         />
+      )}
+
+      {/* Mystery Bonus XP Modal */}
+      {showBonusXP && bonusXPAmount > 0 && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-surface border-2 border-warning/50 rounded-xl p-6 max-w-sm w-full text-center space-y-4">
+            <div className="text-6xl">&#127873;</div>
+            <h3 className="text-xl font-bold text-warning">Mystery Bonus!</h3>
+            <div className="bg-warning/10 border border-warning/30 text-warning font-bold text-3xl py-4 rounded-lg">
+              +{bonusXPAmount} XP
+            </div>
+            <p className="text-xs font-mono text-[#888]">
+              Keep completing lessons to find more bonuses!
+            </p>
+            <button
+              onClick={() => setShowBonusXP(false)}
+              className="bg-warning/20 hover:bg-warning/30 text-warning font-mono text-sm px-6 py-2 rounded-lg transition-colors border border-warning/30"
+            >
+              Awesome!
+            </button>
+          </div>
+        </div>
       )}
 
       {/* Paywall Modal */}

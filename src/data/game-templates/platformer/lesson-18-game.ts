@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson18Platformer: GameLessonVariant = {
-  lessonId: "18-score-system",
+  lessonId: "18-save-snapshot-v0",
   instructions: `# Collectible Scoring — Coin Value System\n\nNot all collectibles are created equal! In many platformers, coins come in different tiers:\n- **Gold** coins = 100 points\n- **Silver** coins = 50 points\n- **Bronze** coins = 25 points\n\nThe player's score is an **accumulated state** — it grows as game events (coin pickups) occur. Each coin's type determines its point value.\n\n## Your Task\n\n1. Define a Coin struct with id, type (gold/silver/bronze), x, y, value, and collected fields\n2. Write a \`int getCoinValue(string type)\` function that returns 100 for gold, 50 for silver, 25 for bronze\n3. Create 3 coins: one gold, one silver, one bronze — all collected\n4. Accumulate the total score from all collected coins\n5. Output remaining entities and the final score\n\n## Protocol Reminder\n- \`ENTITY|id|type|x|y|width|height\`\n- \`GAME_MESSAGE|text\`\n- \`SCORE|value\``,
   starterCode: `#include <iostream>
 #include <string>

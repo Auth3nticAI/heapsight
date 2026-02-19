@@ -91,7 +91,7 @@ export default function ConfettiCelebration({
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
       <div
-        className={`bg-gradient-to-br ${msg.gradient} text-white px-8 py-6 rounded-2xl shadow-2xl animate-bounce_in`}
+        className={`bg-gradient-to-br ${msg.gradient} text-white px-6 sm:px-8 py-5 sm:py-6 rounded-2xl shadow-2xl animate-bounce_in mx-4`}
       >
         <p className="text-2xl font-bold mb-1 text-center">{msg.text}</p>
         {detail && (

@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson13SimpleRpg: GameLessonVariant = {
-  lessonId: "13-enums",
+  lessonId: "13-inheritance-trap",
 
   instructions: `# Character Classes — Enum-Driven Stat Templates\n\nIn data-driven RPGs, **enums** serve as identifiers for character class archetypes. Each enum value maps to a stat template — a predefined set of HP, ATK, and DEF values. This pattern keeps class data centralized and easy to extend.\n\n## Objectives\n- Define an enum \`CharClass\` with values WARRIOR, MAGE, ROGUE\n- Write a function to assign base stats based on class enum\n- Create a character using the MAGE class\n- Render the character and display its stats\n\n## Class Stat Templates\n| Class | HP | ATK | DEF |\n|-------|----|-----|-----|\n| WARRIOR | 120 | 15 | 12 |\n| MAGE | 80 | 25 | 5 |\n| ROGUE | 90 | 20 | 8 |\n\n## Output Protocol\n- \`ENTITY|id|type|x|y|width|height|health\` — render the character\n- \`GAME_MESSAGE|text\` — display class info and stats\n- \`SCORE|value\` — total stat points (HP + ATK + DEF)`,
 

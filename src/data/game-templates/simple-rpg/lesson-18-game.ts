@@ -1,7 +1,7 @@
 import type { GameLessonVariant } from "@/types/game";
 
 export const lesson18SimpleRpg: GameLessonVariant = {
-  lessonId: "18-score-system",
+  lessonId: "18-save-snapshot-v0",
 
   instructions: `# Experience Points — Level-Up System
 
