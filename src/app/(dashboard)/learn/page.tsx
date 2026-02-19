@@ -204,7 +204,7 @@ export default function LearnPage() {
       {/* ─── Header Bar ─────────────────────────────────────────────── */}
       <header className="border-b border-[#1a1a2e] px-4 sm:px-6 py-4">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="lg:hidden pl-12">
+          <div className="lg:hidden md:pl-12">
             <h1 className="text-xl font-semibold text-white">HeapSight</h1>
             <p className="text-xs text-[#666] font-mono mt-0.5">
               Learn C++ by Building {template ? TEMPLATE_LABELS[template] || "a Project" : "a Project"}

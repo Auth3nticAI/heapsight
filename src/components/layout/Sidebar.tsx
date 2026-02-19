@@ -282,10 +282,10 @@ export default function Sidebar({ userEmail, totalXp, userTier, streakCount }: S
         <SidebarContent />
       </aside>
 
-      {/* Mobile Hamburger Button */}
+      {/* Hamburger Button — hidden on mobile (bottom tabs handle nav) and desktop (sidebar visible) */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2.5 bg-[#0d0d1a] border border-[#1a1a2e] rounded-xl shadow-lg touch-manipulation hover:bg-[#111118] transition-colors"
+        className="hidden md:block lg:hidden fixed top-4 left-4 z-50 p-2.5 bg-[#0d0d1a] border border-[#1a1a2e] rounded-xl shadow-lg touch-manipulation hover:bg-[#111118] transition-colors"
         aria-label="Toggle menu"
       >
         {isOpen ? (

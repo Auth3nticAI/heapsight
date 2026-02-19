@@ -98,7 +98,7 @@ export default function ProgressPage() {
       {/* Header */}
       <header className="border-b border-[#1a1a2e] px-4 sm:px-6 py-4">
         <div className="max-w-4xl mx-auto">
-          <div className="lg:hidden pl-12">
+          <div className="lg:hidden md:pl-12">
             <h1 className="text-xl font-semibold text-white">Progress</h1>
             <p className="text-xs text-[#666] font-mono mt-0.5">Your stats &amp; achievements</p>
           </div>

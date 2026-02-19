@@ -193,7 +193,7 @@ export default function LessonPath({
                             fromOffsetX={prevOffsetMobile}
                             toOffsetX={offsetMobile}
                             completed={!!connectorCompleted}
-                            height={64}
+                            height={44}
                           />
                         </div>
                       </>

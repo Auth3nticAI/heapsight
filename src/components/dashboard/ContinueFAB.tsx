@@ -26,7 +26,8 @@ export default function ContinueFAB({ nextLesson }: ContinueFABProps) {
   return (
     <button
       onClick={() => router.push(`/lesson/${nextLesson.id}`)}
-      className="lg:hidden fixed bottom-20 right-4 z-40 group active:scale-95 transition-transform touch-manipulation"
+      className="lg:hidden fixed right-4 z-40 group active:scale-95 transition-transform touch-manipulation"
+      style={{ bottom: "calc(64px + env(safe-area-inset-bottom, 0px))" }}
       aria-label={`Continue to Lesson ${nextLesson.order}: ${nextLesson.title}`}
     >
       {/* Glow effect */}
