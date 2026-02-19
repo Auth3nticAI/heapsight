@@ -5,12 +5,18 @@ import {
 } from "@polar-sh/sdk/webhooks";
 import { createClient } from "@supabase/supabase-js";
 
-// Admin client bypasses RLS for webhook updates
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { autoRefreshToken: false, persistSession: false } }
-);
+// Lazy-init admin client inside handler — not at module scope,
+// because env vars may not be available during Next.js build.
+function getSupabaseAdmin() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error("Missing Supabase env vars");
+  }
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  );
+}
 
 export async function POST(request: NextRequest) {
   const body = await request.text();
@@ -83,7 +89,7 @@ async function handleSubscriptionActive(data: WebhookData) {
 
   console.log(`[Polar Webhook] Activating subscription for user ${userId}`);
 
-  await supabaseAdmin
+  await getSupabaseAdmin()
     .from("profiles")
     .update({
       tier: "pro",
@@ -98,7 +104,7 @@ async function handleSubscriptionActive(data: WebhookData) {
 async function handleSubscriptionCanceled(data: WebhookData) {
   const customerId = data.customerId as string;
 
-  const { data: profile } = await supabaseAdmin
+  const { data: profile } = await getSupabaseAdmin()
     .from("profiles")
     .select("id")
     .eq("polar_customer_id", customerId)
@@ -107,7 +113,7 @@ async function handleSubscriptionCanceled(data: WebhookData) {
   if (profile) {
     console.log(`[Polar Webhook] Downgrading user ${profile.id} to Free`);
 
-    await supabaseAdmin
+    await getSupabaseAdmin()
       .from("profiles")
       .update({ tier: "free", polar_subscription_id: null })
       .eq("id", profile.id);
@@ -117,7 +123,7 @@ async function handleSubscriptionCanceled(data: WebhookData) {
 async function handleSubscriptionRevoked(data: WebhookData) {
   const customerId = data.customerId as string;
 
-  const { data: profile } = await supabaseAdmin
+  const { data: profile } = await getSupabaseAdmin()
     .from("profiles")
     .select("id")
     .eq("polar_customer_id", customerId)
@@ -126,7 +132,7 @@ async function handleSubscriptionRevoked(data: WebhookData) {
   if (profile) {
     console.log(`[Polar Webhook] Revoking subscription for user ${profile.id}`);
 
-    await supabaseAdmin
+    await getSupabaseAdmin()
       .from("profiles")
       .update({ tier: "free", polar_subscription_id: null })
       .eq("id", profile.id);
@@ -137,7 +143,7 @@ async function handleSubscriptionUpdated(data: WebhookData) {
   const customerId = data.customerId as string;
   const status = data.status as string;
 
-  const { data: profile } = await supabaseAdmin
+  const { data: profile } = await getSupabaseAdmin()
     .from("profiles")
     .select("id, tier")
     .eq("polar_customer_id", customerId)
@@ -150,12 +156,12 @@ async function handleSubscriptionUpdated(data: WebhookData) {
   );
 
   if (status === "canceled" || status === "revoked") {
-    await supabaseAdmin
+    await getSupabaseAdmin()
       .from("profiles")
       .update({ tier: "free", polar_subscription_id: null })
       .eq("id", profile.id);
   } else if (status === "active" && profile.tier !== "pro") {
-    await supabaseAdmin
+    await getSupabaseAdmin()
       .from("profiles")
       .update({ tier: "pro", polar_subscription_id: data.id as string })
       .eq("id", profile.id);
@@ -168,7 +174,7 @@ async function handleOrderPaid(data: WebhookData) {
 
   const customerId = data.customerId as string;
 
-  const { data: profile } = await supabaseAdmin
+  const { data: profile } = await getSupabaseAdmin()
     .from("profiles")
     .select("id, tier")
     .eq("polar_customer_id", customerId)
@@ -179,7 +185,7 @@ async function handleOrderPaid(data: WebhookData) {
       `[Polar Webhook] Restoring Pro access for user ${profile.id}`
     );
 
-    await supabaseAdmin
+    await getSupabaseAdmin()
       .from("profiles")
       .update({
         tier: "pro",
