@@ -158,15 +158,15 @@ export default function Sidebar({ userEmail, totalXp, userTier, streakCount }: S
   const SidebarContent = () => (
     <>
       {/* Logo + User Section */}
-      <div className="p-5 border-b border-[#1a1a2e]">
+      <div className="p-5 border-b border-white/[0.05]">
         <Link href="/learn" className="block mb-5" onClick={() => setIsOpen(false)}>
-          <h1 className="text-xl font-bold text-primary">HeapSight</h1>
-          <p className="text-[10px] text-[#555] font-mono mt-0.5">Master C++ Systems</p>
+          <h1 className="text-xl font-bold text-white">HeapSight</h1>
+          <p className="text-[10px] text-[#AFBCD5]/50 font-mono mt-0.5">Master C++ Systems</p>
         </Link>
 
         {/* User Info */}
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#7c3aed] to-[#3b82f6] flex items-center justify-center text-white font-bold text-base shrink-0">
+          <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#246BFD] to-[#0040C3] flex items-center justify-center text-white font-bold text-base shrink-0">
             {displayName.charAt(0).toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">
@@ -178,7 +178,7 @@ export default function Sidebar({ userEmail, totalXp, userTier, streakCount }: S
               </div>
               {streakCount > 0 && (
                 <>
-                  <span className="text-[#2a2a3e]">&middot;</span>
+                  <span className="text-[#AFBCD5]/30">&middot;</span>
                   <div className="flex items-center gap-1">
                     <FlameIcon className="h-3 w-3 text-[#f97316]" />
                     <span className="text-[10px] font-mono font-bold text-[#f97316]">{streakCount}</span>
@@ -197,16 +197,16 @@ export default function Sidebar({ userEmail, totalXp, userTier, streakCount }: S
         {/* Level Bar */}
         <div className="mt-3">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-[9px] font-mono text-[#888]">
+            <span className="text-[9px] font-mono text-[#AFBCD5]/60">
               LVL {levelInfo.level} &middot; {levelInfo.title}
             </span>
-            <span className="text-[9px] font-mono text-[#555]">
+            <span className="text-[9px] font-mono text-[#AFBCD5]/40">
               {levelInfo.xpInLevel}/{levelInfo.xpForNext}
             </span>
           </div>
-          <div className="w-full bg-[#1a1a2e] rounded-full h-1.5 overflow-hidden">
+          <div className="w-full bg-white/[0.05] rounded-full h-1.5 overflow-hidden">
             <div
-              className="h-1.5 rounded-full bg-gradient-to-r from-[#a855f7] to-[#6366f1] transition-all duration-500"
+              className="h-1.5 rounded-full bg-gradient-to-r from-[#246BFD] to-[#0040C3] transition-all duration-500"
               style={{ width: `${levelInfo.progress}%` }}
             />
           </div>
@@ -225,14 +225,14 @@ export default function Sidebar({ userEmail, totalXp, userTier, streakCount }: S
               onClick={() => handleNavClick(item.path)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative overflow-hidden text-left ${
                 active
-                  ? "bg-primary/10 text-primary border border-primary/30"
-                  : "text-[#888] hover:bg-[#111118] hover:text-white border border-transparent"
+                  ? "bg-[#246BFD]/10 text-[#246BFD] border border-[#246BFD]/30"
+                  : "text-[#AFBCD5] hover:bg-white/[0.05] hover:text-white border border-transparent"
               }`}
             >
               <Icon className={`h-5 w-5 shrink-0 transition-transform ${active ? "scale-110" : ""}`} />
               <span className="font-medium text-sm">{item.name}</span>
               {item.badge && (
-                <span className="ml-auto text-[8px] bg-[#3b82f6]/20 text-[#60a5fa] px-2 py-0.5 rounded-full border border-[#3b82f6]/30 font-mono">
+                <span className="ml-auto text-[8px] bg-[#246BFD]/20 text-[#246BFD] px-2 py-0.5 rounded-full border border-[#246BFD]/30 font-mono">
                   {item.badge}
                 </span>
               )}
@@ -242,13 +242,13 @@ export default function Sidebar({ userEmail, totalXp, userTier, streakCount }: S
       </nav>
 
       {/* Bottom Section */}
-      <div className="p-3 border-t border-[#1a1a2e] space-y-1">
+      <div className="p-3 border-t border-white/[0.05] space-y-1">
         {/* Upgrade CTA (Free users only) */}
         {userTier === "free" && (
           <Link
             href="/upgrade"
             onClick={() => setIsOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-[#a855f7]/10 to-[#3b82f6]/10 border border-[#a855f7]/30 text-[#a855f7] hover:from-[#a855f7]/20 hover:to-[#3b82f6]/20 transition-all mb-1"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-[#246BFD]/10 to-[#0040C3]/10 border border-[#246BFD]/30 text-[#246BFD] hover:from-[#246BFD]/20 hover:to-[#0040C3]/20 transition-all mb-1"
           >
             <SparklesIcon className="h-5 w-5" />
             <span className="font-medium text-sm">Upgrade to Pro</span>
@@ -258,7 +258,7 @@ export default function Sidebar({ userEmail, totalXp, userTier, streakCount }: S
         <Link
           href="/settings"
           onClick={() => setIsOpen(false)}
-          className="flex items-center gap-3 px-4 py-3 text-[#888] hover:text-white hover:bg-[#111118] rounded-xl transition-colors w-full"
+          className="flex items-center gap-3 px-4 py-3 text-[#AFBCD5] hover:text-white hover:bg-white/[0.05] rounded-xl transition-colors w-full"
         >
           <SettingsIcon className="h-5 w-5" />
           <span className="text-sm">Settings</span>
@@ -266,7 +266,7 @@ export default function Sidebar({ userEmail, totalXp, userTier, streakCount }: S
 
         <button
           onClick={handleSignOut}
-          className="w-full flex items-center gap-3 px-4 py-3 text-[#888] hover:text-danger hover:bg-danger/10 rounded-xl transition-colors"
+          className="w-full flex items-center gap-3 px-4 py-3 text-[#AFBCD5] hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-colors"
         >
           <LogOutIcon className="h-5 w-5" />
           <span className="text-sm">Sign out</span>
@@ -278,14 +278,14 @@ export default function Sidebar({ userEmail, totalXp, userTier, streakCount }: S
   return (
     <>
       {/* Desktop Sidebar — always visible on lg+ */}
-      <aside className="hidden lg:flex flex-col w-64 bg-[#0d0d1a] border-r border-[#1a1a2e] h-screen fixed left-0 top-0 z-30">
+      <aside className="hidden lg:flex flex-col w-64 bg-[#071528] border-r border-white/[0.05] h-screen fixed left-0 top-0 z-30">
         <SidebarContent />
       </aside>
 
       {/* Hamburger Button — hidden on mobile (bottom tabs handle nav) and desktop (sidebar visible) */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="hidden md:block lg:hidden fixed top-4 left-4 z-50 p-2.5 bg-[#0d0d1a] border border-[#1a1a2e] rounded-xl shadow-lg touch-manipulation hover:bg-[#111118] transition-colors"
+        className="hidden md:block lg:hidden fixed top-4 left-4 z-50 p-2.5 bg-[#071528] border border-white/[0.05] rounded-xl shadow-lg touch-manipulation hover:bg-white/[0.05] transition-colors"
         aria-label="Toggle menu"
       >
         {isOpen ? (
@@ -299,10 +299,10 @@ export default function Sidebar({ userEmail, totalXp, userTier, streakCount }: S
       {isOpen && (
         <>
           <div
-            className="lg:hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-40 animate-fade_in"
+            className="lg:hidden fixed inset-0 bg-black/70 z-40 animate-fade_in"
             onClick={() => setIsOpen(false)}
           />
-          <aside className="lg:hidden fixed left-0 top-0 w-72 max-w-[85vw] bg-[#0d0d1a] border-r border-[#1a1a2e] h-screen z-50 flex flex-col animate-slide_in_left overflow-hidden">
+          <aside className="lg:hidden fixed left-0 top-0 w-72 max-w-[85vw] bg-[#071528] border-r border-white/[0.05] h-screen z-50 flex flex-col animate-slide_in_left overflow-hidden">
             <SidebarContent />
           </aside>
         </>

@@ -59,7 +59,7 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
           <h2 className="text-xl font-bold text-white">
             You Completed the Free Lessons!
           </h2>
-          <p className="text-sm text-[#888] mt-2">
+          <p className="text-sm text-[#AFBCD5]/70 mt-2">
             Unlock the full experience: 25 lessons, complete game projects,
             export to GitHub, lifetime access.
           </p>
@@ -92,14 +92,14 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
         <button
           onClick={handleUpgrade}
           disabled={loading}
-          className="w-full py-3.5 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm min-h-[44px] touch-manipulation"
+          className="w-full py-3.5 bg-gradient-to-r from-[#246BFD] to-[#0040C3] text-white font-bold rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm min-h-[44px] touch-manipulation"
         >
           {loading ? "Redirecting to Stripe..." : "Unlock Everything \u2014 $67"}
         </button>
 
         <button
           onClick={onClose}
-          className="w-full mt-3 text-center text-sm text-[#555] hover:text-[#888] transition-colors min-h-[44px] touch-manipulation"
+          className="w-full mt-3 text-center text-sm text-[#AFBCD5]/50 hover:text-[#AFBCD5]/70 transition-colors min-h-[44px] touch-manipulation"
         >
           Maybe later
         </button>

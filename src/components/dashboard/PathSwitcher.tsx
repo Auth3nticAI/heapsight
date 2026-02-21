@@ -74,17 +74,17 @@ export default function PathSwitcher({
   };
 
   return (
-    <div className="mb-6 p-4 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
+    <div className="mb-6 p-4 rounded-2xl border border-white/[0.08] bg-[#071528]">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-[10px] font-mono font-bold text-[#888] uppercase tracking-wider">
+        <h3 className="text-[10px] font-mono font-bold text-[#AFBCD5]/70 uppercase tracking-wider">
           Learning Path
         </h3>
         {userTier === "pro" ? (
-          <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded bg-gradient-to-r from-[#a855f7] to-[#6366f1] text-white">
+          <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded bg-gradient-to-r from-[#246BFD] to-[#0040C3] text-white">
             PRO &mdash; Switch Anytime
           </span>
         ) : (
-          <span className="text-[9px] font-mono text-[#555]">
+          <span className="text-[9px] font-mono text-[#AFBCD5]/50">
             1 path included
           </span>
         )}
@@ -104,10 +104,10 @@ export default function PathSwitcher({
                 relative p-3.5 sm:p-3 rounded-xl border-2 transition-all text-left min-h-[100px] sm:min-h-[76px] touch-manipulation
                 ${
                   isActive
-                    ? "border-teal-500/40 bg-teal-600/[0.07]"
+                    ? "border-[#246BFD]/40 bg-[#246BFD]/[0.07]"
                     : isLocked
-                    ? "border-[#ffffff08] bg-[#060610] opacity-50"
-                    : "border-[#ffffff10] bg-[#060610] hover:border-[#ffffff20] active:scale-[0.98] cursor-pointer"
+                    ? "border-white/[0.05] bg-[#040B10] opacity-50"
+                    : "border-white/[0.08] bg-[#040B10] hover:border-white/[0.15] active:scale-[0.98] cursor-pointer"
                 }
               `}
             >
@@ -130,9 +130,9 @@ export default function PathSwitcher({
                 <span
                   className={`text-sm sm:text-xs font-semibold truncate ${
                     isActive
-                      ? "text-teal-400"
+                      ? "text-[#246BFD]"
                       : isLocked
-                      ? "text-gray-600"
+                      ? "text-[#AFBCD5]/40"
                       : "text-white"
                   }`}
                 >
@@ -142,18 +142,18 @@ export default function PathSwitcher({
 
               {isActive ? (
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] sm:text-[9px] font-mono text-teal-400/70">Active</span>
-                  <span className="text-[10px] sm:text-[9px] font-mono text-[#888]">
+                  <span className="text-[10px] sm:text-[9px] font-mono text-[#246BFD]/70">Active</span>
+                  <span className="text-[10px] sm:text-[9px] font-mono text-[#AFBCD5]/70">
                     {pathProgress[path.id] || 0}/{totalLessons}
                   </span>
                 </div>
               ) : (
                 <div className="flex items-center justify-between">
-                  <p className={`text-[10px] sm:text-[9px] font-mono truncate ${isLocked ? "text-[#444]" : "text-[#666]"}`}>
+                  <p className={`text-[10px] sm:text-[9px] font-mono truncate ${isLocked ? "text-[#AFBCD5]/40" : "text-[#AFBCD5]/50"}`}>
                     {path.description}
                   </p>
                   {!isLocked && (pathProgress[path.id] || 0) > 0 && (
-                    <span className="text-[10px] sm:text-[9px] font-mono text-[#555] ml-1 shrink-0">
+                    <span className="text-[10px] sm:text-[9px] font-mono text-[#AFBCD5]/50 ml-1 shrink-0">
                       {pathProgress[path.id]}/{totalLessons}
                     </span>
                   )}
@@ -167,7 +167,7 @@ export default function PathSwitcher({
       {userTier === "free" && (
         <button
           onClick={onUpgradeClick}
-          className="w-full mt-2.5 text-[9px] font-mono text-[#555] hover:text-[#a855f7] transition-colors text-center"
+          className="w-full mt-2.5 text-[9px] font-mono text-[#AFBCD5]/50 hover:text-[#246BFD] transition-colors text-center"
         >
           <svg
             className="inline h-3 w-3 mr-1 text-[#a855f7]"

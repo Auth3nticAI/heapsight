@@ -44,7 +44,7 @@ export default function LevelCard({
         </div>
       </div>
 
-      <div className="w-full bg-[#1a1a2e] rounded-full h-2 overflow-hidden mb-1.5">
+      <div className="w-full bg-white/[0.05] rounded-full h-2 overflow-hidden mb-1.5">
         <div
           className="h-2 rounded-full bg-gradient-to-r from-[#a855f7] to-[#6366f1] transition-all duration-700 relative overflow-hidden"
           style={{ width: `${progress}%` }}

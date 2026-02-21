@@ -98,9 +98,9 @@ function Scene({ frame }: { frame: CrawlerFrame | null }) {
       <Grid
         args={[10, 10]}
         cellSize={0.5}
-        cellColor="#1a1a2e"
+        cellColor="#071528"
         sectionSize={2}
-        sectionColor="#2a2a3e"
+        sectionColor="rgba(255,255,255,0.08)"
         fadeDistance={15}
       />
       {frame ? (

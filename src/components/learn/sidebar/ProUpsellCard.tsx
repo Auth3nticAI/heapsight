@@ -35,7 +35,7 @@ export default function ProUpsellCard({ completedCount, freeLimit }: ProUpsellCa
               {Math.min(completedCount, freeLimit)}/{freeLimit}
             </span>
           </div>
-          <div className="w-full bg-[#1a1a2e] rounded-full h-1.5 overflow-hidden">
+          <div className="w-full bg-white/[0.05] rounded-full h-1.5 overflow-hidden">
             <div
               className={`h-1.5 rounded-full transition-all duration-700 ${
                 isNearLimit

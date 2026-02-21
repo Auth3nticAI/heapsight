@@ -135,7 +135,7 @@ export default function AccountPage() {
   if (loading || !profile) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-sm font-mono text-[#555] animate-pulse">Loading...</p>
+        <p className="text-sm font-mono text-[#AFBCD5]/50 animate-pulse">Loading...</p>
       </div>
     );
   }
@@ -153,35 +153,35 @@ export default function AccountPage() {
   return (
     <>
       {/* Header */}
-      <header className="border-b border-[#ffffff08] px-4 sm:px-6 py-5">
+      <header className="border-b border-white/[0.05] px-4 sm:px-6 py-5">
         <div className="max-w-3xl mx-auto">
           <div className="md:pl-12 lg:pl-0">
             <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
               Account
             </h1>
-            <p className="text-xs text-[#555] font-mono mt-1 hidden lg:block">
+            <p className="text-xs text-[#AFBCD5]/50 font-mono mt-1 hidden lg:block">
               Your profile, stats, and subscription
             </p>
-            <p className="text-xs text-[#555] font-mono mt-1 lg:hidden">Your profile overview</p>
+            <p className="text-xs text-[#AFBCD5]/50 font-mono mt-1 lg:hidden">Your profile overview</p>
           </div>
         </div>
       </header>
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 space-y-6">
         {/* Profile Card */}
-        <section className="p-5 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
+        <section className="p-5 rounded-2xl border border-white/[0.08] bg-[#071528]">
           <div className="flex items-center gap-4 mb-5">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#7c3aed] to-[#3b82f6] flex items-center justify-center text-white text-2xl font-bold shrink-0">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#246BFD] to-[#0040C3] flex items-center justify-center text-white text-2xl font-bold shrink-0">
               {displayName.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-lg font-bold text-white truncate">{displayName}</p>
-              <p className="text-xs font-mono text-[#666] truncate">{profile.email}</p>
+              <p className="text-xs font-mono text-[#AFBCD5]/50 truncate">{profile.email}</p>
               <div className="flex items-center gap-2 mt-1">
-                <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded bg-gradient-to-r from-[#a855f7] to-[#6366f1] text-white">
+                <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded bg-gradient-to-r from-[#246BFD] to-[#0040C3] text-white">
                   LVL {levelInfo.level}
                 </span>
-                <span className="text-[10px] font-mono text-[#888]">{levelInfo.title}</span>
+                <span className="text-[10px] font-mono text-[#AFBCD5]/70">{levelInfo.title}</span>
               </div>
             </div>
             {profile.tier === "pro" && (
@@ -194,14 +194,14 @@ export default function AccountPage() {
           {/* Level Bar */}
           <div className="mb-4">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-[9px] font-mono text-[#888]">Level Progress</span>
-              <span className="text-[9px] font-mono text-[#555]">
+              <span className="text-[9px] font-mono text-[#AFBCD5]/70">Level Progress</span>
+              <span className="text-[9px] font-mono text-[#AFBCD5]/50">
                 {levelInfo.xpInLevel}/{levelInfo.xpForNext} XP
               </span>
             </div>
-            <div className="w-full bg-[#ffffff08] rounded-full h-2 overflow-hidden">
+            <div className="w-full bg-white/[0.05] rounded-full h-2 overflow-hidden">
               <div
-                className="h-2 rounded-full bg-gradient-to-r from-[#a855f7] to-[#6366f1] transition-all duration-500"
+                className="h-2 rounded-full bg-gradient-to-r from-[#246BFD] to-[#0040C3] transition-all duration-500"
                 style={{ width: `${levelInfo.progress}%` }}
               />
             </div>
@@ -209,32 +209,32 @@ export default function AccountPage() {
 
           {/* Stats Row */}
           <div className="grid grid-cols-3 gap-2 sm:gap-3">
-            <div className="p-3 rounded-xl bg-[#060610] border border-[#ffffff10] text-center">
+            <div className="p-3 rounded-xl bg-[#071528] border border-white/[0.08] text-center">
               <div className="flex items-center justify-center gap-1 mb-1">
                 <ZapIcon className="h-3.5 w-3.5 text-[#fbbf24]" />
               </div>
               <p className="text-sm sm:text-base font-bold text-white font-mono">{profile.totalXp.toLocaleString()}</p>
-              <p className="text-[8px] font-mono text-[#666] uppercase">Total XP</p>
+              <p className="text-[8px] font-mono text-[#AFBCD5]/50 uppercase">Total XP</p>
             </div>
-            <div className="p-3 rounded-xl bg-[#060610] border border-[#ffffff10] text-center">
+            <div className="p-3 rounded-xl bg-[#071528] border border-white/[0.08] text-center">
               <div className="flex items-center justify-center gap-1 mb-1">
                 <FlameIcon className="h-3.5 w-3.5 text-[#f97316]" />
               </div>
               <p className="text-base font-bold text-white font-mono">{profile.currentStreak}</p>
-              <p className="text-[8px] font-mono text-[#666] uppercase">Streak</p>
+              <p className="text-[8px] font-mono text-[#AFBCD5]/50 uppercase">Streak</p>
             </div>
-            <div className="p-3 rounded-xl bg-[#060610] border border-[#ffffff10] text-center">
+            <div className="p-3 rounded-xl bg-[#071528] border border-white/[0.08] text-center">
               <div className="flex items-center justify-center gap-1 mb-1">
                 <span className="text-sm">{"\u2713"}</span>
               </div>
               <p className="text-base font-bold text-white font-mono">{profile.completedCount}/{pathLessons.length}</p>
-              <p className="text-[8px] font-mono text-[#666] uppercase">Lessons</p>
+              <p className="text-[8px] font-mono text-[#AFBCD5]/50 uppercase">Lessons</p>
             </div>
           </div>
         </section>
 
         {/* Learning Path */}
-        <section className="p-5 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
+        <section className="p-5 rounded-2xl border border-white/[0.08] bg-[#071528]">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-white">Learning Path</h2>
             <Link
@@ -246,39 +246,39 @@ export default function AccountPage() {
           </div>
           {profile.template ? (
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-[#060610] border border-[#ffffff10] flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-[#071528] border border-white/[0.08] flex items-center justify-center">
                 <span className="text-2xl">{TEMPLATE_ICONS[profile.template] || "?"}</span>
               </div>
               <div>
                 <p className="text-sm text-white font-semibold">
                   {TEMPLATE_LABELS[profile.template] || profile.template}
                 </p>
-                <p className="text-[10px] font-mono text-[#666]">
+                <p className="text-[10px] font-mono text-[#AFBCD5]/50">
                   {isCrawlerPath ? "C++ Dungeon Crawler Path" : "C++ Game Dev Path"}
                 </p>
               </div>
             </div>
           ) : (
-            <p className="text-xs text-[#666] font-mono">No path selected</p>
+            <p className="text-xs text-[#AFBCD5]/50 font-mono">No path selected</p>
           )}
         </section>
 
         {/* Subscription */}
-        <section className="p-5 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
+        <section className="p-5 rounded-2xl border border-white/[0.08] bg-[#071528]">
           <h2 className="text-sm font-semibold text-white mb-4">Subscription</h2>
           {profile.tier === "pro" ? (
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[#2a1a3e] flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-lg bg-[#246BFD]/10 flex items-center justify-center shrink-0">
                 <SparklesIcon className="h-5 w-5 text-[#a855f7]" />
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#2a1a3e] text-[#a855f7] border border-[#a855f7]/20 font-bold">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#246BFD]/10 text-[#a855f7] border border-[#a855f7]/20 font-bold">
                     PRO
                   </span>
                   <span className="text-xs text-white font-semibold">All lessons unlocked</span>
                 </div>
-                <p className="text-[10px] font-mono text-[#555]">
+                <p className="text-[10px] font-mono text-[#AFBCD5]/50">
                   Lifetime access &middot; No subscription
                 </p>
               </div>
@@ -286,19 +286,19 @@ export default function AccountPage() {
           ) : (
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#1a1a2e] text-[#888] border border-[#2a2a3e] font-bold">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#071528] text-[#AFBCD5]/70 border border-white/[0.08] font-bold">
                   FREE
                 </span>
                 <span className="text-xs text-[#ccc]">{freeCount} lessons unlocked</span>
               </div>
               <Link
                 href="/upgrade"
-                className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-[#a855f7] to-[#6366f1] hover:from-[#9333ea] hover:to-[#4f46e5] text-white font-semibold text-sm rounded-xl transition-all min-h-[44px] touch-manipulation"
+                className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-[#246BFD] to-[#0040C3] hover:from-[#246BFD]/90 hover:to-[#0040C3]/90 text-white font-semibold text-sm rounded-xl transition-all min-h-[44px] touch-manipulation"
               >
                 <SparklesIcon className="h-4 w-4" />
                 Upgrade to Pro &mdash; $67
               </Link>
-              <p className="text-[10px] font-mono text-[#555] text-center">
+              <p className="text-[10px] font-mono text-[#AFBCD5]/50 text-center">
                 One-time payment &middot; Lifetime access
               </p>
             </div>
@@ -309,9 +309,9 @@ export default function AccountPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Link
             href="/settings"
-            className="flex items-center justify-center gap-2 p-4 rounded-xl border border-[#ffffff10] bg-[#ffffff08] hover:bg-[#ffffff12] transition-colors min-h-[44px] touch-manipulation"
+            className="flex items-center justify-center gap-2 p-4 rounded-xl border border-white/[0.08] bg-white/[0.05] hover:bg-white/[0.08] transition-colors min-h-[44px] touch-manipulation"
           >
-            <GearIcon className="h-5 w-5 text-[#888]" />
+            <GearIcon className="h-5 w-5 text-[#AFBCD5]/70" />
             <span className="text-sm font-semibold text-white">Edit Settings</span>
           </Link>
           <button

@@ -43,7 +43,7 @@ export default function BottomNav({ onContinue, continueLessonTitle }: BottomNav
       <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
         <button
           onClick={onContinue}
-          className="bg-primary text-black rounded-full w-14 h-14 flex items-center justify-center shadow-lg shadow-primary/40 active:scale-95 transition-transform touch-manipulation"
+          className="bg-gradient-to-r from-[#246BFD] to-[#0040C3] text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg shadow-primary/40 active:scale-95 transition-transform touch-manipulation"
           aria-label={continueLessonTitle ? `Continue: ${continueLessonTitle}` : "Continue learning"}
         >
           <PlayIcon className="h-6 w-6 ml-0.5" />
@@ -51,13 +51,13 @@ export default function BottomNav({ onContinue, continueLessonTitle }: BottomNav
       </div>
 
       {/* Nav bar */}
-      <nav className="bg-[#0d0d1a]/95 backdrop-blur-sm border-t border-[#1a1a2e] safe-area-bottom">
+      <nav className="bg-[#040B10]/95 backdrop-blur-sm border-t border-white/[0.05] safe-area-bottom">
         <div className="flex items-center h-16">
           {/* Learn */}
           <button
             onClick={() => router.push("/learn")}
             className={`flex-1 flex flex-col items-center justify-center gap-1 min-h-[48px] transition-colors touch-manipulation ${
-              pathname === "/learn" ? "text-primary" : "text-[#555] active:text-[#888]"
+              pathname === "/learn" ? "text-primary" : "text-[#AFBCD5]/50 active:text-[#AFBCD5]/70"
             }`}
             aria-label="Learn"
             aria-current={pathname === "/learn" ? "page" : undefined}
@@ -73,7 +73,7 @@ export default function BottomNav({ onContinue, continueLessonTitle }: BottomNav
           <button
             onClick={() => router.push("/account")}
             className={`flex-1 flex flex-col items-center justify-center gap-1 min-h-[48px] transition-colors touch-manipulation ${
-              pathname === "/account" ? "text-primary" : "text-[#555] active:text-[#888]"
+              pathname === "/account" ? "text-primary" : "text-[#AFBCD5]/50 active:text-[#AFBCD5]/70"
             }`}
             aria-label="Account"
             aria-current={pathname === "/account" ? "page" : undefined}

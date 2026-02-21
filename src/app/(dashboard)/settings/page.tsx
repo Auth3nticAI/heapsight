@@ -255,7 +255,7 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-sm font-mono text-[#555] animate-pulse">Loading settings...</p>
+        <p className="text-sm font-mono text-[#AFBCD5]/50 animate-pulse">Loading settings...</p>
       </div>
     );
   }
@@ -270,16 +270,16 @@ export default function SettingsPage() {
   return (
     <>
       {/* Header */}
-      <header className="border-b border-[#ffffff08] px-4 sm:px-6 py-5">
+      <header className="border-b border-white/[0.05] px-4 sm:px-6 py-5">
         <div className="max-w-5xl mx-auto">
           <div className="md:pl-12 lg:pl-0">
             <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
               Settings
             </h1>
-            <p className="text-xs text-[#555] font-mono mt-1 hidden lg:block">
+            <p className="text-xs text-[#AFBCD5]/50 font-mono mt-1 hidden lg:block">
               Profile, security, and account management
             </p>
-            <p className="text-xs text-[#555] font-mono mt-1 lg:hidden">Manage your account</p>
+            <p className="text-xs text-[#AFBCD5]/50 font-mono mt-1 lg:hidden">Manage your account</p>
           </div>
         </div>
       </header>
@@ -289,12 +289,12 @@ export default function SettingsPage() {
           {/* ─── Main Content ──────────────────────────────────── */}
           <div className="flex-1 space-y-6 min-w-0">
             {/* Profile Section */}
-            <section id="profile" className="p-5 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
+            <section id="profile" className="p-5 rounded-2xl border border-white/[0.08] bg-[#071528]">
               <h2 className="text-sm font-semibold text-white mb-4">Profile</h2>
 
               {/* Avatar + Name */}
               <div className="flex items-center gap-4 mb-5">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#7c3aed] to-[#3b82f6] flex items-center justify-center text-white text-2xl font-bold shrink-0">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#246BFD] to-[#0040C3] flex items-center justify-center text-white text-2xl font-bold shrink-0">
                   {displayName.charAt(0).toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -302,8 +302,8 @@ export default function SettingsPage() {
                   <div className="flex items-center gap-2 mt-1">
                     <ZapIcon className="h-3.5 w-3.5 text-[#fbbf24]" />
                     <span className="text-xs font-mono font-bold text-[#fbbf24]">{totalXp.toLocaleString()} XP</span>
-                    <span className="text-[#2a2a3e]">&middot;</span>
-                    <span className="text-xs font-mono text-[#888]">{completedCount}/{pathLessonCount} lessons</span>
+                    <span className="text-[#AFBCD5]/30">&middot;</span>
+                    <span className="text-xs font-mono text-[#AFBCD5]/70">{completedCount}/{pathLessonCount} lessons</span>
                   </div>
                 </div>
                 {tier === "pro" && (
@@ -315,23 +315,23 @@ export default function SettingsPage() {
 
               {/* Email (read-only) */}
               <div className="space-y-2">
-                <label className="block text-[10px] font-mono font-bold text-[#888] uppercase tracking-wider">
+                <label className="block text-[10px] font-mono font-bold text-[#AFBCD5]/70 uppercase tracking-wider">
                   Email
                 </label>
                 <input
                   type="email"
                   value={email}
                   disabled
-                  className="w-full bg-[#060610] border border-[#ffffff10] rounded-xl px-4 py-3 text-base sm:text-sm font-mono text-gray-500 cursor-not-allowed"
+                  className="w-full bg-[#071528] border border-white/[0.08] rounded-xl px-4 py-3 text-base sm:text-sm font-mono text-[#AFBCD5]/60 cursor-not-allowed"
                 />
-                <p className="text-[9px] font-mono text-[#555]">
+                <p className="text-[9px] font-mono text-[#AFBCD5]/50">
                   Email cannot be changed. Your display name is derived from your email.
                 </p>
               </div>
             </section>
 
             {/* Learning Path */}
-            <section id="path" className="p-5 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
+            <section id="path" className="p-5 rounded-2xl border border-white/[0.08] bg-[#071528]">
               <h2 className="text-sm font-semibold text-white mb-4">Learning Path</h2>
               {template ? (
                 <div className="flex items-center justify-between">
@@ -341,7 +341,7 @@ export default function SettingsPage() {
                       <p className="text-sm text-white font-semibold">
                         {TEMPLATE_LABELS[template] || template}
                       </p>
-                      <p className="text-[10px] font-mono text-[#666]">
+                      <p className="text-[10px] font-mono text-[#AFBCD5]/50">
                         {isCrawlerPath ? "C++ Dungeon Crawler Path" : "C++ Game Dev Path"}
                       </p>
                     </div>
@@ -354,18 +354,18 @@ export default function SettingsPage() {
                   </Link>
                 </div>
               ) : (
-                <p className="text-xs text-[#666] font-mono">No path selected</p>
+                <p className="text-xs text-[#AFBCD5]/50 font-mono">No path selected</p>
               )}
             </section>
 
             {/* Security */}
-            <section id="security" className="p-5 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
+            <section id="security" className="p-5 rounded-2xl border border-white/[0.08] bg-[#071528]">
               <h2 className="text-sm font-semibold text-white mb-4">Change Password</h2>
 
               <div className="space-y-4">
                 {/* New Password */}
                 <div>
-                  <label className="block text-[10px] font-mono font-bold text-[#888] uppercase tracking-wider mb-2">
+                  <label className="block text-[10px] font-mono font-bold text-[#AFBCD5]/70 uppercase tracking-wider mb-2">
                     New Password
                   </label>
                   <div className="relative">
@@ -373,13 +373,13 @@ export default function SettingsPage() {
                       type={showNewPassword ? "text" : "password"}
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="w-full bg-[#060610] border border-[#ffffff10] rounded-xl px-4 py-3 text-base sm:text-sm font-mono text-white placeholder-[#444] focus:border-teal-500/40 focus:outline-none transition-colors pr-12"
+                      className="w-full bg-[#071528] border border-white/[0.08] rounded-xl px-4 py-3 text-base sm:text-sm font-mono text-white placeholder-[#AFBCD5]/30 focus:border-[#246BFD]/40 focus:outline-none transition-colors pr-12"
                       placeholder="Enter new password"
                     />
                     <button
                       type="button"
                       onClick={() => setShowNewPassword(!showNewPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] hover:text-white transition-colors p-1"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#AFBCD5]/50 hover:text-white transition-colors p-1"
                     >
                       {showNewPassword ? (
                         <EyeOffIcon className="h-4 w-4" />
@@ -392,7 +392,7 @@ export default function SettingsPage() {
 
                 {/* Confirm Password */}
                 <div>
-                  <label className="block text-[10px] font-mono font-bold text-[#888] uppercase tracking-wider mb-2">
+                  <label className="block text-[10px] font-mono font-bold text-[#AFBCD5]/70 uppercase tracking-wider mb-2">
                     Confirm Password
                   </label>
                   <div className="relative">
@@ -400,13 +400,13 @@ export default function SettingsPage() {
                       type={showConfirmPassword ? "text" : "password"}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full bg-[#060610] border border-[#ffffff10] rounded-xl px-4 py-3 text-base sm:text-sm font-mono text-white placeholder-[#444] focus:border-teal-500/40 focus:outline-none transition-colors pr-12"
+                      className="w-full bg-[#071528] border border-white/[0.08] rounded-xl px-4 py-3 text-base sm:text-sm font-mono text-white placeholder-[#AFBCD5]/30 focus:border-[#246BFD]/40 focus:outline-none transition-colors pr-12"
                       placeholder="Confirm new password"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] hover:text-white transition-colors p-1"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#AFBCD5]/50 hover:text-white transition-colors p-1"
                     >
                       {showConfirmPassword ? (
                         <EyeOffIcon className="h-4 w-4" />
@@ -434,8 +434,8 @@ export default function SettingsPage() {
                   disabled={saving || (!newPassword && !confirmPassword)}
                   className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all min-h-[44px] touch-manipulation ${
                     saving || (!newPassword && !confirmPassword)
-                      ? "bg-[#ffffff08] text-gray-500 cursor-not-allowed"
-                      : "bg-teal-600 hover:bg-teal-500 text-white"
+                      ? "bg-white/[0.05] text-[#AFBCD5]/60 cursor-not-allowed"
+                      : "bg-[#246BFD] hover:bg-[#0040C3] text-white"
                   }`}
                 >
                   <SaveIcon className="h-4 w-4" />
@@ -445,16 +445,16 @@ export default function SettingsPage() {
             </section>
 
             {/* Danger Zone */}
-            <section id="danger" className="p-5 rounded-2xl border border-red-600/20 bg-[#09091a]">
+            <section id="danger" className="p-5 rounded-2xl border border-red-600/20 bg-[#071528]">
               <h2 className="text-sm font-semibold text-danger mb-4">Danger Zone</h2>
 
               <div className="space-y-3">
                 <button
                   onClick={handleExportData}
-                  className="w-full flex items-center justify-between px-4 py-3 bg-[#ffffff08] hover:bg-[#ffffff12] border border-[#ffffff15] rounded-xl text-sm font-mono text-gray-300 transition-colors min-h-[44px] touch-manipulation"
+                  className="w-full flex items-center justify-between px-4 py-3 bg-white/[0.05] hover:bg-white/[0.08] border border-[#ffffff15] rounded-xl text-sm font-mono text-[#AFBCD5] transition-colors min-h-[44px] touch-manipulation"
                 >
                   <span>Export My Data</span>
-                  <DownloadIcon className="h-4 w-4 text-[#888]" />
+                  <DownloadIcon className="h-4 w-4 text-[#AFBCD5]/70" />
                 </button>
 
                 <button
@@ -471,8 +471,8 @@ export default function SettingsPage() {
           {/* ─── Right Sidebar ─────────────────────────────────── */}
           <div className="lg:w-64 shrink-0 space-y-4">
             {/* Quick Nav */}
-            <div className="p-4 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
-              <h3 className="text-[10px] font-mono font-bold text-[#888] uppercase tracking-wider mb-3">
+            <div className="p-4 rounded-2xl border border-white/[0.08] bg-[#071528]">
+              <h3 className="text-[10px] font-mono font-bold text-[#AFBCD5]/70 uppercase tracking-wider mb-3">
                 Settings
               </h3>
               <div className="space-y-0.5">
@@ -487,8 +487,8 @@ export default function SettingsPage() {
                     onClick={() => scrollToSection(item.id)}
                     className={`w-full text-left px-3 py-2.5 rounded-lg text-xs font-mono transition-colors min-h-[44px] ${
                       activeSection === item.id
-                        ? "bg-teal-600/15 text-teal-400"
-                        : "text-gray-500 hover:text-white hover:bg-[#ffffff08]"
+                        ? "bg-[#246BFD]/15 text-[#246BFD]"
+                        : "text-[#AFBCD5]/60 hover:text-white hover:bg-white/[0.05]"
                     }`}
                   >
                     {item.label}
@@ -498,37 +498,37 @@ export default function SettingsPage() {
             </div>
 
             {/* Subscription Card */}
-            <div className="p-4 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
-              <h3 className="text-[10px] font-mono font-bold text-[#888] uppercase tracking-wider mb-3">
+            <div className="p-4 rounded-2xl border border-white/[0.08] bg-[#071528]">
+              <h3 className="text-[10px] font-mono font-bold text-[#AFBCD5]/70 uppercase tracking-wider mb-3">
                 Subscription
               </h3>
               {tier === "pro" ? (
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#2a1a3e] text-[#a855f7] border border-[#a855f7]/20 font-bold">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#246BFD]/10 text-[#a855f7] border border-[#a855f7]/20 font-bold">
                       PRO
                     </span>
-                    <span className="text-[10px] font-mono text-[#888]">Active</span>
+                    <span className="text-[10px] font-mono text-[#AFBCD5]/70">Active</span>
                   </div>
-                  <p className="text-[9px] font-mono text-[#555]">
+                  <p className="text-[9px] font-mono text-[#AFBCD5]/50">
                     Lifetime access &middot; All lessons unlocked
                   </p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#1a1a2e] text-[#888] border border-[#2a2a3e] font-bold">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#071528] text-[#AFBCD5]/70 border border-white/[0.08] font-bold">
                       FREE
                     </span>
                   </div>
                   <Link
                     href="/upgrade"
-                    className="flex items-center justify-center gap-2 w-full py-2.5 bg-gradient-to-r from-[#a855f7] to-[#6366f1] hover:from-[#9333ea] hover:to-[#4f46e5] text-white font-semibold text-xs rounded-xl transition-all min-h-[40px] touch-manipulation"
+                    className="flex items-center justify-center gap-2 w-full py-2.5 bg-gradient-to-r from-[#246BFD] to-[#0040C3] hover:from-[#246BFD]/90 hover:to-[#0040C3]/90 text-white font-semibold text-xs rounded-xl transition-all min-h-[40px] touch-manipulation"
                   >
                     <SparklesIcon className="h-4 w-4" />
                     Upgrade to Pro
                   </Link>
-                  <p className="text-[9px] font-mono text-[#555] text-center">
+                  <p className="text-[9px] font-mono text-[#AFBCD5]/50 text-center">
                     $67 one-time &middot; Lifetime access
                   </p>
                 </div>
@@ -536,13 +536,13 @@ export default function SettingsPage() {
             </div>
 
             {/* Help */}
-            <div className="p-4 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
-              <h3 className="text-[10px] font-mono font-bold text-[#888] uppercase tracking-wider mb-3">
+            <div className="p-4 rounded-2xl border border-white/[0.08] bg-[#071528]">
+              <h3 className="text-[10px] font-mono font-bold text-[#AFBCD5]/70 uppercase tracking-wider mb-3">
                 Support
               </h3>
               <a
                 href="mailto:support@heapsight.com"
-                className="block text-xs font-mono text-[#888] hover:text-white transition-colors"
+                className="block text-xs font-mono text-[#AFBCD5]/70 hover:text-white transition-colors"
               >
                 support@heapsight.com
               </a>

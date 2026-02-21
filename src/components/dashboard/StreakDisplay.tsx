@@ -34,35 +34,35 @@ export default function StreakDisplay({ streakCount, longestStreak, freezeCount,
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border cursor-default ${
             streakCount > 0
               ? "bg-[#1a0e0e] border-[#3a1e1e]"
-              : "bg-[#1a1a2e] border-[#2a2a3e]"
+              : "bg-white/[0.05] border-white/[0.08]"
           }`}
         >
           <FlameIcon
             className={`h-4 w-4 ${
-              streakCount > 0 ? "text-[#f97316] animate-pulse" : "text-[#555]"
+              streakCount > 0 ? "text-[#f97316] animate-pulse" : "text-[#AFBCD5]/50"
             }`}
           />
           <span
             className={`text-sm font-mono font-bold ${
-              streakCount > 0 ? "text-[#f97316]" : "text-[#555]"
+              streakCount > 0 ? "text-[#f97316]" : "text-[#AFBCD5]/50"
             }`}
           >
             {streakCount}
           </span>
-          <span className="text-[10px] font-mono text-[#888] hidden sm:inline">
+          <span className="text-[10px] font-mono text-[#AFBCD5]/70 hidden sm:inline">
             day{streakCount !== 1 ? "s" : ""}
           </span>
         </div>
 
         {/* Tooltip */}
         {streakCount > 0 && (
-          <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-[#1a1a2e] border border-[#2a2a3e] rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
-            <p className="text-[10px] font-mono text-[#888]">
+          <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-[#071528] border border-white/[0.08] rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+            <p className="text-[10px] font-mono text-[#AFBCD5]/70">
               Longest:{" "}
               <span className="text-[#f97316] font-bold">{longestStreak}</span> day
               {longestStreak !== 1 ? "s" : ""}
             </p>
-            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#1a1a2e] border-l border-t border-[#2a2a3e] rotate-45" />
+            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#071528] border-l border-t border-white/[0.08] rotate-45" />
           </div>
         )}
       </div>
@@ -74,17 +74,17 @@ export default function StreakDisplay({ streakCount, longestStreak, freezeCount,
             className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full border cursor-default ${
               freezeCount > 0
                 ? "bg-[#0e1a2e] border-[#1e3a5e] text-[#60a5fa]"
-                : "bg-[#1a1a2e] border-[#2a2a3e] text-[#555]"
+                : "bg-white/[0.05] border-white/[0.08] text-[#AFBCD5]/50"
             }`}
           >
             <ShieldIcon className="h-3.5 w-3.5" />
             <span className="text-[10px] font-mono font-bold">{freezeCount}</span>
           </div>
-          <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-[#1a1a2e] border border-[#2a2a3e] rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
-            <p className="text-[10px] font-mono text-[#888]">
+          <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-[#071528] border border-white/[0.08] rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+            <p className="text-[10px] font-mono text-[#AFBCD5]/70">
               Streak Freeze &mdash; protects your streak if you miss a day
             </p>
-            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#1a1a2e] border-l border-t border-[#2a2a3e] rotate-45" />
+            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#071528] border-l border-t border-white/[0.08] rotate-45" />
           </div>
         </div>
       )}

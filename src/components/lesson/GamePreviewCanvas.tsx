@@ -38,7 +38,7 @@ export default function GamePreviewCanvas() {
     }
 
     // Draw grid
-    ctx.strokeStyle = "#1a1a2e";
+    ctx.strokeStyle = "#071528";
     ctx.lineWidth = 0.5;
     for (let x = 0; x < canvas.width; x += 50) {
       ctx.beginPath();

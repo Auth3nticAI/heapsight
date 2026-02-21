@@ -65,7 +65,7 @@ export default function UpgradeBanner({ completedCount, freeLimit }: UpgradeBann
               {Math.min(completedCount, freeLimit)}/{freeLimit}
             </span>
           </div>
-          <div className="w-full bg-[#1a1a2e] rounded-full h-2 overflow-hidden">
+          <div className="w-full bg-white/[0.05] rounded-full h-2 overflow-hidden">
             <div
               className={`h-2 rounded-full transition-all duration-700 ${
                 isNearLimit
@@ -86,14 +86,14 @@ export default function UpgradeBanner({ completedCount, freeLimit }: UpgradeBann
 
         {/* Feature highlights */}
         <div className="grid grid-cols-2 gap-2 mb-4">
-          <div className="flex items-center gap-2 bg-[#0a0a0f]/50 rounded-lg p-2.5 border border-[#1a1a2e]">
+          <div className="flex items-center gap-2 bg-[#040B10]/50 rounded-lg p-2.5 border border-white/[0.05]">
             <BrainIcon className="h-4 w-4 text-[#a855f7] shrink-0" />
             <div>
               <p className="text-[10px] font-semibold text-white">AI Tutor</p>
               <p className="text-[8px] font-mono text-[#666]">Error explanations</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 bg-[#0a0a0f]/50 rounded-lg p-2.5 border border-[#1a1a2e]">
+          <div className="flex items-center gap-2 bg-[#040B10]/50 rounded-lg p-2.5 border border-white/[0.05]">
             <RocketIcon className="h-4 w-4 text-primary shrink-0" />
             <div>
               <p className="text-[10px] font-semibold text-white">100 Lessons/Path</p>

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --background: #1a1a2e;
+  --background: #040B10;
   --foreground: #e0e0e0;
 }
 
@@ -92,7 +92,7 @@ pre[class*="language-"] {
 }
 
 ::-webkit-scrollbar-track {
-  background: #22223a;
+  background: #071528;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -125,7 +125,7 @@ button:focus-visible,
 a:focus-visible,
 [role="tab"]:focus-visible,
 [role="button"]:focus-visible {
-  outline: 2px solid #00ff88;
+  outline: 2px solid #246BFD;
   outline-offset: 2px;
   border-radius: 4px;
 }

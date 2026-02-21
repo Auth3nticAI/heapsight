@@ -89,7 +89,7 @@ export default function LeaderboardPreview() {
 
   if (loading) {
     return (
-      <div className="rounded-xl border border-[#1a1a2e] bg-surface p-4">
+      <div className="rounded-xl border border-white/[0.05] bg-[#071528] p-4">
         <div className="flex items-center gap-2 mb-3">
           <TrophyIcon className="h-4 w-4 text-[#fbbf24]" />
           <h3 className="text-sm font-semibold text-white">Top Learners</h3>
@@ -102,7 +102,7 @@ export default function LeaderboardPreview() {
   if (topThree.length === 0) return null;
 
   return (
-    <div className="rounded-xl border border-[#1a1a2e] bg-surface p-4">
+    <div className="rounded-xl border border-white/[0.05] bg-[#071528] p-4">
       {/* User rank pill if top 3 */}
       {myRank && myRank <= 3 && (
         <div className="mb-3 px-3 py-2 rounded-lg bg-gradient-to-r from-[#1a1a0e]/60 to-[#1a160e]/60 border border-[#fbbf24]/20 flex items-center gap-2">
@@ -139,7 +139,7 @@ export default function LeaderboardPreview() {
             className={`flex items-center gap-2.5 p-2.5 rounded-lg ${
               leader.rank <= 3
                 ? "bg-gradient-to-r from-[#1a1a0e]/40 to-transparent"
-                : "bg-[#0d0d1a]"
+                : "bg-[#040B10]"
             }`}
           >
             <span className="text-lg w-6 text-center shrink-0">
@@ -161,7 +161,7 @@ export default function LeaderboardPreview() {
 
       {/* User's rank if not in top 3 */}
       {myRank && myRank > 3 && (
-        <div className="mt-3 pt-3 border-t border-[#1a1a2e]">
+        <div className="mt-3 pt-3 border-t border-white/[0.05]">
           <p className="text-[10px] text-[#888] text-center font-mono">
             You&apos;re ranked <span className="text-white font-semibold">#{myRank}</span> this week
           </p>

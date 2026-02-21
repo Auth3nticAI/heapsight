@@ -120,9 +120,9 @@ export default function ReplayController({
     ((currentTime - REPLAY_START) / REPLAY_DURATION) * 100;
 
   return (
-    <div className="w-full bg-surface rounded-lg border border-[#1a1a2e] p-4">
+    <div className="w-full bg-[#071528] rounded-lg border border-white/[0.05] p-4">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-mono text-[#666] uppercase tracking-wider">
+        <h3 className="text-sm font-mono text-[#AFBCD5]/50 uppercase tracking-wider">
           Crash Replay
         </h3>
         <span className="text-xs font-mono text-warning">
@@ -132,7 +132,7 @@ export default function ReplayController({
 
       {/* Timeline bar */}
       <div className="relative mb-2">
-        <div className="h-2 bg-[#1a1a2e] rounded-full overflow-hidden">
+        <div className="h-2 bg-white/[0.05] rounded-full overflow-hidden">
           <div
             className="h-full rounded-full transition-all duration-75"
             style={{
@@ -194,7 +194,7 @@ export default function ReplayController({
       <div className="flex items-center justify-center gap-3">
         <button
           onClick={stepBackward}
-          className="w-8 h-8 rounded bg-[#1a1a2e] border border-[#2a2a3e] text-[#666] hover:text-white hover:border-[#444] transition-colors flex items-center justify-center text-xs font-mono"
+          className="w-8 h-8 rounded bg-white/[0.05] border border-white/[0.08] text-[#AFBCD5]/50 hover:text-white hover:border-white/[0.15] transition-colors flex items-center justify-center text-xs font-mono"
         >
           &lt;
         </button>
@@ -208,14 +208,14 @@ export default function ReplayController({
 
         <button
           onClick={stepForward}
-          className="w-8 h-8 rounded bg-[#1a1a2e] border border-[#2a2a3e] text-[#666] hover:text-white hover:border-[#444] transition-colors flex items-center justify-center text-xs font-mono"
+          className="w-8 h-8 rounded bg-white/[0.05] border border-white/[0.08] text-[#AFBCD5]/50 hover:text-white hover:border-white/[0.15] transition-colors flex items-center justify-center text-xs font-mono"
         >
           &gt;
         </button>
 
         {/* Timestamp */}
         <span className="ml-4 text-sm font-mono tabular-nums">
-          <span className="text-[#666]">T+</span>
+          <span className="text-[#AFBCD5]/50">T+</span>
           <span
             className={currentTime >= 6.0 ? "text-danger" : "text-[#e0e0e0]"}
           >

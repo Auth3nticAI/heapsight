@@ -100,7 +100,7 @@ export default function HintSystem({
       {availableHintLevel > 0 && !showHint && (
         <button
           onClick={() => handleShowHint(nextLevel)}
-          className="flex items-center gap-2 text-xs font-mono text-gray-500 hover:text-warning border border-[#ffffff10] hover:border-warning/30 bg-[#09091a] rounded-xl px-3 py-2 transition-all"
+          className="flex items-center gap-2 text-xs font-mono text-[#AFBCD5]/60 hover:text-warning border border-white/[0.08] hover:border-warning/30 bg-[#071528] rounded-xl px-3 py-2 transition-all"
         >
           <svg
             width="14"
@@ -145,7 +145,7 @@ export default function HintSystem({
               <span className="text-xs font-mono text-warning">
                 Hint {currentHintLevel}/{hints.length}
               </span>
-              <span className="text-[9px] font-mono text-[#555]">
+              <span className="text-[9px] font-mono text-[#AFBCD5]/50">
                 {currentHintLevel === 1 && "Gentle nudge"}
                 {currentHintLevel === 2 && "More guidance"}
                 {currentHintLevel === 3 && "Showing the way"}
@@ -153,19 +153,19 @@ export default function HintSystem({
             </div>
             <button
               onClick={() => setShowHint(false)}
-              className="text-[#555] hover:text-white text-sm leading-none transition-colors"
+              className="text-[#AFBCD5]/50 hover:text-white text-sm leading-none transition-colors"
               aria-label="Close hint"
             >
               &times;
             </button>
           </div>
 
-          <div className="text-xs font-mono text-[#ccc] leading-relaxed bg-[#060610] border border-[#ffffff10] rounded-lg p-2.5">
+          <div className="text-xs font-mono text-[#AFBCD5] leading-relaxed bg-[#040B10] border border-white/[0.08] rounded-lg p-2.5">
             {currentHint.hint_text}
           </div>
 
           {currentHint.hint_code && (
-            <pre className="text-xs font-mono text-[#e0e0e0] bg-[#060610] border border-[#ffffff10] rounded-lg p-2.5 overflow-x-auto">
+            <pre className="text-xs font-mono text-[#e0e0e0] bg-[#040B10] border border-white/[0.08] rounded-lg p-2.5 overflow-x-auto">
               <code>{currentHint.hint_code}</code>
             </pre>
           )}
@@ -182,7 +182,7 @@ export default function HintSystem({
               )}
             <button
               onClick={() => setShowHint(false)}
-              className="text-[10px] font-mono text-[#555] hover:text-[#999] transition-colors"
+              className="text-[10px] font-mono text-[#AFBCD5]/50 hover:text-[#999] transition-colors"
             >
               Got it
             </button>

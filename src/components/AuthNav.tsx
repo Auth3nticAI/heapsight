@@ -52,8 +52,8 @@ export default function AuthNav({ variant = "dark" }: AuthNavProps) {
         href="/login"
         className={`px-3 py-1.5 border rounded-lg text-xs font-mono transition-colors ${
           variant === "dark"
-            ? "border-[#2a2a3e] text-[#888] hover:border-primary/40 hover:text-white"
-            : "border-[#ddd] text-[#666] hover:border-primary hover:text-black"
+            ? "border-white/[0.08] text-[#AFBCD5]/70 hover:border-primary/40 hover:text-white"
+            : "border-[#ddd] text-[#AFBCD5]/50 hover:border-primary hover:text-black"
         }`}
       >
         Sign In
@@ -76,9 +76,9 @@ export default function AuthNav({ variant = "dark" }: AuthNavProps) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-56 bg-surface border border-[#2a2a3e] rounded-xl shadow-xl z-50 overflow-hidden">
+        <div className="absolute right-0 top-full mt-2 w-56 bg-[#071528] border border-white/[0.08] rounded-xl shadow-xl z-50 overflow-hidden">
           {/* User info */}
-          <div className="px-4 py-3 border-b border-[#1a1a2e]">
+          <div className="px-4 py-3 border-b border-white/[0.05]">
             <p className="text-xs font-mono text-white truncate">{user.email}</p>
           </div>
 
@@ -87,17 +87,17 @@ export default function AuthNav({ variant = "dark" }: AuthNavProps) {
             <Link
               href="/learn"
               onClick={() => setOpen(false)}
-              className="block px-4 py-2 text-xs font-mono text-[#888] hover:bg-[#1a1a2e] hover:text-white transition-colors"
+              className="block px-4 py-2 text-xs font-mono text-[#AFBCD5]/70 hover:bg-white/[0.05] hover:text-white transition-colors"
             >
               Dashboard
             </Link>
           </div>
 
           {/* Sign out */}
-          <div className="border-t border-[#1a1a2e] py-1">
+          <div className="border-t border-white/[0.05] py-1">
             <button
               onClick={handleSignOut}
-              className="w-full text-left px-4 py-2 text-xs font-mono text-[#666] hover:bg-danger/10 hover:text-danger transition-colors"
+              className="w-full text-left px-4 py-2 text-xs font-mono text-[#AFBCD5]/50 hover:bg-danger/10 hover:text-danger transition-colors"
             >
               Sign Out
             </button>

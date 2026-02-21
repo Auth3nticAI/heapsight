@@ -186,7 +186,7 @@ export default function LearnPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-sm font-mono text-[#555] animate-pulse">Loading lessons...</p>
+        <p className="text-sm font-mono text-[#AFBCD5]/50 animate-pulse">Loading lessons...</p>
       </div>
     );
   }
@@ -203,25 +203,25 @@ export default function LearnPage() {
   return (
     <>
       {/* ─── Header Bar ─────────────────────────────────────────────── */}
-      <header className="border-b border-[#ffffff08] px-4 sm:px-6 py-4">
+      <header className="border-b border-white/[0.05] px-4 sm:px-6 py-4">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="lg:hidden md:pl-12">
             <h1 className="text-xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">HeapSight</h1>
-            <p className="text-xs text-[#555] font-mono mt-0.5">
+            <p className="text-xs text-[#AFBCD5]/50 font-mono mt-0.5">
               Learn C++ by Building {template ? TEMPLATE_LABELS[template] || "a Project" : "a Project"}
             </p>
           </div>
           <div className="hidden lg:block">
             <h2 className="text-xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">Learn</h2>
-            <p className="text-xs text-[#555] font-mono mt-0.5">
+            <p className="text-xs text-[#AFBCD5]/50 font-mono mt-0.5">
               {template ? TEMPLATE_LABELS[template] : "Select a path"}
             </p>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
-            <div className="flex items-center gap-1.5 bg-[#ffffff08] px-3 py-1.5 rounded-full border border-[#ffffff10]">
+            <div className="flex items-center gap-1.5 bg-white/[0.05] px-3 py-1.5 rounded-full border border-white/[0.08]">
               <ZapIcon className="h-4 w-4 text-[#fbbf24]" />
               <span className="text-sm font-mono font-bold text-[#fbbf24]">{totalXp}</span>
-              <span className="text-[10px] font-mono text-gray-500">XP</span>
+              <span className="text-[10px] font-mono text-[#AFBCD5]/60">XP</span>
             </div>
             <StreakDisplay
               streakCount={streak?.current_streak || 0}
@@ -233,13 +233,13 @@ export default function LearnPage() {
               <div className="relative w-9 h-9">
                 <svg className="w-9 h-9 -rotate-90" viewBox="0 0 36 36">
                   <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#ffffff10" strokeWidth="3" />
-                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#00ff88" strokeWidth="3" strokeDasharray={`${(completedCount / totalLessons) * 100}, 100`} />
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#246BFD" strokeWidth="3" strokeDasharray={`${(completedCount / totalLessons) * 100}, 100`} />
                 </svg>
-                <span className="absolute inset-0 flex items-center justify-center text-[10px] font-mono text-[#888]">
+                <span className="absolute inset-0 flex items-center justify-center text-[10px] font-mono text-[#AFBCD5]/70">
                   {Math.round((completedCount / totalLessons) * 100)}%
                 </span>
               </div>
-              <span className="text-[10px] font-mono text-[#555]">{completedCount}/{totalLessons}</span>
+              <span className="text-[10px] font-mono text-[#AFBCD5]/50">{completedCount}/{totalLessons}</span>
             </div>
           </div>
         </div>
@@ -253,13 +253,13 @@ export default function LearnPage() {
           {/* Mobile-only: compact daily goal banner */}
           <div className="lg:hidden mb-4">
             {!completedToday ? (
-              <div className="flex items-center gap-3 p-3 rounded-xl border border-[#ffffff10] bg-[#09091a]">
-                <div className="h-8 w-8 rounded-full bg-[#ffffff08] flex items-center justify-center shrink-0">
-                  <TargetIcon className="h-4 w-4 text-[#60a5fa]" />
+              <div className="flex items-center gap-3 p-3 rounded-xl border border-white/[0.08] bg-[#071528]">
+                <div className="h-8 w-8 rounded-full bg-white/[0.05] flex items-center justify-center shrink-0">
+                  <TargetIcon className="h-4 w-4 text-[#246BFD]" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-semibold text-white">Daily Goal: 0/1</p>
-                  <p className="text-[9px] font-mono text-[#666] truncate">Complete 1 lesson for +50 XP</p>
+                  <p className="text-[9px] font-mono text-[#AFBCD5]/50 truncate">Complete 1 lesson for +50 XP</p>
                 </div>
                 {streak && streak.current_streak > 0 && (
                   <div className="flex items-center gap-1 shrink-0">
@@ -269,9 +269,9 @@ export default function LearnPage() {
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-3 p-3 rounded-xl border border-teal-500/20 bg-teal-900/10">
-                <div className="h-8 w-8 rounded-full bg-teal-500/20 flex items-center justify-center shrink-0">
-                  <span className="text-teal-400 text-sm">{"\u2713"}</span>
+              <div className="flex items-center gap-3 p-3 rounded-xl border border-[#246BFD]/20 bg-[#246BFD]/10">
+                <div className="h-8 w-8 rounded-full bg-[#246BFD]/20 flex items-center justify-center shrink-0">
+                  <span className="text-[#246BFD] text-sm">{"\u2713"}</span>
                 </div>
                 <p className="text-xs font-semibold text-white">Daily Goal Complete!</p>
               </div>
@@ -288,7 +288,7 @@ export default function LearnPage() {
                 {template && (() => {
                   const diff = getPathDifficulty(template);
                   return (
-                    <span className="flex items-center gap-1.5 text-[9px] font-mono text-gray-400 bg-[#ffffff08] px-2 py-0.5 rounded-full border border-[#ffffff10]">
+                    <span className="flex items-center gap-1.5 text-[9px] font-mono text-[#AFBCD5] bg-white/[0.05] px-2 py-0.5 rounded-full border border-white/[0.08]">
                       <span className="inline-flex gap-0.5">
                         {Array.from({ length: 4 }, (_, i) => (
                           <svg
@@ -308,12 +308,12 @@ export default function LearnPage() {
                   );
                 })()}
               </div>
-              <p className="text-xs text-[#666] font-mono">
+              <p className="text-xs text-[#AFBCD5]/50 font-mono">
                 100 lessons &middot; {userTier === "pro" ? "all unlocked" : `${freeCount} free`} &middot; Each lesson: concept + {isCrawlerPath ? "crawler builder" : "game builder"}
               </p>
             </div>
             {template && (
-              <Link href="/paths" className="text-[10px] font-mono bg-teal-600/10 text-teal-400 px-2.5 py-1 rounded-lg border border-teal-500/20 hover:bg-teal-600/20 transition-colors shrink-0">
+              <Link href="/paths" className="text-[10px] font-mono bg-[#246BFD]/10 text-[#246BFD] px-2.5 py-1 rounded-lg border border-[#246BFD]/20 hover:bg-[#246BFD]/20 transition-colors shrink-0">
                 {TEMPLATE_LABELS[template]} &rarr;
               </Link>
             )}

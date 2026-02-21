@@ -160,7 +160,7 @@ export default function Leaderboard() {
   const MEDALS = ["\uD83E\uDD47", "\uD83E\uDD48", "\uD83E\uDD49"];
 
   return (
-    <div className="rounded-xl border border-[#1a1a2e] bg-surface p-4 sm:p-6">
+    <div className="rounded-xl border border-white/[0.05] bg-[#071528] p-4 sm:p-6">
       {/* Header */}
       <div className="flex items-center gap-2 mb-5">
         <TrophyIcon className="h-5 w-5 text-[#fbbf24]" />
@@ -176,7 +176,7 @@ export default function Leaderboard() {
             className={`px-3 py-1.5 text-xs font-mono rounded-lg border transition-colors min-h-[44px] ${
               tab === t.id
                 ? "bg-primary/10 text-primary border-primary/30"
-                : "bg-[#1a1a2e] text-[#888] border-[#2a2a3e] hover:border-[#3a3a4e]"
+                : "bg-white/[0.05] text-[#AFBCD5]/70 border-white/[0.08] hover:border-white/[0.15]"
             }`}
           >
             {t.label}
@@ -186,11 +186,11 @@ export default function Leaderboard() {
 
       {/* List */}
       {loading ? (
-        <div className="text-center text-[#555] py-8 text-sm font-mono animate-pulse">
+        <div className="text-center text-[#AFBCD5]/50 py-8 text-sm font-mono animate-pulse">
           Loading...
         </div>
       ) : leaders.length === 0 ? (
-        <div className="text-center text-[#555] py-8 text-sm font-mono">
+        <div className="text-center text-[#AFBCD5]/50 py-8 text-sm font-mono">
           No data yet. Be the first!
         </div>
       ) : (
@@ -201,7 +201,7 @@ export default function Leaderboard() {
               className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
                 leader.rank <= 3
                   ? "bg-gradient-to-r from-[#1a1a0e]/60 to-[#1a160e]/60 border border-[#fbbf24]/20"
-                  : "bg-[#0d0d1a] hover:bg-[#111118]"
+                  : "bg-[#040B10] hover:bg-white/[0.04]"
               }`}
             >
               {/* Rank */}
@@ -209,7 +209,7 @@ export default function Leaderboard() {
                 {leader.rank <= 3 ? (
                   <span className="text-2xl">{MEDALS[leader.rank - 1]}</span>
                 ) : (
-                  <span className="text-lg font-bold text-[#555] font-mono">
+                  <span className="text-lg font-bold text-[#AFBCD5]/50 font-mono">
                     {leader.rank}
                   </span>
                 )}
@@ -235,7 +235,7 @@ export default function Leaderboard() {
                     <span className="text-base font-bold text-[#f97316] font-mono">
                       {leader.score}
                     </span>
-                    <span className="text-[9px] text-[#888] font-mono">
+                    <span className="text-[9px] text-[#AFBCD5]/70 font-mono">
                       days
                     </span>
                   </>
@@ -245,7 +245,7 @@ export default function Leaderboard() {
                     <span className="text-base font-bold text-[#fbbf24] font-mono">
                       {leader.score}
                     </span>
-                    <span className="text-[9px] text-[#888] font-mono">XP</span>
+                    <span className="text-[9px] text-[#AFBCD5]/70 font-mono">XP</span>
                   </>
                 )}
               </div>
@@ -256,8 +256,8 @@ export default function Leaderboard() {
 
       {/* User's rank if not in top 10 */}
       {myRank && myRank > 10 && (
-        <div className="mt-4 pt-4 border-t border-[#1a1a2e]">
-          <p className="text-sm text-[#888] text-center font-mono">
+        <div className="mt-4 pt-4 border-t border-white/[0.05]">
+          <p className="text-sm text-[#AFBCD5]/70 text-center font-mono">
             You&apos;re ranked #{myRank}
           </p>
         </div>

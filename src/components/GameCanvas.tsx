@@ -105,11 +105,11 @@ export default function GameCanvas({
         ref={canvasRef}
         width={CANVAS_W}
         height={CANVAS_H}
-        className={`rounded-lg border border-[#1a1a2e] ${
+        className={`rounded-lg border border-white/[0.05] ${
           stateRef.current.phase === "crashing" ? "animate-shake" : ""
         }`}
         style={{
-          background: "#0d0d1a",
+          background: "#040B10",
           imageRendering: "pixelated",
         }}
       />

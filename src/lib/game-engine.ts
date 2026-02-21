@@ -265,7 +265,7 @@ export function renderGame(
   const h = CANVAS_H;
 
   // Clear
-  ctx.fillStyle = "#0d0d1a";
+  ctx.fillStyle = "#040B10";
   ctx.fillRect(0, 0, w, h);
 
   if (state.phase === "crashing" || state.phase === "frozen") {
@@ -369,7 +369,7 @@ function renderCrashEffect(
   // Phase 1: Screen tear (0 - 0.3)
   if (p < 0.3) {
     const intensity = p / 0.3;
-    ctx.fillStyle = "#0d0d1a";
+    ctx.fillStyle = "#040B10";
     ctx.fillRect(0, 0, w, h);
 
     // Horizontal tears
@@ -386,7 +386,7 @@ function renderCrashEffect(
       const x = rng() * w;
       const y = rng() * h;
       const s = 2 + rng() * 8;
-      const colors = ["#ff0040", "#00ff88", "#ffaa00", "#0d0d1a", "#ffffff"];
+      const colors = ["#ff0040", "#00ff88", "#ffaa00", "#040B10", "#ffffff"];
       ctx.fillStyle = colors[Math.floor(rng() * colors.length)];
       ctx.fillRect(x, y, s, s);
     }

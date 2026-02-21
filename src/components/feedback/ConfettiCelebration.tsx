@@ -23,7 +23,7 @@ const MESSAGES: Record<CelebrationType, { text: string; gradient: string }> = {
   },
   daily_goal: {
     text: "Daily Goal Complete!",
-    gradient: "from-primary to-[#00cc6e]",
+    gradient: "from-[#246BFD] to-[#0040C3]",
   },
 };
 

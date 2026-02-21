@@ -108,16 +108,16 @@ export default function OnboardingPage() {
         {/* Progress bar */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-mono text-[#555]">
+            <span className="text-[10px] font-mono text-[#AFBCD5]/50">
               Step {step} of 2
             </span>
-            <span className="text-[10px] font-mono text-[#555]">
+            <span className="text-[10px] font-mono text-[#AFBCD5]/50">
               {step === 1 ? "50" : "100"}%
             </span>
           </div>
-          <div className="w-full h-1.5 bg-[#1a1a2e] rounded-full overflow-hidden">
+          <div className="w-full h-1.5 bg-white/[0.05] rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-primary to-[#00cc6e] rounded-full transition-all duration-500"
+              className="h-full bg-gradient-to-r from-[#246BFD] to-[#0040C3] rounded-full transition-all duration-500"
               style={{ width: step === 1 ? "50%" : "100%" }}
             />
           </div>
@@ -131,7 +131,7 @@ export default function OnboardingPage() {
               <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
                 Welcome to HeapSight
               </h1>
-              <p className="text-base text-[#888] max-w-xl mx-auto">
+              <p className="text-base text-[#AFBCD5]/70 max-w-xl mx-auto">
                 Learn C++ by building real games and dungeons. Earn achievements,
                 compete on leaderboards, and master 4 industry paradigms.
               </p>
@@ -158,20 +158,20 @@ export default function OnboardingPage() {
               ].map((f) => (
                 <div
                   key={f.title}
-                  className="p-4 rounded-xl border border-[#2a2a3e] bg-surface text-center"
+                  className="p-4 rounded-xl border border-white/[0.08] bg-[#071528] text-center"
                 >
                   <div className="text-2xl mb-2">{f.icon}</div>
                   <h3 className="text-sm font-semibold text-white mb-0.5">
                     {f.title}
                   </h3>
-                  <p className="text-[10px] font-mono text-[#666]">{f.desc}</p>
+                  <p className="text-[10px] font-mono text-[#AFBCD5]/50">{f.desc}</p>
                 </div>
               ))}
             </div>
 
             <button
               onClick={() => setStep(2)}
-              className="w-full py-3.5 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors text-sm min-h-[48px]"
+              className="w-full py-3.5 bg-gradient-to-r from-[#246BFD] to-[#0040C3] text-white font-bold rounded-lg hover:opacity-90 transition-colors text-sm min-h-[48px]"
             >
               Get Started &rarr;
             </button>
@@ -185,7 +185,7 @@ export default function OnboardingPage() {
               <h1 className="text-2xl font-bold text-white mb-2">
                 Choose Your First Path
               </h1>
-              <p className="text-sm text-[#888]">
+              <p className="text-sm text-[#AFBCD5]/70">
                 Don&apos;t worry &mdash; you can switch between all 4 paths
                 anytime.
               </p>
@@ -193,7 +193,7 @@ export default function OnboardingPage() {
 
             {/* Game Development */}
             <div className="mb-6">
-              <h3 className="text-xs font-mono text-[#555] uppercase tracking-wider mb-3">
+              <h3 className="text-xs font-mono text-[#AFBCD5]/50 uppercase tracking-wider mb-3">
                 Game Development
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -207,7 +207,7 @@ export default function OnboardingPage() {
                         className={`p-5 rounded-xl border-2 transition-all text-left min-h-[140px] touch-manipulation ${
                           selected === template.id
                             ? "border-primary bg-primary/10 shadow-lg shadow-primary/10"
-                            : "border-[#2a2a3e] bg-surface hover:border-[#3a3a4e]"
+                            : "border-white/[0.08] bg-[#071528] hover:border-white/[0.15]"
                         }`}
                       >
                         <div className="flex items-start gap-3">
@@ -223,7 +223,7 @@ export default function OnboardingPage() {
                                 {details.tagline}
                               </p>
                             )}
-                            <p className="text-[10px] text-[#888] mb-2 line-clamp-2">
+                            <p className="text-[10px] text-[#AFBCD5]/70 mb-2 line-clamp-2">
                               {template.description}
                             </p>
                             <div className="flex items-center gap-2 flex-wrap">
@@ -239,7 +239,7 @@ export default function OnboardingPage() {
                                 {template.difficulty}
                               </span>
                               {details && (
-                                <span className="text-[9px] font-mono text-[#555]">
+                                <span className="text-[9px] font-mono text-[#AFBCD5]/50">
                                   {details.bestFor}
                                 </span>
                               )}
@@ -255,7 +255,7 @@ export default function OnboardingPage() {
 
             {/* Dungeon Crawler */}
             <div className="mb-8">
-              <h3 className="text-xs font-mono text-[#555] uppercase tracking-wider mb-3">
+              <h3 className="text-xs font-mono text-[#AFBCD5]/50 uppercase tracking-wider mb-3">
                 Dungeon Crawler
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -269,7 +269,7 @@ export default function OnboardingPage() {
                         className={`p-5 rounded-xl border-2 transition-all text-left min-h-[140px] touch-manipulation ${
                           selected === template.id
                             ? "border-primary bg-primary/10 shadow-lg shadow-primary/10"
-                            : "border-[#2a2a3e] bg-surface hover:border-[#3a3a4e]"
+                            : "border-white/[0.08] bg-[#071528] hover:border-white/[0.15]"
                         }`}
                       >
                         <div className="flex items-start gap-3">
@@ -285,7 +285,7 @@ export default function OnboardingPage() {
                                 {details.tagline}
                               </p>
                             )}
-                            <p className="text-[10px] text-[#888] mb-2 line-clamp-2">
+                            <p className="text-[10px] text-[#AFBCD5]/70 mb-2 line-clamp-2">
                               {template.description}
                             </p>
                             <div className="flex items-center gap-2 flex-wrap">
@@ -301,7 +301,7 @@ export default function OnboardingPage() {
                                 {template.difficulty}
                               </span>
                               {details && (
-                                <span className="text-[9px] font-mono text-[#555]">
+                                <span className="text-[9px] font-mono text-[#AFBCD5]/50">
                                   {details.bestFor}
                                 </span>
                               )}
@@ -318,14 +318,14 @@ export default function OnboardingPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => setStep(1)}
-                className="px-4 py-3 border border-[#2a2a3e] text-[#888] text-sm font-mono rounded-lg hover:border-[#3a3a4e] hover:text-white transition-colors min-h-[48px]"
+                className="px-4 py-3 border border-white/[0.08] text-[#AFBCD5]/70 text-sm font-mono rounded-lg hover:border-white/[0.15] hover:text-white transition-colors min-h-[48px]"
               >
                 &larr; Back
               </button>
               <button
                 onClick={handleContinue}
                 disabled={!selected || loading}
-                className="flex-1 py-3.5 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm min-h-[48px]"
+                className="flex-1 py-3.5 bg-gradient-to-r from-[#246BFD] to-[#0040C3] text-white font-bold rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm min-h-[48px]"
               >
                 {loading
                   ? "Setting up..."

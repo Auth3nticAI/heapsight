@@ -75,24 +75,24 @@ function LoginForm() {
             HeapSight
           </Link>
           <h2 className="text-lg font-semibold text-white mt-3">Welcome Back</h2>
-          <p className="text-sm text-[#666] mt-1">
+          <p className="text-sm text-[#AFBCD5]/50 mt-1">
             Pick up right where you left off
           </p>
         </div>
 
         <form
           onSubmit={handleLogin}
-          className="bg-surface border border-[#1a1a2e] rounded-xl p-6 space-y-4"
+          className="bg-surface border border-white/[0.05] rounded-xl p-6 space-y-4"
         >
           <div>
-            <label className="block text-xs font-mono text-[#888] mb-1.5">
+            <label className="block text-xs font-mono text-[#AFBCD5]/70 mb-1.5">
               Email
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2.5 bg-[#0d0d1a] border border-[#2a2a3e] rounded-lg text-white text-base sm:text-sm font-mono placeholder:text-[#444] focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full px-3 py-2.5 bg-[#040B10] border border-white/[0.08] rounded-lg text-white text-base sm:text-sm font-mono placeholder:text-[#AFBCD5]/30 focus:outline-none focus:border-primary/50 transition-colors"
               placeholder="you@example.com"
               required
               autoComplete="email"
@@ -101,12 +101,12 @@ function LoginForm() {
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-mono text-[#888]">
+              <label className="block text-xs font-mono text-[#AFBCD5]/70">
                 Password
               </label>
               <Link
                 href="/reset-password"
-                className="text-[10px] font-mono text-[#555] hover:text-primary transition-colors"
+                className="text-[10px] font-mono text-[#AFBCD5]/50 hover:text-primary transition-colors"
               >
                 Forgot password?
               </Link>
@@ -116,7 +116,7 @@ function LoginForm() {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2.5 pr-10 bg-[#0d0d1a] border border-[#2a2a3e] rounded-lg text-white text-base sm:text-sm font-mono placeholder:text-[#444] focus:outline-none focus:border-primary/50 transition-colors"
+                className="w-full px-3 py-2.5 pr-10 bg-[#040B10] border border-white/[0.08] rounded-lg text-white text-base sm:text-sm font-mono placeholder:text-[#AFBCD5]/30 focus:outline-none focus:border-primary/50 transition-colors"
                 placeholder="••••••••"
                 required
                 minLength={6}
@@ -125,7 +125,7 @@ function LoginForm() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] hover:text-[#888] transition-colors text-xs font-mono"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#AFBCD5]/50 hover:text-[#AFBCD5]/70 transition-colors text-xs font-mono"
               >
                 {showPassword ? "HIDE" : "SHOW"}
               </button>
@@ -141,7 +141,7 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 bg-primary text-black font-semibold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2 min-h-[44px] touch-manipulation"
+            className="w-full py-2.5 bg-gradient-to-r from-[#246BFD] to-[#0040C3] text-white font-semibold rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2 min-h-[44px] touch-manipulation"
           >
             {loading && (
               <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
@@ -153,7 +153,7 @@ function LoginForm() {
           </button>
         </form>
 
-        <p className="text-center text-sm text-[#555] mt-4">
+        <p className="text-center text-sm text-[#AFBCD5]/50 mt-4">
           Don&apos;t have an account?{" "}
           <Link
             href="/signup"
@@ -166,7 +166,7 @@ function LoginForm() {
         <p className="text-center mt-6">
           <Link
             href="/"
-            className="text-xs text-[#444] hover:text-[#666] transition-colors"
+            className="text-xs text-[#AFBCD5]/40 hover:text-[#AFBCD5]/50 transition-colors"
           >
             &larr; Back to demo
           </Link>
@@ -181,7 +181,7 @@ export default function LoginPage() {
     <Suspense
       fallback={
         <main className="min-h-screen bg-background flex items-center justify-center">
-          <p className="text-sm font-mono text-[#555] animate-pulse">Loading...</p>
+          <p className="text-sm font-mono text-[#AFBCD5]/50 animate-pulse">Loading...</p>
         </main>
       }
     >

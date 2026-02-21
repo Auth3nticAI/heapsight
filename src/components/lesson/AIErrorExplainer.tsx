@@ -105,7 +105,7 @@ export default function AIErrorExplainer({
   // Free user: upgrade prompt
   if (userTier === "free" || showUpgrade) {
     return (
-      <div className="border border-[#a855f7]/20 bg-[#09091a] rounded-xl p-3">
+      <div className="border border-[#a855f7]/20 bg-[#071528] rounded-xl p-3">
         <div className="flex items-start gap-3">
           <div className="shrink-0">
             <svg
@@ -131,7 +131,7 @@ export default function AIErrorExplainer({
                 PRO
               </span>
             </div>
-            <p className="text-[10px] font-mono text-[#888] mb-2">
+            <p className="text-[10px] font-mono text-[#AFBCD5]/70 mb-2">
               Get instant, beginner-friendly explanations of every C++ error
               with specific fixes.
             </p>
@@ -149,7 +149,7 @@ export default function AIErrorExplainer({
 
   // Pro user
   return (
-    <div className="border border-[#a855f7]/20 bg-[#09091a] rounded-xl p-3 space-y-2">
+    <div className="border border-[#a855f7]/20 bg-[#071528] rounded-xl p-3 space-y-2">
       <div className="flex items-center gap-2">
         <svg
           width="14"
@@ -167,12 +167,12 @@ export default function AIErrorExplainer({
           PRO
         </span>
         {responseTime > 0 && (
-          <span className="text-[9px] font-mono text-[#555]">
+          <span className="text-[9px] font-mono text-[#AFBCD5]/50">
             {(responseTime / 1000).toFixed(1)}s
           </span>
         )}
         {remaining !== null && (
-          <span className="text-[9px] font-mono text-[#555] ml-auto">
+          <span className="text-[9px] font-mono text-[#AFBCD5]/50 ml-auto">
             {remaining} left today
           </span>
         )}
@@ -196,7 +196,7 @@ export default function AIErrorExplainer({
 
       {explanation && (
         <>
-          <div className="text-xs font-mono text-[#ccc] leading-relaxed bg-[#060610] border border-[#ffffff10] rounded-lg p-2.5 whitespace-pre-wrap">
+          <div className="text-xs font-mono text-[#AFBCD5] leading-relaxed bg-[#040B10] border border-white/[0.08] rounded-lg p-2.5 whitespace-pre-wrap">
             {explanation}
           </div>
 
@@ -207,7 +207,7 @@ export default function AIErrorExplainer({
               </span>
             ) : (
               <>
-                <span className="text-[9px] font-mono text-[#555]">
+                <span className="text-[9px] font-mono text-[#AFBCD5]/50">
                   Was this helpful?
                 </span>
                 <button
@@ -220,7 +220,7 @@ export default function AIErrorExplainer({
                     height="14"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#00ff88"
+                    stroke="#9CD323"
                     strokeWidth="2"
                   >
                     <path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z" />

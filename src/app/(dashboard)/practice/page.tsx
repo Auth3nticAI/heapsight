@@ -74,17 +74,17 @@ export default function PracticePage() {
   return (
     <>
       {/* Header */}
-      <header className="border-b border-[#1a1a2e] px-4 sm:px-6 py-4">
+      <header className="border-b border-white/[0.05] px-4 sm:px-6 py-4">
         <div className="max-w-4xl mx-auto">
           <div className="lg:hidden md:pl-12">
             <h1 className="text-xl font-semibold text-white">Practice</h1>
-            <p className="text-xs text-[#666] font-mono mt-0.5">Quick drills &amp; challenges</p>
+            <p className="text-xs text-[#AFBCD5]/50 font-mono mt-0.5">Quick drills &amp; challenges</p>
           </div>
           <div className="hidden lg:flex items-center gap-3">
             <TargetIcon className="h-6 w-6 text-[#60a5fa]" />
             <div>
               <h1 className="text-xl font-semibold text-white">Practice</h1>
-              <p className="text-xs text-[#666] font-mono mt-0.5">
+              <p className="text-xs text-[#AFBCD5]/50 font-mono mt-0.5">
                 Sharpen your skills with daily quests and weekly challenges
               </p>
             </div>
@@ -97,12 +97,12 @@ export default function PracticePage() {
         <div className="mb-8 p-6 rounded-xl border border-[#60a5fa]/20 bg-gradient-to-br from-[#0e1a2e] to-[#121228] text-center">
           <div className="text-5xl mb-4">{"\uD83C\uDFAF"}</div>
           <h2 className="text-xl font-bold text-white mb-2">Practice Mode Coming Soon</h2>
-          <p className="text-sm text-[#888] font-mono max-w-md mx-auto mb-4">
+          <p className="text-sm text-[#AFBCD5]/70 font-mono max-w-md mx-auto mb-4">
             Daily quests, speed challenges, and code review exercises to reinforce your C++ skills.
           </p>
           <Link
             href="/learn"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-black font-semibold text-sm rounded-lg hover:bg-primary/90 transition-colors min-h-[44px] touch-manipulation"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#246BFD] to-[#0040C3] text-white font-semibold text-sm rounded-lg hover:opacity-90 transition-colors min-h-[44px] touch-manipulation"
           >
             Start a Lesson Instead &rarr;
           </Link>
@@ -113,18 +113,18 @@ export default function PracticePage() {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <h3 className="text-sm font-semibold text-white">Daily Quests</h3>
-              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#60a5fa]/20 text-[#60a5fa] border border-[#60a5fa]/30">
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#246BFD]/20 text-[#246BFD] border border-[#246BFD]/30">
                 COMING SOON
               </span>
             </div>
-            <span className="text-[9px] font-mono text-[#555]">Resets daily at midnight</span>
+            <span className="text-[9px] font-mono text-[#AFBCD5]/50">Resets daily at midnight</span>
           </div>
 
           <div className="space-y-3">
             {DAILY_QUESTS.map((quest) => (
               <div
                 key={quest.id}
-                className="flex items-center gap-4 p-4 rounded-xl border border-[#1a1a2e] bg-surface opacity-50"
+                className="flex items-center gap-4 p-4 rounded-xl border border-white/[0.05] bg-[#071528] opacity-50"
               >
                 <div className="text-2xl shrink-0">{quest.icon}</div>
                 <div className="flex-1 min-w-0">
@@ -140,11 +140,11 @@ export default function PracticePage() {
                       {quest.difficulty}
                     </span>
                   </div>
-                  <p className="text-xs text-[#666] font-mono mt-0.5">{quest.description}</p>
+                  <p className="text-xs text-[#AFBCD5]/50 font-mono mt-0.5">{quest.description}</p>
                 </div>
                 <div className="shrink-0 flex items-center gap-2">
                   <span className="text-xs font-mono text-[#fbbf24]">+{quest.xp} XP</span>
-                  <LockIcon className="h-4 w-4 text-[#555]" />
+                  <LockIcon className="h-4 w-4 text-[#AFBCD5]/50" />
                 </div>
               </div>
             ))}
@@ -160,7 +160,7 @@ export default function PracticePage() {
                 COMING SOON
               </span>
             </div>
-            <span className="text-[9px] font-mono text-[#555]">New challenge every Monday</span>
+            <span className="text-[9px] font-mono text-[#AFBCD5]/50">New challenge every Monday</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -171,7 +171,7 @@ export default function PracticePage() {
               >
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-3xl">{challenge.icon}</span>
-                  <div className="flex items-center gap-1 text-[9px] font-mono text-[#888]">
+                  <div className="flex items-center gap-1 text-[9px] font-mono text-[#AFBCD5]/70">
                     <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
                     </svg>
@@ -179,10 +179,10 @@ export default function PracticePage() {
                   </div>
                 </div>
                 <h4 className="text-sm font-bold text-white mb-1">{challenge.title}</h4>
-                <p className="text-xs font-mono text-[#666] mb-3">{challenge.description}</p>
+                <p className="text-xs font-mono text-[#AFBCD5]/50 mb-3">{challenge.description}</p>
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-mono font-bold text-[#fbbf24]">+{challenge.xp} XP</span>
-                  <LockIcon className="h-4 w-4 text-[#555]" />
+                  <LockIcon className="h-4 w-4 text-[#AFBCD5]/50" />
                 </div>
               </div>
             ))}

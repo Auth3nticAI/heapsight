@@ -108,7 +108,7 @@ export default function LessonTooltip({
       {show && (
         <div
           className={`
-            absolute z-50 w-[calc(100vw-24px)] sm:w-56 max-w-[224px] p-3 rounded-lg border border-[#2a2a3e] bg-[#0d0d1a]/95 backdrop-blur-sm
+            absolute z-50 w-[calc(100vw-24px)] sm:w-56 max-w-[224px] p-3 rounded-lg border border-white/[0.08] bg-[#040B10]/95 backdrop-blur-sm
             shadow-xl pointer-events-none
             ${position === "above" ? "bottom-full mb-3" : "top-full mt-3"}
             left-1/2
@@ -118,7 +118,7 @@ export default function LessonTooltip({
           {/* Arrow */}
           <div
             className={`
-              absolute left-1/2 -translate-x-1/2 w-2 h-2 bg-[#0d0d1a] border-[#2a2a3e] rotate-45
+              absolute left-1/2 -translate-x-1/2 w-2 h-2 bg-[#040B10] border-white/[0.08] rotate-45
               ${position === "above"
                 ? "bottom-[-5px] border-r border-b"
                 : "top-[-5px] border-l border-t"
@@ -127,19 +127,19 @@ export default function LessonTooltip({
           />
 
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-mono text-[#888]">Lesson {order}</span>
+            <span className="text-[10px] font-mono text-[#AFBCD5]/70">Lesson {order}</span>
             <span className={`text-[9px] font-mono font-bold ${statusColor}`}>{statusLabel}</span>
           </div>
 
           <h4 className="text-xs font-semibold text-white mb-1 leading-tight">{title}</h4>
-          <p className="text-[10px] text-[#888] leading-relaxed mb-2 line-clamp-2">{description}</p>
+          <p className="text-[10px] text-[#AFBCD5]/70 leading-relaxed mb-2 line-clamp-2">{description}</p>
 
           <div className="flex items-center gap-3 text-[9px] font-mono text-[#666]">
             <span>~{minutes}m</span>
             <span className="text-[#fbbf24]">+{xpReward} XP</span>
             <div className="flex items-center gap-1.5 ml-auto">
-              <div className={`w-1.5 h-1.5 rounded-full ${part1Done ? "bg-[#22c55e]" : "bg-[#2a2a3e]"}`} />
-              <div className={`w-1.5 h-1.5 rounded-full ${part2Done ? "bg-[#22c55e]" : "bg-[#2a2a3e]"}`} />
+              <div className={`w-1.5 h-1.5 rounded-full ${part1Done ? "bg-[#22c55e]" : "bg-white/[0.08]"}`} />
+              <div className={`w-1.5 h-1.5 rounded-full ${part2Done ? "bg-[#22c55e]" : "bg-white/[0.08]"}`} />
             </div>
           </div>
 

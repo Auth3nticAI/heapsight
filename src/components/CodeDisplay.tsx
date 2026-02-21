@@ -73,7 +73,7 @@ export default function CodeDisplay({ variant }: CodeDisplayProps) {
     <div className="w-full h-full flex flex-col">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <h3 className="text-sm font-mono text-[#666] uppercase tracking-wider">
+          <h3 className="text-sm font-mono text-[#AFBCD5]/50 uppercase tracking-wider">
             game.cpp
           </h3>
           {variant === "buggy" ? (
@@ -86,10 +86,10 @@ export default function CodeDisplay({ variant }: CodeDisplayProps) {
             </span>
           )}
         </div>
-        <span className="text-[10px] font-mono text-[#444]">read-only</span>
+        <span className="text-[10px] font-mono text-[#AFBCD5]/40">read-only</span>
       </div>
 
-      <div className="bg-[#0d0d1a] rounded-lg border border-[#1a1a2e] overflow-auto flex-1 p-4">
+      <div className="bg-[#040B10] rounded-lg border border-white/[0.05] overflow-auto flex-1 p-4">
         <pre className="!bg-transparent !p-0 !m-0 font-mono text-[13px] leading-[1.6]">
           <code>
             {lines.map((line, i) => {
@@ -103,7 +103,7 @@ export default function CodeDisplay({ variant }: CodeDisplayProps) {
                   className={`flex ${isHighlighted ? highlightClass : ""}`}
                   style={{ minHeight: "1.6em" }}
                 >
-                  <span className="select-none text-[#333] w-8 text-right pr-3 flex-shrink-0 text-[12px]">
+                  <span className="select-none text-[#AFBCD5]/20 w-8 text-right pr-3 flex-shrink-0 text-[12px]">
                     {lineNum}
                   </span>
                   <span

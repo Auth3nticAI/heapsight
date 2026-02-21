@@ -14,11 +14,11 @@ function renderMarkdown(md: string): string {
   const html = md
     // Code blocks
     .replace(/```(\w+)?\n([\s\S]*?)```/g, (_m, _lang, code) => {
-      return `<pre class="bg-[#060610] border border-[#ffffff10] rounded-lg p-3 my-3 overflow-x-auto"><code class="text-xs font-mono text-[#e0e0e0]">${escapeHtml(code.trim())}</code></pre>`;
+      return `<pre class="bg-[#040B10] border border-white/[0.08] rounded-lg p-3 my-3 overflow-x-auto"><code class="text-xs font-mono text-[#e0e0e0]">${escapeHtml(code.trim())}</code></pre>`;
     })
     // Inline code (escaped to prevent XSS)
     .replace(/`([^`]+)`/g, (_m, code) => {
-      return `<code class="bg-[#ffffff10] text-teal-400 px-1.5 py-0.5 rounded text-xs font-mono">${escapeHtml(code)}</code>`;
+      return `<code class="bg-[#ffffff10] text-[#246BFD] px-1.5 py-0.5 rounded text-xs font-mono">${escapeHtml(code)}</code>`;
     })
     // Headers
     .replace(
@@ -38,12 +38,12 @@ function renderMarkdown(md: string): string {
     // List items
     .replace(
       /^- (.+)$/gm,
-      '<li class="text-sm text-[#bbb] ml-4 list-disc mb-1">$1</li>'
+      '<li class="text-sm text-[#AFBCD5]/80 ml-4 list-disc mb-1">$1</li>'
     )
     // Paragraphs (lines that aren't already HTML)
     .replace(
       /^(?!<[hlupod])([\w"].+)$/gm,
-      '<p class="text-sm text-[#bbb] mb-[1.5em]">$1</p>'
+      '<p class="text-sm text-[#AFBCD5]/80 mb-[1.5em]">$1</p>'
     );
 
   return html;
@@ -71,9 +71,9 @@ export default function LessonInstructions({
   const hasMoreHints = activeHint < part.hints.length - 1;
 
   return (
-    <div className="h-full flex flex-col rounded-2xl border border-[#ffffff10] bg-[#09091a] overflow-hidden">
-      <div className="flex items-center justify-between px-3 py-1.5 bg-[#060610] border-b border-[#ffffff08]">
-        <span className="text-[10px] font-mono text-[#555] uppercase tracking-wider">
+    <div className="h-full flex flex-col rounded-2xl border border-white/[0.08] bg-[#071528] overflow-hidden">
+      <div className="flex items-center justify-between px-3 py-1.5 bg-[#040B10] border-b border-white/[0.05]">
+        <span className="text-[10px] font-mono text-[#AFBCD5]/50 uppercase tracking-wider">
           {part.type === "game_builder" ? "Game Builder" : "Instructions"}
         </span>
         <div className="flex items-center gap-1.5 overflow-x-auto max-w-[60%] scrollbar-none">
@@ -94,7 +94,7 @@ export default function LessonInstructions({
       />
 
       {/* Hints */}
-      <div className="border-t border-[#ffffff08] p-3">
+      <div className="border-t border-white/[0.05] p-3">
         {activeHint >= 0 && (
           <div className="space-y-2 mb-2">
             {part.hints.slice(0, activeHint + 1).map((hint, i) => (
@@ -110,7 +110,7 @@ export default function LessonInstructions({
         {hasMoreHints && (
           <button
             onClick={showNextHint}
-            className="text-xs font-mono text-[#555] hover:text-warning transition-colors min-h-[44px] py-2"
+            className="text-xs font-mono text-[#AFBCD5]/50 hover:text-warning transition-colors min-h-[44px] py-2"
           >
             {activeHint < 0 ? "Need a hint?" : "Show another hint"}
           </button>

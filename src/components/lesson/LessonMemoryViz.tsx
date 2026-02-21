@@ -48,10 +48,10 @@ function extractMemoryFromCode(code: string): MemorySlot[] {
 }
 
 const TYPE_COLORS: Record<MemorySlot["type"], { bg: string; border: string; label: string; value: string }> = {
-  empty: { bg: "#22223a", border: "#2e2e42", label: "#555", value: "#555" },
-  stack: { bg: "#1a3a2a", border: "#2d6b4f", label: "#E8E6EA", value: "#4ade80" },
+  empty: { bg: "#071528", border: "rgba(255,255,255,0.08)", label: "#AFBCD5", value: "#AFBCD5" },
+  stack: { bg: "rgba(156,211,35,0.08)", border: "rgba(156,211,35,0.3)", label: "#E8E6EA", value: "#9CD323" },
   heap: { bg: "#3a2a1a", border: "#6b4f2d", label: "#E8E6EA", value: "#fbbf24" },
-  pointer: { bg: "#2a2a4a", border: "#4f46e5", label: "#E8E6EA", value: "#818cf8" },
+  pointer: { bg: "rgba(36,107,253,0.08)", border: "rgba(36,107,253,0.3)", label: "#E8E6EA", value: "#246BFD" },
 };
 
 export default function LessonMemoryViz() {
@@ -60,12 +60,12 @@ export default function LessonMemoryViz() {
   const slots = useMemo(() => extractMemoryFromCode(code), [code]);
 
   return (
-    <div className="h-full flex flex-col rounded-2xl border border-[#ffffff10] bg-[#09091a] overflow-hidden">
-      <div className="flex items-center gap-2 px-3 py-1.5 bg-[#060610] border-b border-[#ffffff08]">
-        <span className="text-[10px] font-mono text-[#555] uppercase tracking-wider">
+    <div className="h-full flex flex-col rounded-2xl border border-white/[0.08] bg-[#071528] overflow-hidden">
+      <div className="flex items-center gap-2 px-3 py-1.5 bg-[#040B10] border-b border-white/[0.05]">
+        <span className="text-[10px] font-mono text-[#AFBCD5]/50 uppercase tracking-wider">
           Memory
         </span>
-        <span className="text-[10px] font-mono text-[#444]">
+        <span className="text-[10px] font-mono text-[#AFBCD5]/40">
           Stack View
         </span>
       </div>
@@ -105,16 +105,16 @@ export default function LessonMemoryViz() {
         {/* Legend */}
         <div className="flex gap-3 mt-3 flex-wrap">
           {[
-            { color: "#22223a", label: "Free" },
-            { color: "#2d6b4f", label: "Stack" },
-            { color: "#4f46e5", label: "Pointer" },
+            { color: "#071528", label: "Free" },
+            { color: "#9CD323", label: "Stack" },
+            { color: "#246BFD", label: "Pointer" },
           ].map(({ color, label }) => (
             <div key={label} className="flex items-center gap-1">
               <div
                 className="w-2.5 h-2.5 rounded-sm"
                 style={{ backgroundColor: color }}
               />
-              <span className="text-[10px] font-mono text-[#666]">
+              <span className="text-[10px] font-mono text-[#AFBCD5]/50">
                 {label}
               </span>
             </div>

@@ -99,15 +99,15 @@ export default function UpgradePage() {
   return (
     <>
       {/* Header */}
-      <header className="border-b border-[#1a1a2e] px-4 sm:px-6 py-4">
+      <header className="border-b border-white/[0.05] px-4 sm:px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center gap-3">
           <Link
             href="/learn"
-            className="text-[#555] hover:text-white transition-colors text-sm font-mono"
+            className="text-[#AFBCD5]/50 hover:text-white transition-colors text-sm font-mono"
           >
             &larr; Back
           </Link>
-          <div className="w-px h-4 bg-[#2a2a3e]" />
+          <div className="w-px h-4 bg-white/[0.08]" />
           <h1 className="text-lg font-semibold text-white">Upgrade to Pro</h1>
         </div>
       </header>
@@ -122,7 +122,7 @@ export default function UpgradePage() {
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">
             Unlock Everything
           </h2>
-          <p className="text-sm text-[#888] max-w-md mx-auto font-mono">
+          <p className="text-sm text-[#AFBCD5]/70 max-w-md mx-auto font-mono">
             100 lessons per path, 400 total across all tracks, AI error explanations, and more.
           </p>
         </div>
@@ -134,7 +134,7 @@ export default function UpgradePage() {
             className={`text-xs font-mono px-5 py-2.5 rounded-lg border transition-colors ${
               billingPeriod === "monthly"
                 ? "bg-[#a855f7]/20 border-[#a855f7]/40 text-[#a855f7]"
-                : "bg-transparent border-[#2a2a3e] text-[#666] hover:text-[#888]"
+                : "bg-transparent border-white/[0.08] text-[#AFBCD5]/50 hover:text-[#AFBCD5]/70"
             }`}
           >
             Monthly
@@ -144,11 +144,11 @@ export default function UpgradePage() {
             className={`text-xs font-mono px-5 py-2.5 rounded-lg border transition-colors relative ${
               billingPeriod === "yearly"
                 ? "bg-[#a855f7]/20 border-[#a855f7]/40 text-[#a855f7]"
-                : "bg-transparent border-[#2a2a3e] text-[#666] hover:text-[#888]"
+                : "bg-transparent border-white/[0.08] text-[#AFBCD5]/50 hover:text-[#AFBCD5]/70"
             }`}
           >
             Yearly
-            <span className="absolute -top-2.5 -right-3 text-[8px] font-mono bg-primary text-black px-1.5 py-0.5 rounded-full font-bold">
+            <span className="absolute -top-2.5 -right-3 text-[8px] font-mono bg-[#246BFD] text-white px-1.5 py-0.5 rounded-full font-bold">
               -43%
             </span>
           </button>
@@ -157,10 +157,10 @@ export default function UpgradePage() {
         {/* Pricing Card */}
         <div className="max-w-md mx-auto mb-10">
           <div className="p-[1px] rounded-xl bg-gradient-to-b from-[#a855f7]/40 to-[#6366f1]/20">
-            <div className="bg-[#12121a] rounded-xl p-6 sm:p-8 text-center">
+            <div className="bg-[#071528] rounded-xl p-6 sm:p-8 text-center">
               <div className="flex items-baseline justify-center gap-1 mb-1">
                 <span className="text-5xl font-bold text-white">${price}</span>
-                <span className="text-sm font-mono text-[#888]">
+                <span className="text-sm font-mono text-[#AFBCD5]/70">
                   /{billingPeriod === "monthly" ? "mo" : "yr"}
                 </span>
               </div>
@@ -170,7 +170,7 @@ export default function UpgradePage() {
                 </p>
               )}
               {billingPeriod === "monthly" && (
-                <p className="text-[11px] font-mono text-[#888] mb-5">
+                <p className="text-[11px] font-mono text-[#AFBCD5]/70 mb-5">
                   Cancel anytime
                 </p>
               )}
@@ -199,7 +199,7 @@ export default function UpgradePage() {
                   `Start Pro ${billingPeriod === "yearly" ? "Yearly" : "Monthly"}`
                 )}
               </button>
-              <p className="text-[10px] font-mono text-[#555] mt-3">
+              <p className="text-[10px] font-mono text-[#AFBCD5]/50 mt-3">
                 7-day free trial &middot; Cancel anytime &middot; 30-day money-back guarantee
               </p>
             </div>
@@ -207,16 +207,16 @@ export default function UpgradePage() {
         </div>
 
         {/* Feature Comparison */}
-        <div className="rounded-xl border border-[#1a1a2e] bg-surface overflow-hidden mb-10">
-          <div className="grid grid-cols-3 border-b border-[#1a1a2e] px-5 py-3">
-            <div className="text-xs font-mono text-[#666]">Feature</div>
-            <div className="text-xs font-mono text-[#888] text-center">Free</div>
+        <div className="rounded-xl border border-white/[0.05] bg-[#071528] overflow-hidden mb-10">
+          <div className="grid grid-cols-3 border-b border-white/[0.05] px-5 py-3">
+            <div className="text-xs font-mono text-[#AFBCD5]/50">Feature</div>
+            <div className="text-xs font-mono text-[#AFBCD5]/70 text-center">Free</div>
             <div className="text-xs font-mono text-[#a855f7] text-center font-bold">Pro</div>
           </div>
           {FEATURES.map((f) => (
             <div
               key={f.label}
-              className={`grid grid-cols-3 border-b border-[#1a1a2e]/50 px-5 py-3.5 last:border-b-0 ${
+              className={`grid grid-cols-3 border-b border-white/[0.05]/50 px-5 py-3.5 last:border-b-0 ${
                 f.isNew ? "bg-[#a855f7]/[0.03]" : ""
               }`}
             >
@@ -230,16 +230,16 @@ export default function UpgradePage() {
                   )}
                 </div>
                 {f.description && (
-                  <span className="text-[10px] font-mono text-[#555]">{f.description}</span>
+                  <span className="text-[10px] font-mono text-[#AFBCD5]/50">{f.description}</span>
                 )}
               </div>
               <div className="text-sm text-center flex items-center justify-center">
                 {typeof f.free === "string" ? (
-                  <span className="text-[#888] font-mono">{f.free}</span>
+                  <span className="text-[#AFBCD5]/70 font-mono">{f.free}</span>
                 ) : f.free ? (
                   <CheckCircleIcon className="h-4 w-4 text-primary" />
                 ) : (
-                  <XCircleIcon className="h-4 w-4 text-[#444]" />
+                  <XCircleIcon className="h-4 w-4 text-[#AFBCD5]/40" />
                 )}
               </div>
               <div className="text-sm text-center flex items-center justify-center">
@@ -248,7 +248,7 @@ export default function UpgradePage() {
                 ) : f.pro ? (
                   <CheckCircleIcon className="h-4 w-4 text-primary" />
                 ) : (
-                  <XCircleIcon className="h-4 w-4 text-[#444]" />
+                  <XCircleIcon className="h-4 w-4 text-[#AFBCD5]/40" />
                 )}
               </div>
             </div>
@@ -262,12 +262,12 @@ export default function UpgradePage() {
             {FAQ.map((faq) => (
               <details
                 key={faq.q}
-                className="group rounded-lg border border-[#1a1a2e] bg-surface overflow-hidden"
+                className="group rounded-lg border border-white/[0.05] bg-[#071528] overflow-hidden"
               >
-                <summary className="px-5 py-4 text-sm font-semibold text-white cursor-pointer hover:bg-[#111118] transition-colors list-none flex items-center justify-between">
+                <summary className="px-5 py-4 text-sm font-semibold text-white cursor-pointer hover:bg-white/[0.04] transition-colors list-none flex items-center justify-between">
                   {faq.q}
                   <svg
-                    className="h-4 w-4 text-[#555] transition-transform group-open:rotate-180 shrink-0"
+                    className="h-4 w-4 text-[#AFBCD5]/50 transition-transform group-open:rotate-180 shrink-0"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -277,7 +277,7 @@ export default function UpgradePage() {
                   </svg>
                 </summary>
                 <div className="px-5 pb-4">
-                  <p className="text-xs text-[#888] font-mono leading-relaxed">{faq.a}</p>
+                  <p className="text-xs text-[#AFBCD5]/70 font-mono leading-relaxed">{faq.a}</p>
                 </div>
               </details>
             ))}

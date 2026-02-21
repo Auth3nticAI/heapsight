@@ -557,7 +557,7 @@ export default function LessonPage() {
     return (
       <main className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-xl text-[#E8E6EA] mb-2">Lesson not found</h1>
+          <h1 className="text-xl text-white mb-2">Lesson not found</h1>
           <Link href="/learn" className="text-primary text-sm hover:underline">
             Back to lessons
           </Link>
@@ -586,15 +586,15 @@ export default function LessonPage() {
   if (lesson.tier === "pro" && userTier === "free" && showPaywall) {
     return (
       <main className="min-h-screen bg-background">
-        <header className="border-b border-[#2e2e42] px-4 py-2 flex items-center gap-3 shrink-0">
+        <header className="border-b border-white/[0.05] px-4 py-2 flex items-center gap-3 shrink-0">
           <Link
             href="/learn"
-            className="text-[#555] hover:text-[#E8E6EA] transition-colors text-sm"
+            className="text-[#AFBCD5]/60 hover:text-white transition-colors text-sm"
           >
             &larr; Lessons
           </Link>
-          <div className="w-px h-4 bg-[#3a3a4e]" />
-          <h1 className="text-sm font-semibold text-[#E8E6EA]">
+          <div className="w-px h-4 bg-white/[0.10]" />
+          <h1 className="text-sm font-semibold text-white">
             {lesson.order}. {displayTitle}
           </h1>
         </header>
@@ -611,16 +611,16 @@ export default function LessonPage() {
   return (
     <main className="h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="border-b border-[#2e2e42] px-3 sm:px-4 py-2 flex items-center justify-between shrink-0 gap-2">
+      <header className="border-b border-white/[0.05] px-3 sm:px-4 py-2 flex items-center justify-between shrink-0 gap-2">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <Link
             href="/learn"
-            className="text-[#555] hover:text-[#E8E6EA] transition-colors text-sm shrink-0"
+            className="text-[#AFBCD5]/60 hover:text-white transition-colors text-sm shrink-0"
           >
             &larr;<span className="hidden sm:inline"> Lessons</span>
           </Link>
-          <div className="w-px h-4 bg-[#3a3a4e] shrink-0" />
-          <h1 className="text-sm font-semibold text-[#E8E6EA] truncate">
+          <div className="w-px h-4 bg-white/[0.10] shrink-0" />
+          <h1 className="text-sm font-semibold text-white truncate">
             {lesson.order}. {displayTitle}
           </h1>
           <span className="hidden sm:inline text-[10px] font-mono bg-primary/10 text-primary px-2 py-0.5 rounded shrink-0">
@@ -645,7 +645,7 @@ export default function LessonPage() {
         <div className="flex flex-col lg:w-1/2 min-h-0 h-[45vh] lg:h-auto">
           {/* Tab bar */}
           <div
-            className="flex shrink-0 bg-[#0d0d1a] border-b border-[#ffffff08] px-2"
+            className="flex shrink-0 bg-[#040B10] border-b border-white/[0.05] px-2"
             role="tablist"
           >
             {(
@@ -667,8 +667,8 @@ export default function LessonPage() {
                   onClick={() => setLeftTab(tab.id)}
                   className={`px-3 py-2.5 text-xs font-mono transition-colors border-b-2 -mb-px min-h-[44px] ${
                     leftTab === tab.id
-                      ? "bg-[#ffffff08] text-white border-teal-400"
-                      : "text-gray-500 hover:text-gray-300 border-transparent"
+                      ? "bg-[#ffffff08] text-white border-[#246BFD]"
+                      : "text-[#AFBCD5]/60 hover:text-[#AFBCD5] border-transparent"
                   }`}
                   role="tab"
                   aria-selected={leftTab === tab.id}
@@ -742,7 +742,7 @@ export default function LessonPage() {
 
       {/* Action bar — safe-area-inset for notch phones */}
       <div
-        className="border-t border-[#2e2e42] px-3 sm:px-4 py-2 sm:py-2.5 shrink-0"
+        className="border-t border-white/[0.05] px-3 sm:px-4 py-2 sm:py-2.5 shrink-0"
         style={{ paddingBottom: "max(0.5rem, env(safe-area-inset-bottom, 0.5rem))" }}
       >
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -753,7 +753,7 @@ export default function LessonPage() {
               className={`flex-1 sm:flex-initial px-3 sm:px-4 py-2 text-sm font-mono rounded-lg transition-all disabled:opacity-50 border min-h-[44px] ${
                 runSuccess
                   ? "bg-primary/20 text-primary border-primary/30"
-                  : "bg-[#2e2e42] text-[#E8E6EA] border-[#3a3a4e] hover:bg-[#3a3a4e]"
+                  : "bg-[#2e2e42] text-white border-white/[0.08] hover:bg-white/[0.10]"
               }`}
             >
               {isRunning ? (
@@ -771,7 +771,7 @@ export default function LessonPage() {
             <button
               onClick={handleSubmit}
               disabled={isRunning}
-              className="flex-1 sm:flex-initial px-3 sm:px-4 py-2 bg-primary text-black text-sm font-semibold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 min-h-[44px]"
+              className="flex-1 sm:flex-initial px-3 sm:px-4 py-2 bg-gradient-to-r from-[#246BFD] to-[#0040C3] text-white text-sm font-semibold rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 min-h-[44px]"
             >
               {isRunning ? (
                 <span className="flex items-center justify-center gap-2">
@@ -789,7 +789,7 @@ export default function LessonPage() {
             </button>
             <button
               onClick={handleReset}
-              className="px-3 py-2 text-[#555] text-xs font-mono hover:text-[#888] transition-colors min-h-[44px]"
+              className="px-3 py-2 text-[#AFBCD5]/50 text-xs font-mono hover:text-[#888] transition-colors min-h-[44px]"
             >
               Reset
             </button>
@@ -811,7 +811,7 @@ export default function LessonPage() {
             {lessonFullyComplete && nextLesson && nextLesson.tier === "pro" && userTier === "free" && (
               <button
                 onClick={() => setShowPaywall(true)}
-                className="px-3 sm:px-4 py-2 bg-[#a855f7] text-[#E8E6EA] text-sm font-semibold rounded-lg hover:bg-[#a855f7]/90 transition-colors min-h-[44px]"
+                className="px-3 sm:px-4 py-2 bg-[#a855f7] text-white text-sm font-semibold rounded-lg hover:bg-[#a855f7]/90 transition-colors min-h-[44px]"
               >
                 {"\uD83D\uDD12"} Unlock Next
               </button>
@@ -828,7 +828,7 @@ export default function LessonPage() {
             {lessonFullyComplete && !nextLesson && (
               <Link
                 href="/learn"
-                className="px-3 sm:px-4 py-2 bg-primary text-black text-sm font-semibold rounded-lg hover:bg-primary/90 transition-colors min-h-[44px] flex items-center"
+                className="px-3 sm:px-4 py-2 bg-gradient-to-r from-[#246BFD] to-[#0040C3] text-white text-sm font-semibold rounded-lg hover:opacity-90 transition-colors min-h-[44px] flex items-center"
               >
                 Complete!
               </Link>

@@ -22,9 +22,9 @@ export default function LessonOutput({ lessonId, userId, userTier, userCode }: L
   const allPassed = testResults.length > 0 && passedCount === testResults.length;
 
   return (
-    <div className="h-full flex flex-col rounded-2xl border border-[#ffffff10] bg-[#09091a] overflow-hidden">
-      <div className="flex items-center gap-2 px-3 py-1.5 bg-[#060610] border-b border-[#ffffff08]">
-        <span className="text-[10px] font-mono text-[#555] uppercase tracking-wider">
+    <div className="h-full flex flex-col rounded-2xl border border-white/[0.08] bg-[#071528] overflow-hidden">
+      <div className="flex items-center gap-2 px-3 py-1.5 bg-[#040B10] border-b border-white/[0.05]">
+        <span className="text-[10px] font-mono text-[#AFBCD5]/50 uppercase tracking-wider">
           Output
         </span>
         {isRunning && (
@@ -38,10 +38,10 @@ export default function LessonOutput({ lessonId, userId, userTier, userCode }: L
         {/* Console Output */}
         {(output || isRunning) && (
           <div>
-            <div className="text-[9px] font-mono text-[#555] uppercase mb-1">
+            <div className="text-[9px] font-mono text-[#AFBCD5]/50 uppercase mb-1">
               Console
             </div>
-            <pre className="text-xs font-mono text-[#e0e0e0] bg-[#060610] border border-[#ffffff10] rounded-lg p-2.5 whitespace-pre-wrap break-words">
+            <pre className="text-xs font-mono text-[#e0e0e0] bg-[#040B10] border border-white/[0.08] rounded-lg p-2.5 whitespace-pre-wrap break-words">
               {output || (isRunning ? "..." : "")}
             </pre>
           </div>
@@ -84,7 +84,7 @@ export default function LessonOutput({ lessonId, userId, userTier, userCode }: L
               onClick={() => setTestsExpanded(!testsExpanded)}
               className="w-full flex items-center justify-between py-1 min-h-[44px]"
             >
-              <span className="text-[9px] font-mono text-[#555] uppercase">
+              <span className="text-[9px] font-mono text-[#AFBCD5]/50 uppercase">
                 Tests
               </span>
               <div className="flex items-center gap-2">
@@ -92,7 +92,7 @@ export default function LessonOutput({ lessonId, userId, userTier, userCode }: L
                   {passedCount}/{testResults.length} passed
                 </span>
                 <svg
-                  className={`w-3.5 h-3.5 text-[#555] transition-transform ${testsExpanded ? "rotate-180" : ""}`}
+                  className={`w-3.5 h-3.5 text-[#AFBCD5]/50 transition-transform ${testsExpanded ? "rotate-180" : ""}`}
                   viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
                 >
                   <path d="M6 9l6 6 6-6" />
@@ -116,7 +116,7 @@ export default function LessonOutput({ lessonId, userId, userTier, userCode }: L
                     <div className="flex-1 min-w-0">
                       <div className="break-words">{result.description}</div>
                       {!result.passed && (
-                        <div className="mt-1 text-[10px] text-[#888] break-words">
+                        <div className="mt-1 text-[10px] text-[#AFBCD5]/70 break-words">
                           <div>
                             Expected:{" "}
                             <span className="text-primary">
@@ -142,7 +142,7 @@ export default function LessonOutput({ lessonId, userId, userTier, userCode }: L
         {/* Empty state */}
         {!output && errors.length === 0 && testResults.length === 0 && !isRunning && (
           <div className="flex items-center justify-center h-full">
-            <p className="text-xs font-mono text-[#444]">
+            <p className="text-xs font-mono text-[#AFBCD5]/40">
               Click &quot;Run Code&quot; to see output
             </p>
           </div>

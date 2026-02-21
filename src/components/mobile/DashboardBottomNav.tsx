@@ -62,7 +62,7 @@ export default function DashboardBottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-[#0d0d1a]/95 backdrop-blur-sm border-t border-[#1a1a2e]"
+      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-[#040B10]/95 backdrop-blur-sm border-t border-white/[0.05]"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       <div className="flex items-center h-14">
@@ -74,7 +74,7 @@ export default function DashboardBottomNav() {
               key={item.path}
               onClick={() => router.push(item.path)}
               className={`flex-1 flex flex-col items-center justify-center gap-0.5 min-h-[48px] transition-colors touch-manipulation ${
-                active ? "text-primary" : "text-[#555] active:text-[#888]"
+                active ? "text-primary" : "text-[#AFBCD5]/50 active:text-[#AFBCD5]/70"
               }`}
               aria-label={item.label}
               aria-current={active ? "page" : undefined}

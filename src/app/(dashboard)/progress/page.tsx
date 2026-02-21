@@ -75,7 +75,7 @@ export default function ProgressPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-sm font-mono text-[#555] animate-pulse">Loading progress...</p>
+        <p className="text-sm font-mono text-[#AFBCD5]/50 animate-pulse">Loading progress...</p>
       </div>
     );
   }
@@ -89,16 +89,16 @@ export default function ProgressPage() {
   return (
     <>
       {/* Header */}
-      <header className="border-b border-[#ffffff08] px-4 sm:px-6 py-5">
+      <header className="border-b border-white/[0.05] px-4 sm:px-6 py-5">
         <div className="max-w-4xl mx-auto">
           <div className="md:pl-12 lg:pl-0">
             <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
               Progress
             </h1>
-            <p className="text-xs text-[#555] font-mono mt-1 hidden lg:block">
+            <p className="text-xs text-[#AFBCD5]/50 font-mono mt-1 hidden lg:block">
               Detailed statistics, achievements, and streak history
             </p>
-            <p className="text-xs text-[#555] font-mono mt-1 lg:hidden">Your stats &amp; achievements</p>
+            <p className="text-xs text-[#AFBCD5]/50 font-mono mt-1 lg:hidden">Your stats &amp; achievements</p>
           </div>
         </div>
       </header>
@@ -133,30 +133,30 @@ export default function ProgressPage() {
               icon: <span className="text-xl">{"\uD83D\uDCC5"}</span>,
             },
           ].map((stat) => (
-            <div key={stat.label} className="p-4 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
+            <div key={stat.label} className="p-4 rounded-2xl border border-white/[0.08] bg-[#071528]">
               <div className="flex items-center gap-2 mb-2">{stat.icon}</div>
               <p className="text-lg font-bold text-white font-mono">{stat.value}</p>
-              <p className="text-[9px] font-mono text-gray-500 uppercase">{stat.label}</p>
+              <p className="text-[9px] font-mono text-[#AFBCD5]/60 uppercase">{stat.label}</p>
             </div>
           ))}
         </div>
 
         {/* Level Progress */}
-        <div className="mb-8 p-5 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
+        <div className="mb-8 p-5 rounded-2xl border border-white/[0.08] bg-[#071528]">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
-              <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-lg bg-gradient-to-r from-[#a855f7] to-[#6366f1] text-white">
+              <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-lg bg-gradient-to-r from-[#246BFD] to-[#0040C3] text-white">
                 LVL {levelInfo.level}
               </span>
               <span className="text-base font-bold text-white">{levelInfo.title}</span>
             </div>
-            <span className="text-xs font-mono text-gray-500 shrink-0">
+            <span className="text-xs font-mono text-[#AFBCD5]/60 shrink-0">
               {levelInfo.xpInLevel}/{levelInfo.xpForNext} XP
             </span>
           </div>
-          <div className="w-full bg-[#ffffff08] rounded-full h-3 overflow-hidden">
+          <div className="w-full bg-white/[0.05] rounded-full h-3 overflow-hidden">
             <div
-              className="h-3 rounded-full bg-gradient-to-r from-[#a855f7] to-[#6366f1] transition-all duration-700 relative overflow-hidden"
+              className="h-3 rounded-full bg-gradient-to-r from-[#246BFD] to-[#0040C3] transition-all duration-700 relative overflow-hidden"
               style={{ width: `${levelInfo.progress}%` }}
             >
               <div className="absolute inset-0 shimmer-overlay animate-shimmer" />
@@ -165,7 +165,7 @@ export default function ProgressPage() {
         </div>
 
         {/* Streak History */}
-        <div className="mb-8 p-5 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
+        <div className="mb-8 p-5 rounded-2xl border border-white/[0.08] bg-[#071528]">
           <div className="flex items-center gap-2 mb-4">
             <FlameIcon className="h-5 w-5 text-[#f97316]" />
             <h3 className="text-sm font-semibold text-white">Streak Stats</h3>
@@ -173,21 +173,21 @@ export default function ProgressPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <div>
               <p className="text-2xl font-bold text-[#f97316] font-mono">{stats.currentStreak}</p>
-              <p className="text-[9px] font-mono text-gray-500 uppercase">Current Streak</p>
+              <p className="text-[9px] font-mono text-[#AFBCD5]/60 uppercase">Current Streak</p>
             </div>
             <div>
               <p className="text-2xl font-bold text-white font-mono">{stats.longestStreak}</p>
-              <p className="text-[9px] font-mono text-gray-500 uppercase">Longest Streak</p>
+              <p className="text-[9px] font-mono text-[#AFBCD5]/60 uppercase">Longest Streak</p>
             </div>
             <div>
-              <p className="text-2xl font-bold text-[#60a5fa] font-mono">{stats.totalDaysActive}</p>
-              <p className="text-[9px] font-mono text-gray-500 uppercase">Total Days</p>
+              <p className="text-2xl font-bold text-[#246BFD] font-mono">{stats.totalDaysActive}</p>
+              <p className="text-[9px] font-mono text-[#AFBCD5]/60 uppercase">Total Days</p>
             </div>
           </div>
 
           {/* Streak milestones */}
-          <div className="mt-4 pt-4 border-t border-[#ffffff08]">
-            <p className="text-[9px] font-mono text-gray-500 mb-2">MILESTONES</p>
+          <div className="mt-4 pt-4 border-t border-white/[0.05]">
+            <p className="text-[9px] font-mono text-[#AFBCD5]/60 mb-2">MILESTONES</p>
             <div className="flex flex-wrap gap-2">
               {[7, 14, 30, 60, 100, 365].map((milestone) => {
                 const reached = stats.longestStreak >= milestone;
@@ -197,7 +197,7 @@ export default function ProgressPage() {
                     className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold border ${
                       reached
                         ? "bg-[#f97316]/10 text-[#f97316] border-[#f97316]/30"
-                        : "bg-[#ffffff05] text-[#444] border-[#ffffff08]"
+                        : "bg-white/[0.03] text-[#AFBCD5]/40 border-white/[0.05]"
                     }`}
                   >
                     {milestone}d {reached ? "\u2713" : ""}
@@ -214,13 +214,13 @@ export default function ProgressPage() {
             <h3 className="text-sm font-semibold text-white">
               Achievements ({unlockedCount}/{totalAchievements})
             </h3>
-            <span className="text-[9px] font-mono text-[#555]">
+            <span className="text-[9px] font-mono text-[#AFBCD5]/50">
               {Math.round((unlockedCount / totalAchievements) * 100)}% complete
             </span>
           </div>
 
           {/* Achievement progress bar */}
-          <div className="w-full bg-[#ffffff08] rounded-full h-2 overflow-hidden mb-6">
+          <div className="w-full bg-white/[0.05] rounded-full h-2 overflow-hidden mb-6">
             <div
               className="h-2 rounded-full bg-gradient-to-r from-[#fbbf24] to-[#f59e0b] transition-all duration-500"
               style={{ width: `${(unlockedCount / totalAchievements) * 100}%` }}
@@ -234,7 +234,7 @@ export default function ProgressPage() {
 
             return (
               <div key={category} className="mb-6">
-                <h4 className="text-xs font-mono font-bold text-[#888] uppercase tracking-wider mb-3">
+                <h4 className="text-xs font-mono font-bold text-[#AFBCD5]/70 uppercase tracking-wider mb-3">
                   {categoryLabel}
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -246,7 +246,7 @@ export default function ProgressPage() {
                         className={`p-4 rounded-xl border transition-all ${
                           unlocked
                             ? `bg-gradient-to-br ${getRarityGradient(achievement.rarity)} ${getRarityColor(achievement.rarity)}`
-                            : "bg-[#09091a] border-[#ffffff08] opacity-50"
+                            : "bg-[#071528] border-white/[0.05] opacity-50"
                         }`}
                       >
                         <div className="flex items-start gap-3">
@@ -254,19 +254,19 @@ export default function ProgressPage() {
                             {achievement.icon}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className={`text-xs font-semibold truncate ${unlocked ? "text-white" : "text-[#666]"}`}>
+                            <p className={`text-xs font-semibold truncate ${unlocked ? "text-white" : "text-[#AFBCD5]/50"}`}>
                               {achievement.title}
                             </p>
-                            <p className="text-[9px] font-mono text-[#888] mt-0.5">
+                            <p className="text-[9px] font-mono text-[#AFBCD5]/70 mt-0.5">
                               {achievement.description}
                             </p>
                             <div className="flex items-center gap-2 mt-1.5">
                               <span className={`text-[8px] font-mono font-bold uppercase ${
-                                unlocked ? "text-[#fbbf24]" : "text-[#555]"
+                                unlocked ? "text-[#fbbf24]" : "text-[#AFBCD5]/50"
                               }`}>
                                 {achievement.rarity}
                               </span>
-                              <span className="text-[8px] font-mono text-[#555]">
+                              <span className="text-[8px] font-mono text-[#AFBCD5]/50">
                                 +{achievement.xp_reward} XP
                               </span>
                               {unlocked && (
@@ -289,7 +289,7 @@ export default function ProgressPage() {
           <div className="mt-6 text-center">
             <Link
               href="/learn"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-600 hover:bg-teal-500 text-white font-semibold text-sm rounded-xl transition-colors min-h-[44px] touch-manipulation"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#246BFD] hover:bg-[#0040C3] text-white font-semibold text-sm rounded-xl transition-colors min-h-[44px] touch-manipulation"
             >
               Continue Learning to Unlock More &rarr;
             </Link>

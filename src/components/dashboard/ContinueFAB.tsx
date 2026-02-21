@@ -34,11 +34,11 @@ export default function ContinueFAB({ nextLesson }: ContinueFABProps) {
       <div className="absolute inset-0 bg-primary rounded-full blur-xl opacity-40 group-hover:opacity-60 transition-opacity" />
 
       {/* Button body */}
-      <div className="relative bg-gradient-to-r from-primary to-[#00cc6e] rounded-full shadow-2xl shadow-primary/40 flex items-center gap-3 px-5 py-3.5 min-h-[56px]">
-        <PlayIcon className="h-5 w-5 text-black" />
+      <div className="relative bg-gradient-to-r from-[#246BFD] to-[#0040C3] rounded-full shadow-2xl shadow-primary/40 flex items-center gap-3 px-5 py-3.5 min-h-[56px]">
+        <PlayIcon className="h-5 w-5 text-white" />
         <div className="text-left">
-          <div className="text-[9px] font-mono text-black/60 font-semibold">Continue</div>
-          <div className="text-sm text-black font-bold whitespace-nowrap">
+          <div className="text-[9px] font-mono text-white/60 font-semibold">Continue</div>
+          <div className="text-sm text-white font-bold whitespace-nowrap">
             Lesson {nextLesson.order}
           </div>
         </div>

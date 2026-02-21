@@ -60,7 +60,7 @@ export default function UpgradeSuccessPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <div className="animate-spin h-10 w-10 border-3 border-[#a855f7] border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-sm font-mono text-[#888] animate-pulse">
+          <p className="text-sm font-mono text-[#AFBCD5]/70 animate-pulse">
             Verifying your upgrade...
           </p>
         </div>
@@ -72,7 +72,7 @@ export default function UpgradeSuccessPage() {
     <div className="flex items-center justify-center min-h-[60vh] px-4 sm:px-6">
       <div className="max-w-lg w-full">
         <div className="p-[1px] rounded-xl bg-gradient-to-b from-primary/40 to-[#a855f7]/20">
-          <div className="bg-[#12121a] rounded-xl p-8 sm:p-10 text-center">
+          <div className="bg-[#071528] rounded-xl p-8 sm:p-10 text-center">
             {/* Success icon */}
             <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-5">
               <CheckIcon className="h-8 w-8 text-primary" />
@@ -81,7 +81,7 @@ export default function UpgradeSuccessPage() {
             <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
               Welcome to Pro!
             </h1>
-            <p className="text-sm font-mono text-[#888] mb-6">
+            <p className="text-sm font-mono text-[#AFBCD5]/70 mb-6">
               {verified
                 ? "Your account has been upgraded. All Pro features are now unlocked."
                 : "Payment received. Your account will be upgraded momentarily."}
@@ -92,12 +92,12 @@ export default function UpgradeSuccessPage() {
               {PRO_FEATURES.map((f) => (
                 <div
                   key={f.icon}
-                  className="flex items-center gap-2 bg-[#0a0a0f] border border-[#1a1a2e] rounded-lg p-3"
+                  className="flex items-center gap-2 bg-[#040B10] border border-white/[0.05] rounded-lg p-3"
                 >
                   <SparklesIcon className="h-4 w-4 text-[#a855f7] shrink-0" />
                   <div className="text-left min-w-0">
                     <p className="text-[10px] font-semibold text-white truncate">{f.icon}</p>
-                    <p className="text-[8px] font-mono text-[#666] truncate">{f.desc}</p>
+                    <p className="text-[8px] font-mono text-[#AFBCD5]/50 truncate">{f.desc}</p>
                   </div>
                 </div>
               ))}
@@ -106,13 +106,13 @@ export default function UpgradeSuccessPage() {
             {/* CTA */}
             <button
               onClick={() => router.push("/learn")}
-              className="w-full py-3.5 bg-primary hover:bg-primary/90 text-black font-bold rounded-lg transition-colors text-sm"
+              className="w-full py-3.5 bg-gradient-to-r from-[#246BFD] to-[#0040C3] text-white font-bold rounded-lg hover:opacity-90 transition-colors text-sm"
             >
               Start Learning &rarr;
             </button>
 
             {sessionId && (
-              <p className="text-[9px] font-mono text-[#333] mt-4">
+              <p className="text-[9px] font-mono text-[#AFBCD5]/20 mt-4">
                 Session: {sessionId.slice(0, 20)}...
               </p>
             )}

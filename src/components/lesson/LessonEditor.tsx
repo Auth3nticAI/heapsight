@@ -36,12 +36,12 @@ export default function LessonEditor({ readOnly = false }: LessonEditorProps) {
   );
 
   return (
-    <div className="h-full w-full rounded-2xl overflow-hidden border border-[#ffffff10] flex flex-col">
-      <div className="shrink-0 flex items-center justify-between px-3 py-1.5 bg-[#060610] border-b border-[#ffffff08]">
-        <span className="text-[10px] font-mono text-[#555] uppercase tracking-wider">
+    <div className="h-full w-full rounded-2xl overflow-hidden border border-white/[0.08] flex flex-col">
+      <div className="shrink-0 flex items-center justify-between px-3 py-1.5 bg-[#040B10] border-b border-white/[0.05]">
+        <span className="text-[10px] font-mono text-[#AFBCD5]/50 uppercase tracking-wider">
           {currentPart === 2 ? "game.cpp" : "main.cpp"}
         </span>
-        <span className="text-[10px] font-mono text-[#444]">C++</span>
+        <span className="text-[10px] font-mono text-[#AFBCD5]/40">C++</span>
       </div>
       <div className="flex-1 min-h-0">
       <Editor

@@ -102,10 +102,10 @@ const PATHS = [
     paradigm: "3D Spatial Engineering",
     description: "Build a first-person 3D dungeon crawler. Cameras, raycasting, lighting, and procedural generation.",
     skills: ["3D Camera Math", "Raycasting", "Spatial Data Structures", "First-Person Rendering"],
-    accent: "text-[#2dd4bf]",
+    accent: "text-[#246BFD]",
     bestFor: "3D game devs & graphics programmers",
-    iconBg: "from-teal-500/25 to-cyan-500/25",
-    progressBarColor: "bg-teal-500",
+    iconBg: "from-[#246BFD]/25 to-cyan-500/25",
+    progressBarColor: "bg-[#246BFD]",
     progressGlow: "0 0 8px rgba(20,184,166,0.6)",
   },
 ];
@@ -180,29 +180,29 @@ export default function PathsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-sm font-mono text-[#555] animate-pulse">Loading paths...</p>
+        <p className="text-sm font-mono text-[#AFBCD5]/50 animate-pulse">Loading paths...</p>
       </div>
     );
   }
 
   return (
     <>
-      <header className="border-b border-[#ffffff08] px-4 sm:px-6 py-5">
+      <header className="border-b border-white/[0.05] px-4 sm:px-6 py-5">
         <div className="max-w-4xl mx-auto">
           <div className="md:pl-12 lg:pl-0">
             <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
               Learning Paths
             </h1>
-            <p className="text-xs text-[#555] font-mono mt-1 hidden lg:block">
+            <p className="text-xs text-[#AFBCD5]/50 font-mono mt-1 hidden lg:block">
               4 industry paradigms &middot; 100 lessons each &middot; Genuinely different architectures
             </p>
-            <p className="text-xs text-[#555] font-mono mt-1 lg:hidden">Choose your paradigm</p>
+            <p className="text-xs text-[#AFBCD5]/50 font-mono mt-1 lg:hidden">Choose your paradigm</p>
           </div>
         </div>
       </header>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
-        <p className="text-xs font-mono text-[#444] mb-6">
+        <p className="text-xs font-mono text-[#AFBCD5]/40 mb-6">
           Each path teaches C++ through a fundamentally different paradigm.{" "}
           {userTier === "pro"
             ? "As a Pro member, you can switch paths anytime."
@@ -222,7 +222,7 @@ export default function PathsPage() {
               <div key={path.id} className="relative rounded-2xl group flex flex-col overflow-hidden">
                 {/* Gradient border overlay — fades in on hover, stays on active */}
                 <div
-                  className={`absolute inset-0 rounded-2xl transition-opacity duration-300 bg-gradient-to-br from-teal-500/40 to-purple-500/30
+                  className={`absolute inset-0 rounded-2xl transition-opacity duration-300 bg-gradient-to-br from-[#246BFD]/40 to-purple-500/30
                     ${isCurrent ? "opacity-100" : isLocked ? "opacity-0" : "opacity-0 group-hover:opacity-60"}
                   `}
                 />
@@ -230,16 +230,16 @@ export default function PathsPage() {
                 <div className="absolute inset-0 rounded-2xl border border-[#ffffff0f]" />
                 {/* Active card glow */}
                 {isCurrent && (
-                  <div className="absolute inset-0 rounded-2xl shadow-[0_0_24px_rgba(45,212,191,0.10)] pointer-events-none" />
+                  <div className="absolute inset-0 rounded-2xl shadow-[0_0_24px_rgba(36,107,253,0.10)] pointer-events-none" />
                 )}
 
                 {/* Inner card */}
-                <div className={`relative m-[1px] rounded-[14px] bg-[#09091a] flex flex-col pt-5 px-5 pb-6 flex-1
+                <div className={`relative m-[1px] rounded-[14px] bg-[#071528] flex flex-col pt-5 px-5 pb-6 flex-1
                   ${isLocked ? "opacity-55" : ""}
                 `}>
                   {/* Active badge */}
                   {isCurrent && (
-                    <div className="absolute top-3 right-3 flex items-center gap-1 bg-[#2dd4bf]/15 text-[#2dd4bf] px-2 py-0.5 rounded-full text-[9px] font-mono font-bold border border-[#2dd4bf]/25">
+                    <div className="absolute top-3 right-3 flex items-center gap-1 bg-[#246BFD]/15 text-[#246BFD] px-2 py-0.5 rounded-full text-[9px] font-mono font-bold border border-[#246BFD]/25">
                       <CheckIcon className="h-3 w-3" />
                       ACTIVE
                     </div>
@@ -254,7 +254,7 @@ export default function PathsPage() {
                   )}
 
                   {/* Icon with gradient bg */}
-                  <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${path.iconBg} flex items-center justify-center text-2xl mb-4 border border-[#ffffff08]`}>
+                  <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${path.iconBg} flex items-center justify-center text-2xl mb-4 border border-white/[0.05]`}>
                     {path.icon}
                   </div>
 
@@ -267,29 +267,29 @@ export default function PathsPage() {
                       return (
                         <div className="flex items-center gap-2">
                           <DifficultyStars level={diff.level} />
-                          <span className="text-[9px] font-mono text-[#666]">{diff.label}</span>
+                          <span className="text-[9px] font-mono text-[#AFBCD5]/50">{diff.label}</span>
                         </div>
                       );
                     })()}
                   </div>
 
                   {/* Description */}
-                  <p className="text-xs text-[#777] mb-4 leading-relaxed line-clamp-3 h-[60px] overflow-hidden">
+                  <p className="text-xs text-[#AFBCD5]/60 mb-4 leading-relaxed line-clamp-3 h-[60px] overflow-hidden">
                     {path.description}
                   </p>
 
                   {/* Skills */}
                   <div className="flex gap-1.5 mb-4 h-[22px] overflow-hidden">
                     {path.skills.slice(0, 3).map((skill) => (
-                      <span key={skill} className="text-[8px] font-mono bg-[#ffffff08] text-[#ffffff55] px-2 py-0.5 rounded-full border border-[#ffffff08] whitespace-nowrap">
+                      <span key={skill} className="text-[8px] font-mono bg-white/[0.05] text-[#ffffff55] px-2 py-0.5 rounded-full border border-white/[0.05] whitespace-nowrap">
                         {skill}
                       </span>
                     ))}
                   </div>
 
                   {/* Best For */}
-                  <p className="text-[9px] font-mono text-[#444] mb-4">
-                    Best for: <span className="text-[#777]">{path.bestFor}</span>
+                  <p className="text-[9px] font-mono text-[#AFBCD5]/40 mb-4">
+                    Best for: <span className="text-[#AFBCD5]/60">{path.bestFor}</span>
                   </p>
 
                   {/* Progress + Button */}
@@ -297,10 +297,10 @@ export default function PathsPage() {
                     {progress > 0 && (
                       <div className="mb-4">
                         <div className="flex items-center justify-between mb-1.5">
-                          <span className="text-[9px] font-mono text-[#666]">Progress</span>
-                          <span className="text-[9px] font-mono text-[#666]">{progress}/{totalLessons} ({progressPct}%)</span>
+                          <span className="text-[9px] font-mono text-[#AFBCD5]/50">Progress</span>
+                          <span className="text-[9px] font-mono text-[#AFBCD5]/50">{progress}/{totalLessons} ({progressPct}%)</span>
                         </div>
-                        <div className="w-full bg-[#ffffff08] rounded-full h-1.5 overflow-hidden">
+                        <div className="w-full bg-white/[0.05] rounded-full h-1.5 overflow-hidden">
                           <div
                             className={`h-1.5 rounded-full ${path.progressBarColor} transition-all duration-500`}
                             style={{ width: `${progressPct}%`, boxShadow: path.progressGlow }}
@@ -312,7 +312,7 @@ export default function PathsPage() {
                     {isCurrent ? (
                       <button
                         onClick={() => router.push("/learn")}
-                        className="w-full py-2.5 rounded-xl bg-[#2dd4bf]/10 text-[#2dd4bf] text-sm font-semibold border border-[#2dd4bf]/20 hover:bg-[#2dd4bf]/15 hover:shadow-[0_0_12px_rgba(45,212,191,0.10)] transition-all min-h-[44px] touch-manipulation"
+                        className="w-full py-2.5 rounded-xl bg-[#246BFD]/10 text-[#246BFD] text-sm font-semibold border border-[#246BFD]/20 hover:bg-[#246BFD]/15 hover:shadow-[0_0_12px_rgba(36,107,253,0.10)] transition-all min-h-[44px] touch-manipulation"
                       >
                         Continue Learning &rarr;
                       </button>
@@ -327,7 +327,7 @@ export default function PathsPage() {
                       <button
                         onClick={() => handleSwitch(path.id)}
                         disabled={switching}
-                        className="w-full py-2.5 rounded-xl bg-[#ffffff08] text-[#aaaaaa] text-sm font-semibold border border-[#ffffff12] hover:bg-[#ffffff12] hover:text-white transition-all min-h-[44px] touch-manipulation disabled:opacity-50"
+                        className="w-full py-2.5 rounded-xl bg-white/[0.05] text-[#aaaaaa] text-sm font-semibold border border-[#ffffff12] hover:bg-[#ffffff12] hover:text-white transition-all min-h-[44px] touch-manipulation disabled:opacity-50"
                       >
                         {switching ? "Switching..." : "Switch to This Path"}
                       </button>

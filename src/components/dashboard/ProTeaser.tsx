@@ -75,7 +75,7 @@ export default function ProTeaser({
               {nextLockedLessons.slice(0, 3).map((lesson) => (
                 <div
                   key={lesson.number}
-                  className="bg-[#0a0a0f]/60 border border-[#2a2a3e] rounded-lg p-3 relative overflow-hidden"
+                  className="bg-[#040B10]/60 border border-white/[0.08] rounded-lg p-3 relative overflow-hidden"
                 >
                   {/* Blur overlay */}
                   <div className="absolute inset-0 backdrop-blur-[2px] bg-[#0a0a0f]/40 flex items-center justify-center z-10">
@@ -88,7 +88,7 @@ export default function ProTeaser({
                     </span>
                     <div>
                       <p className="text-xs font-semibold text-white">{lesson.title}</p>
-                      <p className="text-[9px] font-mono text-[#666] mt-0.5">
+                      <p className="text-[9px] font-mono text-[#AFBCD5]/50 mt-0.5">
                         {lesson.description}
                       </p>
                     </div>

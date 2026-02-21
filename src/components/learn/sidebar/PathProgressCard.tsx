@@ -54,18 +54,18 @@ export default function PathProgressCard({
       );
 
   return (
-    <div className="rounded-2xl border border-[#ffffff10] bg-[#09091a] p-4">
+    <div className="rounded-2xl border border-white/[0.08] bg-[#071528] p-4">
       <div className="flex items-center justify-between mb-3">
         <span className="text-xs font-semibold text-white">
           {isCrawlerPath ? "Dungeon Crawler" : "Game Dev"} Progress
         </span>
-        <span className="text-[9px] font-mono text-gray-500">{completedCount}/{totalLessons}</span>
+        <span className="text-[9px] font-mono text-[#AFBCD5]/60">{completedCount}/{totalLessons}</span>
       </div>
 
       {/* Overall bar */}
-      <div className="w-full bg-[#ffffff08] rounded-full h-2 overflow-hidden mb-4">
+      <div className="w-full bg-white/[0.05] rounded-full h-2 overflow-hidden mb-4">
         <div
-          className="h-2 rounded-full bg-gradient-to-r from-primary via-[#00cc6e] to-[#00aa55] transition-all duration-700"
+          className="h-2 rounded-full bg-gradient-to-r from-[#246BFD] to-[#0040C3] transition-all duration-700"
           style={{ width: `${(completedCount / totalLessons) * 100}%` }}
         />
       </div>
@@ -85,17 +85,17 @@ export default function PathProgressCard({
             <div key={i} className="flex items-center gap-2">
               <span className="text-xs shrink-0 w-5 text-center" aria-hidden="true">{phase.icon}</span>
               <div className="flex-1 min-w-0">
-                <div className="w-full bg-[#ffffff08] rounded-full h-1 overflow-hidden">
+                <div className="w-full bg-white/[0.05] rounded-full h-1 overflow-hidden">
                   <div
                     className={`h-1 rounded-full transition-all duration-500 ${
-                      phaseDone ? "bg-primary" : phaseCompleted > 0 ? "bg-[#3b82f6]" : "bg-[#1a1a2e]"
+                      phaseDone ? "bg-[#246BFD]" : phaseCompleted > 0 ? "bg-[#246BFD]/60" : "bg-white/[0.05]"
                     }`}
                     style={{ width: phaseTotal > 0 ? `${(phaseCompleted / phaseTotal) * 100}%` : "0%" }}
                   />
                 </div>
               </div>
               <span className={`text-[9px] font-mono shrink-0 w-8 text-right ${
-                phaseDone ? "text-primary" : "text-[#555]"
+                phaseDone ? "text-[#246BFD]" : "text-[#AFBCD5]/40"
               }`}>
                 {phaseCompleted}/{phaseTotal}
               </span>

@@ -44,7 +44,7 @@ export default function PhaseHeader({
             <div
               key={i}
               className={`w-1.5 h-1.5 rounded-full ${
-                i < completedCount ? "bg-primary" : "bg-[#2a2a3e]"
+                i < completedCount ? "bg-primary" : "bg-white/[0.08]"
               }`}
             />
           ))}

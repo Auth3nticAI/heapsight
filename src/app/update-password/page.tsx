@@ -75,7 +75,7 @@ export default function UpdatePasswordPage() {
             HeapSight
           </Link>
           <h2 className="text-lg font-semibold text-white mt-3">Create New Password</h2>
-          <p className="text-sm text-[#666] mt-1">
+          <p className="text-sm text-[#AFBCD5]/50 mt-1">
             Choose a strong password for your account
           </p>
         </div>
@@ -84,17 +84,17 @@ export default function UpdatePasswordPage() {
           <div className="bg-surface border border-primary/20 rounded-xl p-6 text-center">
             <div className="text-3xl mb-3">&#x2713;</div>
             <h3 className="text-sm font-semibold text-primary mb-2">Password Updated</h3>
-            <p className="text-xs text-[#888]">
+            <p className="text-xs text-[#AFBCD5]/70">
               Redirecting to your dashboard...
             </p>
           </div>
         ) : (
           <form
             onSubmit={handleUpdate}
-            className="bg-surface border border-[#1a1a2e] rounded-xl p-6 space-y-4"
+            className="bg-surface border border-white/[0.05] rounded-xl p-6 space-y-4"
           >
             <div>
-              <label className="block text-xs font-mono text-[#888] mb-1.5">
+              <label className="block text-xs font-mono text-[#AFBCD5]/70 mb-1.5">
                 New password
               </label>
               <div className="relative">
@@ -102,7 +102,7 @@ export default function UpdatePasswordPage() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3 py-2.5 pr-10 bg-[#0d0d1a] border border-[#2a2a3e] rounded-lg text-white text-sm font-mono placeholder:text-[#444] focus:outline-none focus:border-primary/50 transition-colors"
+                  className="w-full px-3 py-2.5 pr-10 bg-[#040B10] border border-white/[0.08] rounded-lg text-white text-sm font-mono placeholder:text-[#AFBCD5]/30 focus:outline-none focus:border-primary/50 transition-colors"
                   placeholder="••••••••"
                   required
                   minLength={8}
@@ -111,7 +111,7 @@ export default function UpdatePasswordPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] hover:text-[#888] transition-colors text-xs font-mono"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#AFBCD5]/50 hover:text-[#AFBCD5]/70 transition-colors text-xs font-mono"
                 >
                   {showPassword ? "HIDE" : "SHOW"}
                 </button>
@@ -124,25 +124,25 @@ export default function UpdatePasswordPage() {
                       <div
                         key={level}
                         className={`h-1 flex-1 rounded-full transition-colors ${
-                          level <= strength.score ? strength.color : "bg-[#2a2a3e]"
+                          level <= strength.score ? strength.color : "bg-white/[0.08]"
                         }`}
                       />
                     ))}
                   </div>
-                  <p className="text-[10px] font-mono text-[#555]">{strength.label}</p>
+                  <p className="text-[10px] font-mono text-[#AFBCD5]/50">{strength.label}</p>
                 </div>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-mono text-[#888] mb-1.5">
+              <label className="block text-xs font-mono text-[#AFBCD5]/70 mb-1.5">
                 Confirm new password
               </label>
               <input
                 type={showPassword ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-3 py-2.5 bg-[#0d0d1a] border border-[#2a2a3e] rounded-lg text-white text-sm font-mono placeholder:text-[#444] focus:outline-none focus:border-primary/50 transition-colors"
+                className="w-full px-3 py-2.5 bg-[#040B10] border border-white/[0.08] rounded-lg text-white text-sm font-mono placeholder:text-[#AFBCD5]/30 focus:outline-none focus:border-primary/50 transition-colors"
                 placeholder="••••••••"
                 required
                 minLength={8}
@@ -162,7 +162,7 @@ export default function UpdatePasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 bg-primary text-black font-semibold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
+              className="w-full py-2.5 bg-gradient-to-r from-[#246BFD] to-[#0040C3] text-white font-semibold rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
             >
               {loading && (
                 <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
@@ -178,7 +178,7 @@ export default function UpdatePasswordPage() {
         <p className="text-center mt-6">
           <Link
             href="/login"
-            className="text-xs text-[#555] hover:text-[#888] transition-colors"
+            className="text-xs text-[#AFBCD5]/50 hover:text-[#AFBCD5]/70 transition-colors"
           >
             &larr; Back to Sign In
           </Link>

@@ -16,7 +16,7 @@ interface HeapArenaProps {
 }
 
 const STATE_COLORS: Record<BlockState, string> = {
-  free: "#1a1a2e",
+  free: "#071528",
   allocated: "#00ff88",
   freed: "#ffaa00",
   dangling: "#ff0040",
@@ -24,7 +24,7 @@ const STATE_COLORS: Record<BlockState, string> = {
 };
 
 const STATE_BORDER: Record<BlockState, string> = {
-  free: "#2a2a3e",
+  free: "rgba(255,255,255,0.08)",
   allocated: "#00cc6a",
   freed: "#cc8800",
   dangling: "#cc0033",
@@ -48,7 +48,7 @@ export default function HeapArena({
   return (
     <div className="w-full">
       <div className="flex items-center gap-2 mb-3">
-        <h3 className="text-sm font-mono text-[#666] uppercase tracking-wider">
+        <h3 className="text-sm font-mono text-[#AFBCD5]/50 uppercase tracking-wider">
           Live Heap Visualization
         </h3>
         {phase === "crash" && (
@@ -157,7 +157,7 @@ export default function HeapArena({
       {/* Legend */}
       <div className="flex gap-4 mt-3 flex-wrap">
         {[
-          { color: "#1a1a2e", label: "Free" },
+          { color: "#071528", label: "Free" },
           { color: "#00ff88", label: "Allocated" },
           { color: "#ffaa00", label: "Freed" },
           { color: "#ff0040", label: "Dangling" },
@@ -168,7 +168,7 @@ export default function HeapArena({
               className="w-3 h-3 rounded-sm"
               style={{ backgroundColor: color }}
             />
-            <span className="text-[10px] font-mono text-[#666]">{label}</span>
+            <span className="text-[10px] font-mono text-[#AFBCD5]/50">{label}</span>
           </div>
         ))}
       </div>
