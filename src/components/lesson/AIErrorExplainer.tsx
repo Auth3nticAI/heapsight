@@ -105,7 +105,7 @@ export default function AIErrorExplainer({
   // Free user: upgrade prompt
   if (userTier === "free" || showUpgrade) {
     return (
-      <div className="border border-[#2a1a3e] bg-[#1a1028]/50 rounded-lg p-3">
+      <div className="border border-[#a855f7]/20 bg-[#09091a] rounded-xl p-3">
         <div className="flex items-start gap-3">
           <div className="shrink-0">
             <svg
@@ -149,7 +149,7 @@ export default function AIErrorExplainer({
 
   // Pro user
   return (
-    <div className="border border-[#2a1a3e] bg-[#1a1028]/30 rounded-lg p-3 space-y-2">
+    <div className="border border-[#a855f7]/20 bg-[#09091a] rounded-xl p-3 space-y-2">
       <div className="flex items-center gap-2">
         <svg
           width="14"
@@ -196,7 +196,7 @@ export default function AIErrorExplainer({
 
       {explanation && (
         <>
-          <div className="text-xs font-mono text-[#ccc] leading-relaxed bg-[#0d0d1a] border border-[#1a1a2e] rounded p-2.5 whitespace-pre-wrap">
+          <div className="text-xs font-mono text-[#ccc] leading-relaxed bg-[#060610] border border-[#ffffff10] rounded-lg p-2.5 whitespace-pre-wrap">
             {explanation}
           </div>
 

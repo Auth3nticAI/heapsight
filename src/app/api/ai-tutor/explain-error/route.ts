@@ -19,7 +19,7 @@ Your teaching style:
 - Keep explanations under 100 words
 - Use analogies when helpful
 
-Remember: These are beginners building their first games and robots. Make them feel capable.`;
+Remember: These are beginners building their first games and dungeons. Make them feel capable.`;
 
 function buildUserPrompt(errorMessage: string, userCode: string): string {
   return `A C++ beginner got this compilation error:

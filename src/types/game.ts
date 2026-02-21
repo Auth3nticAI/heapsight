@@ -4,9 +4,9 @@ export type GameTemplate =
   | "space_shooter"
   | "platformer"
   | "simple_rpg"
-  | "differential_drive_robot";
+  | "dungeon_crawler";
 
-export type TemplateCategory = "game" | "robot";
+export type TemplateCategory = "game" | "crawler";
 
 export interface GameTemplateInfo {
   id: GameTemplate;

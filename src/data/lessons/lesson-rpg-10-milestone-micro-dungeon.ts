@@ -3,730 +3,612 @@ import { Lesson } from "@/types/lesson";
 export const lessonRPG10: Lesson = {
   id: "rpg-10-milestone-micro-dungeon",
   title: "Milestone: Micro Dungeon",
-  description: "Move, fight, win. The complete tick pipeline: input, move, combat, cleanup, render. All passes in order.",
+  description: "Milestone: the full turn pipeline is wired up. Move, chase, fight, kill. Add a kills counter to confirm the architecture works end to end.",
   order: 10,
-  xpReward: 150,
+  xpReward: 100,
   tier: "free",
-  concepts: ["tick pipeline", "game loop", "win condition", "milestone integration", "deterministic simulation"],
+  concepts: ["milestone", "kills counter", "complete pipeline", "architecture verification"],
   part1: {
-    title: "Concept: Complete Tick Pipeline",
+    title: "Concept: Complete Turn Pipeline",
     type: "concept",
     instructions: `# Milestone: Micro Dungeon
 
-## Mental Model
+## What You Built (L06-L09)
+You now have a complete turn-based combat loop:
+- **INPUT**: Player presses WASD
+- **RESOLVE**: \`resolveCommand()\` moves or flips to INTENT_ATTACK. \`resolveCombat()\` applies damage.
+- **WORLD**: \`phaseWorld()\` moves the enemy one step toward player.
+- **CLEANUP**: \`phaseCleanup()\` removes dead entities, increments turns.
+- **RENDER**: Draw tiles, player, enemy, HUD.
 
-The tick pipeline is the complete sequence of passes that constitute one turn: input, intent, move player, move enemies, combat, cleanup, render. Each pass reads state left by the previous pass and writes state for the next. This is the architecture. Every future feature -- inventory, quests, save/load, replay -- plugs into this pipeline as a new pass or modifies an existing one. The pipeline is the game.
-
-## What Breaks Without This
-
-Without a complete pipeline, you have scattered if-statements. Movement is in one place, combat in another, rendering in a third. Adding a new feature means finding all the right places to insert code. Missing one creates bugs: the enemy renders at its old position, or the player attacks a dead entity. The pipeline eliminates this: every feature is a named pass with a defined position in the sequence.
-
-## The Fix: Named Passes in Explicit Order
-
+## This Lesson: Kills Counter
+One addition: a \`kills\` counter. When the enemy dies in \`phaseCleanup()\`, increment kills. This proves the full pipeline is observable from outside -- a number goes up when combat succeeds.
 \`\`\`cpp
-for (int turn = 0; turn < MAX_TURNS; turn++) {
-    // Pass 1: Input
-    int input = inputs[turn];
+int kills = 0;
 
-    // Pass 2: Move player
-    movePlayer(input);
-
-    // Pass 3: Move enemies
-    moveEnemies();
-
-    // Pass 4: Combat (if input == 5)
-    if (input == 5) combatPass(0);
-
-    // Pass 5: Cleanup dead entities
-    cleanupPass();
-
-    // Pass 6: Render
-    renderGrid();
-
-    // Pass 7: Win check
-    if (entity_count == 1) { /* player wins */ break; }
+void phaseCleanup() {
+    if (enemy_alive && enemy_hp <= 0) {
+        enemy_alive = false;
+        kills++;
+        cout << "Kill confirmed" << endl;
+        cout << "Kills: " << kills << endl;
+    }
+    turn_count++;
 }
 \`\`\`
 
-Each pass is a function. Each function operates on the shared entity arrays. The order is the architecture -- change the order, change the game.
-
 ## Key Concepts
+- \`kills\` is a single integer that accumulates over the session
+- The kill is confirmed in CLEANUP, not RESOLVE -- consistent with deferred removal
+- This counter can drive future systems: level up, unlock new areas, track difficulty
 
-- **Pipeline as architecture** -- the tick sequence defines game behavior. Adding features means adding passes, not editing existing ones.
-- **Win condition** -- when entity_count drops to 1 (only player remains), the game is won. A data check, not a special flag.
-- **Pass isolation** -- each pass reads from arrays and writes to arrays. No pass calls another pass. Main() is the scheduler.
-- **Deterministic** -- same input array produces identical entity positions, combat results, and win timing every run.
-
-## Performance Insight
-
-A 6-turn game with 2 entities runs approximately 50 array operations per turn -- under 1 microsecond total. The pipeline overhead is zero. The architecture is not chosen for performance at this scale; it is chosen for correctness. Performance benefits emerge at scale (50+ entities) because passes sweep arrays contiguously.
-
-## Memory Insight
-
-The entire game state fits in: 4 entity arrays (1088 bytes), one grid (100 bytes), a few scalars (turn counter, entity_count, player gold). Total: under 1.5 KB. No heap. No dynamic allocation. Everything on the stack or in global arrays. This is the memory footprint of a complete turn-based RPG loop.
+## Architecture Summary
+The five-phase pipeline (INPUT, RESOLVE, WORLD, CLEANUP, RENDER) is now complete. Every subsequent lesson adds to one or more phases without restructuring the loop. This is the architecture that scales to 100 lessons.
 
 ## Your Task
+Add \`kills\` counter. Update \`phaseCleanup()\` to increment it on death. Simulate a fatal attack sequence and show the full pipeline output.
 
-Review the full pipeline. Given the 6-turn input sequence [4, 4, 5, 5, 5, 5], trace through each pass. The player moves right twice (toward enemy at (5,1)), then attacks 3 times (HP 30 -> 20 -> 10 -> 0). Enemy dies on turn 5. Win on turn 5.
-
-Expected key output lines:
+Expected output:
 \`\`\`
-TICK|1|PASS:move|P:2,1|E:4,1
-TICK|2|PASS:move|P:3,1|E:3,1
-TICK|3|PASS:combat
-HIT|0->|1|DMG:10|HP:20
-TICK|4|PASS:combat
-HIT|0->|1|DMG:10|HP:10
-TICK|5|PASS:combat
-HIT|0->|1|DMG:10|HP:0
-DEATH|entity_1
-WIN|all enemies defeated
-TURN|5
-HP|100
-GOLD|0
-GAME_MESSAGE|Micro dungeon complete! Player wins in 5 turns.
-\`\`\`
-
-Wait -- the enemy also chases each turn. Let me retrace:
-- Start: P(1,1) E(5,1)
-- Turn 1 input=4 (right): P moves to (2,1). E chases: 5>2, x-- to (4,1).
-- Turn 2 input=4 (right): P moves to (3,1). E chases: 4>3, x-- to (3,1). OVERLAP.
-
-The enemy overlaps the player. For this milestone, the chase AI skips movement if already adjacent (Manhattan dist <= 1). This prevents overlap and keeps the enemy next to the player for combat.
-
-Revised with adjacency guard on chase:
-- Start: P(1,1) E(5,1)
-- Turn 1 input=4: P(2,1). E: dist=3, chase to (4,1). dist now 2.
-- Turn 2 input=4: P(3,1). E: dist=1 (|4-3|+|1-1|=1), already adjacent, no move. E stays (4,1).
-- Turn 3 input=5 (attack): No player move. E: adjacent, no move. Combat: adjacent, HIT. HP 30->20.
-- Turn 4 input=5: Combat: HIT. HP 20->10.
-- Turn 5 input=5: Combat: HIT. HP 10->0. DEATH. entity_count=1. WIN.
-
-\`\`\`
-TICK|1|P:2,1|E:4,1
-TICK|2|P:3,1|E:4,1
-TICK|3|P:3,1|E:4,1
-HIT|0->|1|DMG:10|HP:20
-TICK|4|P:3,1|E:4,1
-HIT|0->|1|DMG:10|HP:10
-TICK|5|P:3,1|E:4,1
-HIT|0->|1|DMG:10|HP:0
-DEATH|entity_1
-WIN|all enemies defeated
-\`\`\`
-
-## Beginner Trap
-
-**Adding the win check inside the combat pass.** If you check for win during combat, the cleanup pass hasn't run yet -- the dead entity is still in the array. entity_count is still 2. The win check must happen AFTER cleanup, when entity_count accurately reflects live entities. Pipeline order matters: combat, cleanup, then win check.
-
-## Elite Insight
-
-The original Rogue (1980) uses exactly this pipeline: input, move player, move monsters, resolve combat, remove dead, redraw screen, check win/loss. Nethack, Angband, DCSS -- all classic roguelikes follow the same turn pipeline. It's been the standard architecture for 45 years because it is correct, debuggable, and deterministic. You just built the same thing.
-
-## Systems Thinking Connection
-
-This complete tick pipeline maps to the Space Shooter's frame loop: input, physics, collision, cleanup, render. Both paths enforce strict pass ordering. The Platformer path adds an accumulator for sub-frame physics steps. The Robotics path's executor callback chain is the same pattern: ordered processing stages with no interleaving.
-
-## Skill Reinforcement
-
-This milestone integrates every concept from lessons 1-9: grid rendering (L1-2), input/intent (L3-4), collision (L5), entity arrays (L6), turn pipeline (L7), combat (L8), and death/cleanup (L9). Phase 2 (lessons 11-20) will extract this into structs, headers, and a proper World state.
-
-## Mastery Check
-
-If you add a new pass (e.g., status effects that tick down each turn), where does it go in the pipeline? After combat and before cleanup. Status effects modify HP (poison damage), so they run after combat (which also modifies HP). Cleanup removes entities with HP <= 0, so it must run after all HP-modifying passes. The pipeline dictates: combat -> status effects -> cleanup -> render.`,
+Milestone: micro-dungeon
+Phases: INPUT -> RESOLVE -> WORLD -> CLEANUP -> RENDER
+Kill confirmed
+Kills: 1
+Turn: 1
+\`\`\``,
     starterCode: `#include <iostream>
 using namespace std;
 
-const int W=10, H=10;
-const int MAX_ENTITIES = 64;
-int entity_x[MAX_ENTITIES];
-int entity_y[MAX_ENTITIES];
-int entity_hp[MAX_ENTITIES];
-char entity_glyph[MAX_ENTITIES];
-int entity_count = 0;
+int enemy_hp = 3;
+int enemy_max_hp = 10;
+bool enemy_alive = true;
+int turn_count = 0;
+// TODO 1: Add kills = 0
 
-void spawnEntity(int x,int y,int hp,char glyph){
-    entity_x[entity_count]=x;entity_y[entity_count]=y;
-    entity_hp[entity_count]=hp;entity_glyph[entity_count]=glyph;
-    entity_count++;
+const int INTENT_NONE = 0;
+const int INTENT_ATTACK = 5;
+int pending_intent = INTENT_ATTACK;
+
+void resolveCombat() {
+    if (pending_intent != INTENT_ATTACK) return;
+    int dmg = 3;
+    enemy_hp -= dmg;
+    pending_intent = INTENT_NONE;
 }
 
-bool isAdjacent(int x1,int y1,int x2,int y2){
-    int dx=x1-x2;int dy=y1-y2;
-    if(dx<0)dx=-dx;if(dy<0)dy=-dy;
-    return(dx+dy)==1;
-}
-
-void movePlayer(int input){
-    if(input==4)entity_x[0]++;
-    if(input==6)entity_x[0]--;
-    if(input==8)entity_y[0]--;
-    if(input==2)entity_y[0]++;
-}
-
-void moveEnemies(){
-    for(int i=1;i<entity_count;i++){
-        if(isAdjacent(entity_x[i],entity_y[i],entity_x[0],entity_y[0]))continue;
-        if(entity_x[i]>entity_x[0])entity_x[i]--;
-        else if(entity_x[i]<entity_x[0])entity_x[i]++;
-        else if(entity_y[i]>entity_y[0])entity_y[i]--;
-        else if(entity_y[i]<entity_y[0])entity_y[i]++;
+void phaseCleanup() {
+    if (enemy_alive && enemy_hp <= 0) {
+        enemy_alive = false;
+        // TODO 2: kills++; cout "Kill confirmed" and "Kills: " + kills
     }
+    turn_count++;
 }
 
-void combatPass(int attacker){
-    for(int i=0;i<entity_count;i++){
-        if(i==attacker)continue;
-        if(isAdjacent(entity_x[attacker],entity_y[attacker],entity_x[i],entity_y[i])){
-            entity_hp[i]-=10;
-            cout<<"HIT|"<<attacker<<"->|"<<i<<"|DMG:10|HP:"<<entity_hp[i]<<endl;
-            return;
-        }
-    }
-    cout<<"MISS|no adjacent target"<<endl;
-}
-
-void cleanupPass(){
-    for(int i=entity_count-1;i>=1;i--){
-        if(entity_hp[i]<=0){
-            cout<<"DEATH|entity_"<<i<<endl;
-            int last=entity_count-1;
-            entity_x[i]=entity_x[last];entity_y[i]=entity_y[last];
-            entity_hp[i]=entity_hp[last];entity_glyph[i]=entity_glyph[last];
-            entity_count--;
-        }
-    }
-}
-
-int main(){
-    spawnEntity(1,1,100,'@');
-    spawnEntity(5,1,30,'E');
-
-    int inputs[]={4,4,5,5,5,5};
-    int num_turns=6;
-    bool won=false;
-
-    for(int t=0;t<num_turns;t++){
-        int input=inputs[t];
-        if(input!=5) movePlayer(input);
-        moveEnemies();
-        if(input==5) combatPass(0);
-        // TODO: Call cleanupPass()
-        // TODO: Print TICK line: TICK|N|P:x,y|E:x,y (if enemy alive)
-        // TODO: Check win condition: if entity_count==1, print WIN|all enemies defeated, set won=true, break
-    }
-
-    cout<<"TURN|"<<(won?5:num_turns)<<endl;
-    cout<<"HP|"<<entity_hp[0]<<endl;
-    cout<<"GOLD|0"<<endl;
-    if(won) cout<<"GAME_MESSAGE|Micro dungeon complete! Player wins in 5 turns."<<endl;
-    else cout<<"GAME_MESSAGE|Dungeon not cleared."<<endl;
-
+int main() {
+    cout << "Milestone: micro-dungeon" << endl;
+    cout << "Phases: INPUT -> RESOLVE -> WORLD -> CLEANUP -> RENDER" << endl;
+    resolveCombat();
+    phaseCleanup();
+    cout << "Turn: " << turn_count << endl;
     return 0;
-}
-`,
+}`,
     solutionCode: `#include <iostream>
 using namespace std;
 
-const int W=10, H=10;
-const int MAX_ENTITIES = 64;
-int entity_x[MAX_ENTITIES];
-int entity_y[MAX_ENTITIES];
-int entity_hp[MAX_ENTITIES];
-char entity_glyph[MAX_ENTITIES];
-int entity_count = 0;
+int enemy_hp = 3;
+int enemy_max_hp = 10;
+bool enemy_alive = true;
+int turn_count = 0;
+int kills = 0;
 
-void spawnEntity(int x,int y,int hp,char glyph){
-    entity_x[entity_count]=x;entity_y[entity_count]=y;
-    entity_hp[entity_count]=hp;entity_glyph[entity_count]=glyph;
-    entity_count++;
+const int INTENT_NONE = 0;
+const int INTENT_ATTACK = 5;
+int pending_intent = INTENT_ATTACK;
+
+void resolveCombat() {
+    if (pending_intent != INTENT_ATTACK) return;
+    int dmg = 3;
+    enemy_hp -= dmg;
+    pending_intent = INTENT_NONE;
 }
 
-bool isAdjacent(int x1,int y1,int x2,int y2){
-    int dx=x1-x2;int dy=y1-y2;
-    if(dx<0)dx=-dx;if(dy<0)dy=-dy;
-    return(dx+dy)==1;
-}
-
-void movePlayer(int input){
-    if(input==4)entity_x[0]++;
-    if(input==6)entity_x[0]--;
-    if(input==8)entity_y[0]--;
-    if(input==2)entity_y[0]++;
-}
-
-void moveEnemies(){
-    for(int i=1;i<entity_count;i++){
-        if(isAdjacent(entity_x[i],entity_y[i],entity_x[0],entity_y[0]))continue;
-        if(entity_x[i]>entity_x[0])entity_x[i]--;
-        else if(entity_x[i]<entity_x[0])entity_x[i]++;
-        else if(entity_y[i]>entity_y[0])entity_y[i]--;
-        else if(entity_y[i]<entity_y[0])entity_y[i]++;
+void phaseCleanup() {
+    if (enemy_alive && enemy_hp <= 0) {
+        enemy_alive = false;
+        kills++;
+        cout << "Kill confirmed" << endl;
+        cout << "Kills: " << kills << endl;
     }
+    turn_count++;
 }
 
-void combatPass(int attacker){
-    for(int i=0;i<entity_count;i++){
-        if(i==attacker)continue;
-        if(isAdjacent(entity_x[attacker],entity_y[attacker],entity_x[i],entity_y[i])){
-            entity_hp[i]-=10;
-            cout<<"HIT|"<<attacker<<"->|"<<i<<"|DMG:10|HP:"<<entity_hp[i]<<endl;
-            return;
-        }
-    }
-    cout<<"MISS|no adjacent target"<<endl;
-}
-
-void cleanupPass(){
-    for(int i=entity_count-1;i>=1;i--){
-        if(entity_hp[i]<=0){
-            cout<<"DEATH|entity_"<<i<<endl;
-            int last=entity_count-1;
-            entity_x[i]=entity_x[last];entity_y[i]=entity_y[last];
-            entity_hp[i]=entity_hp[last];entity_glyph[i]=entity_glyph[last];
-            entity_count--;
-        }
-    }
-}
-
-int main(){
-    spawnEntity(1,1,100,'@');
-    spawnEntity(5,1,30,'E');
-
-    int inputs[]={4,4,5,5,5,5};
-    int num_turns=6;
-    bool won=false;
-    int final_turn=0;
-
-    for(int t=0;t<num_turns;t++){
-        int input=inputs[t];
-        if(input!=5) movePlayer(input);
-        moveEnemies();
-        if(input==5) combatPass(0);
-        cleanupPass();
-
-        cout<<"TICK|"<<(t+1)<<"|P:"<<entity_x[0]<<","<<entity_y[0];
-        if(entity_count>1)cout<<"|E:"<<entity_x[1]<<","<<entity_y[1];
-        cout<<endl;
-
-        final_turn=t+1;
-        if(entity_count==1){
-            cout<<"WIN|all enemies defeated"<<endl;
-            won=true;
-            break;
-        }
-    }
-
-    cout<<"TURN|"<<final_turn<<endl;
-    cout<<"HP|"<<entity_hp[0]<<endl;
-    cout<<"GOLD|0"<<endl;
-    if(won) cout<<"GAME_MESSAGE|Micro dungeon complete! Player wins in "<<final_turn<<" turns."<<endl;
-    else cout<<"GAME_MESSAGE|Dungeon not cleared."<<endl;
-
+int main() {
+    cout << "Milestone: micro-dungeon" << endl;
+    cout << "Phases: INPUT -> RESOLVE -> WORLD -> CLEANUP -> RENDER" << endl;
+    resolveCombat();
+    phaseCleanup();
+    cout << "Turn: " << turn_count << endl;
     return 0;
-}
-`,
+}`,
     tests: [
-      {
-        id: "t1",
-        description: "Tick 1 shows player moved right",
-        expectedOutput: "TICK\\|1\\|P:2,1\\|E:4,1",
-        isPattern: true,
-      },
-      {
-        id: "t2",
-        description: "HIT with damage applied",
-        expectedOutput: "HIT\\|0->\\|1\\|DMG:10",
-        isPattern: true,
-      },
-      {
-        id: "t3",
-        description: "DEATH event fires",
-        expectedOutput: "DEATH\\|entity_1",
-        isPattern: true,
-      },
-      {
-        id: "t4",
-        description: "WIN message",
-        expectedOutput: "WIN\\|all enemies defeated",
-        isPattern: true,
-      },
-      {
-        id: "t5",
-        description: "Player wins in 5 turns",
-        expectedOutput: "GAME_MESSAGE\\|Micro dungeon complete! Player wins in 5 turns\\.",
-        isPattern: true,
-      },
+      { id: "t1", description: "Milestone marker", expectedOutput: "Milestone: micro-dungeon", isPattern: false },
+      { id: "t2", description: "All phases listed", expectedOutput: "Phases: INPUT -> RESOLVE -> WORLD -> CLEANUP -> RENDER", isPattern: false },
+      { id: "t3", description: "Kill confirmed", expectedOutput: "Kill confirmed", isPattern: false },
+      { id: "t4", description: "Kills counter at 1", expectedOutput: "Kills: 1", isPattern: false },
+      { id: "t5", description: "Turn incremented", expectedOutput: "Turn: 1", isPattern: false },
     ],
     hints: [
-      "Call cleanupPass() after combatPass. Then print the TICK line. Then check if entity_count == 1 for win.",
-      "The TICK line: cout<<TICK|<<(t+1)<<|P:<<entity_x[0]<<,<<entity_y[0]; if(entity_count>1) add enemy position.",
-      "Win check: if(entity_count==1){ cout<<WIN|all enemies defeated<<endl; won=true; break; }",
+      "Add int kills = 0; at file scope alongside turn_count.",
+      "In phaseCleanup(), after setting enemy_alive = false: kills++; cout \"Kill confirmed\" and \"Kills: \" + kills.",
+      "The pipeline phrase needs WORLD in it: INPUT -> RESOLVE -> WORLD -> CLEANUP -> RENDER.",
     ],
-    estimatedMinutes: 12,
+    estimatedMinutes: 10
   },
   part2: {
-    title: "Build: Micro Dungeon",
+    title: "Build: Milestone - Micro Dungeon",
     type: "game_builder",
-    instructions: `# Build: Micro Dungeon
+    instructions: `# Build: Milestone - Micro Dungeon
 
-## Mental Model
+## What to Build
+Add a \`kills\` counter to the game. When the enemy dies, increment it. Display kills in the HUD and startup cout. This milestone confirms the full L06-L09 pipeline works together.
 
-The complete micro dungeon: a 10x10 room with walls, a player, an enemy, movement, combat, death, and a win condition. All systems working together through the tick pipeline. This is a playable game.
-
-## What Breaks Without This
-
-Without all systems integrated, the game is incomplete: movement without combat, or combat without death, or death without a win condition. Each system alone is trivial. The value is in the composition -- all passes running in order, producing a coherent game experience from simple data operations.
-
-## The Fix: Full Pipeline with Grid Rendering
-
-Run 6 turns. Player moves toward enemy, attacks when adjacent, kills enemy, wins. The grid renders each turn showing entity positions. The DUNGEON header, GRID_ROW lines, ENTITY lines, TICK lines, HIT/DEATH events, and WIN/GAME_MESSAGE lines together form the complete game output.
-
-## Key Concepts
-
-- **Complete pipeline** -- input, move, AI, combat, cleanup, render, win-check. Seven passes per turn.
-- **Win condition as data check** -- entity_count == 1 means all enemies are dead. No special flag needed.
-- **Grid as visual proof** -- the grid shows entity positions each turn. The student can see the game play out.
-- **Deterministic playthrough** -- the input array is fixed. The same array always produces the same game.
-
-## Performance Insight
-
-The full pipeline with grid rendering is approximately 200 array operations per turn. A 6-turn game totals 1200 operations -- under 10 microseconds on modern hardware. The entire micro dungeon runs in less time than a single frame of a 60fps game.
-
-## Memory Insight
-
-Total memory: entity arrays (1088 bytes) + grid (100 bytes) + input array (24 bytes) + scalars (32 bytes) = ~1.25 KB. The complete RPG game loop fits in a fraction of one cache page. No heap allocation anywhere.
-
-## Your Task
-
-Build the complete micro dungeon. Player at (1,1) HP:100. Enemy at (5,1) HP:30. Inputs: [4,4,5,5,5,5]. Run the full pipeline with grid rendering each turn. Show DUNGEON header, GRID_ROW lines, ENTITY lines, TICK lines, HIT/DEATH/WIN events.
-
-Expected output includes:
+## Step 1: Add kills counter
+\`\`\`cpp
+int kills = 0;
 \`\`\`
-DUNGEON|rpg-v0
-GRID_ROW|0|##########
-GRID_ROW|1|#.@..E...#
-TICK|1|P:2,1|E:4,1
-TICK|2|P:3,1|E:4,1
-TICK|3|P:3,1|E:4,1
-HIT|0->|1|DMG:10|HP:20
-TICK|4|P:3,1|E:4,1
-HIT|0->|1|DMG:10|HP:10
-TICK|5|P:3,1|E:4,1
-HIT|0->|1|DMG:10|HP:0
-DEATH|entity_1
-WIN|all enemies defeated
-TURN|5
-HP|100
-GOLD|0
-GAME_MESSAGE|Micro dungeon complete! Player wins in 5 turns.
+Add this at file scope alongside \`turn_count\`.
+
+## Step 2: Update phaseCleanup()
+Add kills increment alongside the death announcement:
+\`\`\`cpp
+void phaseCleanup() {
+    if (enemy_alive && enemy_hp <= 0) {
+        enemy_alive = false;
+        kills++;
+        cout << "Kill confirmed" << endl;
+    }
+    turn_count++;
+}
 \`\`\`
 
-## Beginner Trap
+## Step 3: Add to startup cout
+\`\`\`cpp
+cout << "Milestone: micro-dungeon" << endl;
+cout << "Phases: INPUT -> RESOLVE -> WORLD -> CLEANUP -> RENDER" << endl;
+\`\`\`
 
-**Printing the grid after the win check breaks out of the loop.** If you break before rendering, the final turn's grid is never shown. Render before the win check, or render inside the win message. Pipeline order: combat -> cleanup -> render -> win check.
+## Step 4: Add kills to HUD
+\`\`\`cpp
+DrawText(TextFormat("Kills: %d", kills), 400, 180, 16, YELLOW);
+\`\`\`
 
-## Elite Insight
+**Click Run now** -- walk to the enemy and bump it 4 times. Watch the console: Damage, Enemy HP, Damage, Enemy HP, Damage, Enemy HP, Damage, Enemy HP 0/10... then "Kill confirmed". The enemy disappears and the YELLOW Kills counter in the HUD jumps to 1.
 
-This micro dungeon is structurally identical to the core loop of Nethack, DCSS (Dungeon Crawl Stone Soup), and Brogue. All classic roguelikes: one room, grid-based, turn-by-turn, deterministic. The difference is content scale -- they have hundreds of rooms, hundreds of entity types, thousands of items. But the pipeline is the same. You just built the foundation that every classic roguelike shares.
+## Milestone Complete
+You now have a working micro-dungeon with:
+- Turn-based movement (WASD)
+- Chase AI (\`phaseWorld()\`)
+- Bump combat (INTENT_ATTACK)
+- Damage resolution (HP decrement)
+- Deferred removal (death in CLEANUP)
+- Kill tracking (\`kills\` counter)
 
-## Mastery Check
+The next five lessons (L11-L15) refactor this into cleaner data structures without changing the behavior. The architecture is proven -- now we clean it up.
 
-If you wanted to add a second enemy at (1,5) HP:20, what changes? Just one line: spawnEntity(1,5,20,'E'). The moveEnemies pass already iterates all entities. The combat pass already checks all entities for adjacency. The cleanup pass already removes any entity with HP<=0. The win check already tests entity_count==1. All systems handle multiple enemies by design. The pipeline scales without modification.`,
+Expected cout output:
+\`\`\`
+Player: (5, 5)
+Pipeline: INPUT -> RESOLVE -> CLEANUP -> RENDER
+Turn: 0
+Enemy: (9, 7)
+Enemies: 1
+Combat: bump
+Player HP: 20/20
+Enemy HP: 10/10
+Kill: hp-to-zero
+Milestone: micro-dungeon
+Phases: INPUT -> RESOLVE -> WORLD -> CLEANUP -> RENDER
+\`\`\``,
     starterCode: `#include <iostream>
+#include "raylib.h"
 using namespace std;
 
-const int W=10,H=10;
-const int MAX_ENTITIES=64;
-int entity_x[MAX_ENTITIES];
-int entity_y[MAX_ENTITIES];
-int entity_hp[MAX_ENTITIES];
-char entity_glyph[MAX_ENTITIES];
-int entity_count=0;
+const int GRID_W = 12;
+const int GRID_H = 10;
+const int TILE = 32;
+int tiles[GRID_H][GRID_W];
+int player_x = 5, player_y = 5;
 
-void spawnEntity(int x,int y,int hp,char glyph){
-    entity_x[entity_count]=x;entity_y[entity_count]=y;
-    entity_hp[entity_count]=hp;entity_glyph[entity_count]=glyph;
-    entity_count++;
-}
+const int INTENT_NONE = 0;
+const int INTENT_UP = 1;
+const int INTENT_DOWN = 2;
+const int INTENT_LEFT = 3;
+const int INTENT_RIGHT = 4;
+const int INTENT_ATTACK = 5;
+int pending_intent = INTENT_NONE;
+int turn_count = 0;
+// TODO 1: Add int kills = 0;
 
-bool isAdjacent(int x1,int y1,int x2,int y2){
-    int dx=x1-x2;int dy=y1-y2;
-    if(dx<0)dx=-dx;if(dy<0)dy=-dy;
-    return(dx+dy)==1;
-}
+int enemy_x = 9, enemy_y = 7;
+bool enemy_alive = true;
 
-void movePlayer(int input){
-    if(input==4)entity_x[0]++;
-    if(input==6)entity_x[0]--;
-    if(input==8)entity_y[0]--;
-    if(input==2)entity_y[0]++;
-}
+int player_hp = 20, player_max_hp = 20;
+int enemy_hp = 10, enemy_max_hp = 10;
 
-void moveEnemies(){
-    for(int i=1;i<entity_count;i++){
-        if(isAdjacent(entity_x[i],entity_y[i],entity_x[0],entity_y[0]))continue;
-        if(entity_x[i]>entity_x[0])entity_x[i]--;
-        else if(entity_x[i]<entity_x[0])entity_x[i]++;
-        else if(entity_y[i]>entity_y[0])entity_y[i]--;
-        else if(entity_y[i]<entity_y[0])entity_y[i]++;
+const char* intentName(int intent) {
+    switch(intent) {
+        case INTENT_UP: return "MOVE_UP";
+        case INTENT_DOWN: return "MOVE_DOWN";
+        case INTENT_LEFT: return "MOVE_LEFT";
+        case INTENT_RIGHT: return "MOVE_RIGHT";
+        case INTENT_ATTACK: return "ATTACK";
+        default: return "NONE";
     }
 }
 
-void combatPass(int attacker){
-    for(int i=0;i<entity_count;i++){
-        if(i==attacker)continue;
-        if(isAdjacent(entity_x[attacker],entity_y[attacker],entity_x[i],entity_y[i])){
-            entity_hp[i]-=10;
-            cout<<"HIT|"<<attacker<<"->|"<<i<<"|DMG:10|HP:"<<entity_hp[i]<<endl;
-            return;
+void resolveCommand() {
+    if (pending_intent == INTENT_NONE || pending_intent == INTENT_ATTACK) return;
+    int new_x = player_x;
+    int new_y = player_y;
+    if (pending_intent == INTENT_UP) new_y--;
+    else if (pending_intent == INTENT_DOWN) new_y++;
+    else if (pending_intent == INTENT_LEFT) new_x--;
+    else if (pending_intent == INTENT_RIGHT) new_x++;
+
+    if (new_x < 0 || new_x >= GRID_W || new_y < 0 || new_y >= GRID_H) {
+        pending_intent = INTENT_NONE;
+        return;
+    }
+    if (tiles[new_y][new_x] == 1) {
+        pending_intent = INTENT_NONE;
+        return;
+    }
+    if (enemy_alive && new_x == enemy_x && new_y == enemy_y) {
+        pending_intent = INTENT_ATTACK;
+        return;
+    }
+    player_x = new_x;
+    player_y = new_y;
+    pending_intent = INTENT_NONE;
+}
+
+void resolveCombat() {
+    if (pending_intent != INTENT_ATTACK) return;
+    int dmg = 3;
+    enemy_hp -= dmg;
+    cout << "Damage: " << dmg << endl;
+    cout << "Enemy HP: " << enemy_hp << "/" << enemy_max_hp << endl;
+    pending_intent = INTENT_NONE;
+}
+
+void phaseInput() {
+    pending_intent = INTENT_NONE;
+    if (IsKeyPressed(KEY_W)) pending_intent = INTENT_UP;
+    else if (IsKeyPressed(KEY_S)) pending_intent = INTENT_DOWN;
+    else if (IsKeyPressed(KEY_A)) pending_intent = INTENT_LEFT;
+    else if (IsKeyPressed(KEY_D)) pending_intent = INTENT_RIGHT;
+}
+
+void phaseResolve() {
+    resolveCommand();
+    resolveCombat();
+}
+
+void phaseWorld() {
+    if (!enemy_alive) return;
+    int dx = player_x - enemy_x;
+    int dy = player_y - enemy_y;
+    int move_x = 0, move_y = 0;
+    if (abs(dx) >= abs(dy)) {
+        move_x = (dx > 0) ? 1 : -1;
+    } else {
+        move_y = (dy > 0) ? 1 : -1;
+    }
+    int nx = enemy_x + move_x;
+    int ny = enemy_y + move_y;
+    if (nx >= 0 && nx < GRID_W && ny >= 0 && ny < GRID_H &&
+        tiles[ny][nx] != 1 &&
+        !(nx == player_x && ny == player_y)) {
+        enemy_x = nx;
+        enemy_y = ny;
+    }
+}
+
+void phaseCleanup() {
+    if (enemy_alive && enemy_hp <= 0) {
+        enemy_alive = false;
+        // TODO 2: kills++; cout "Kill confirmed"
+        cout << "Enemy dead" << endl;
+    }
+    turn_count++;
+}
+
+void initTiles() {
+    for (int y = 0; y < GRID_H; y++) {
+        for (int x = 0; x < GRID_W; x++) {
+            if (y == 0 || y == GRID_H - 1 || x == 0 || x == GRID_W - 1)
+                tiles[y][x] = 1;
+            else
+                tiles[y][x] = 0;
         }
     }
-    cout<<"MISS|no adjacent target"<<endl;
+    tiles[3][4] = 1;
+    tiles[3][5] = 1;
+    tiles[6][7] = 1;
+    tiles[6][8] = 1;
 }
 
-void cleanupPass(){
-    for(int i=entity_count-1;i>=1;i--){
-        if(entity_hp[i]<=0){
-            cout<<"DEATH|entity_"<<i<<endl;
-            int last=entity_count-1;
-            entity_x[i]=entity_x[last];entity_y[i]=entity_y[last];
-            entity_hp[i]=entity_hp[last];entity_glyph[i]=entity_glyph[last];
-            entity_count--;
+int main() {
+    InitWindow(640, 640, "HeapSight RPG");
+    SetTargetFPS(60);
+
+    initTiles();
+
+    int wall_count = 0;
+    for (int y = 0; y < GRID_H; y++)
+        for (int x = 0; x < GRID_W; x++)
+            if (tiles[y][x] == 1) wall_count++;
+
+    cout << "Player: (" << player_x << ", " << player_y << ")" << endl;
+    cout << "Pipeline: INPUT -> RESOLVE -> CLEANUP -> RENDER" << endl;
+    cout << "Turn: " << turn_count << endl;
+    cout << "Enemy: (" << enemy_x << ", " << enemy_y << ")" << endl;
+    cout << "Enemies: 1" << endl;
+    cout << "Combat: bump" << endl;
+    cout << "Player HP: " << player_hp << "/" << player_max_hp << endl;
+    cout << "Enemy HP: " << enemy_hp << "/" << enemy_max_hp << endl;
+    cout << "Kill: hp-to-zero" << endl;
+    // TODO 3: cout "Milestone: micro-dungeon" and "Phases: INPUT -> RESOLVE -> WORLD -> CLEANUP -> RENDER"
+
+    while (!WindowShouldClose()) {
+        phaseInput();
+        if (pending_intent != INTENT_NONE) {
+            phaseResolve();
+            phaseWorld();
+            phaseCleanup();
         }
-    }
-}
 
-void renderGrid(){
-    char grid[H][W];
-    for(int y=0;y<H;y++)for(int x=0;x<W;x++)grid[y][x]='.';
-    for(int x=0;x<W;x++){grid[0][x]='#';grid[H-1][x]='#';}
-    for(int y=0;y<H;y++){grid[y][0]='#';grid[y][W-1]='#';}
-    for(int i=0;i<entity_count;i++){
-        grid[entity_y[i]][entity_x[i]]=entity_glyph[i];
-    }
-    for(int y=0;y<H;y++){
-        cout<<"GRID_ROW|"<<y<<"|";
-        for(int x=0;x<W;x++)cout<<grid[y][x];
-        cout<<endl;
-    }
-}
+        BeginDrawing();
+        ClearBackground(BLACK);
 
-int main(){
-    spawnEntity(1,1,100,'@');
-    spawnEntity(5,1,30,'E');
+        for (int y = 0; y < GRID_H; y++) {
+            for (int x = 0; x < GRID_W; x++) {
+                Color c = (tiles[y][x] == 1) ? GRAY : DARKGRAY;
+                DrawRectangle(x * TILE, y * TILE, TILE - 1, TILE - 1, c);
+            }
+        }
+        DrawRectangle(player_x * TILE, player_y * TILE, TILE - 1, TILE - 1, GREEN);
+        if (enemy_alive) {
+            DrawRectangle(enemy_x * TILE, enemy_y * TILE, TILE - 1, TILE - 1, RED);
+        }
 
-    int inputs[]={4,4,5,5,5,5};
-    int num_turns=6;
-    bool won=false;
-    int final_turn=0;
+        DrawText("HeapSight RPG", 400, 10, 20, WHITE);
+        DrawText(TextFormat("Turn: %d", turn_count), 400, 40, 16, WHITE);
+        DrawText(TextFormat("Intent: %s", intentName(pending_intent)), 400, 60, 16, WHITE);
+        DrawText(TextFormat("Player: (%d, %d)", player_x, player_y), 400, 80, 16, WHITE);
+        DrawText(TextFormat("Walls: %d", wall_count), 400, 100, 16, WHITE);
+        if (enemy_alive) {
+            DrawText(TextFormat("Enemy: (%d, %d)", enemy_x, enemy_y), 400, 120, 16, RED);
+            DrawText(TextFormat("Enemy HP: %d/%d", enemy_hp, enemy_max_hp), 400, 160, 16, RED);
+        } else {
+            DrawText("Enemy: DEAD", 400, 120, 16, DARKGRAY);
+        }
+        DrawText(TextFormat("Player HP: %d/%d", player_hp, player_max_hp), 400, 140, 16, GREEN);
+        // TODO 4: DrawText(TextFormat("Kills: %d", kills), 400, 180, 16, YELLOW)
 
-    cout<<"DUNGEON|rpg-v0"<<endl;
-
-    for(int t=0;t<num_turns;t++){
-        int input=inputs[t];
-
-        // TODO: Complete the pipeline:
-        // 1. Move player (if input != 5)
-        // 2. Move enemies
-        // 3. Combat (if input == 5)
-        // 4. Cleanup dead entities
-        // 5. Render grid
-        // 6. Print TICK line
-        // 7. Check win: if entity_count==1, print WIN, set won=true, break
-
-        final_turn=t+1;
+        EndDrawing();
     }
 
-    cout<<"TURN|"<<final_turn<<endl;
-    cout<<"HP|"<<entity_hp[0]<<endl;
-    cout<<"GOLD|0"<<endl;
-    if(won)cout<<"GAME_MESSAGE|Micro dungeon complete! Player wins in "<<final_turn<<" turns."<<endl;
-    else cout<<"GAME_MESSAGE|Dungeon not cleared."<<endl;
-
+    CloseWindow();
     return 0;
-}
-`,
+}`,
     solutionCode: `#include <iostream>
+#include "raylib.h"
 using namespace std;
 
-const int W=10,H=10;
-const int MAX_ENTITIES=64;
-int entity_x[MAX_ENTITIES];
-int entity_y[MAX_ENTITIES];
-int entity_hp[MAX_ENTITIES];
-char entity_glyph[MAX_ENTITIES];
-int entity_count=0;
+const int GRID_W = 12;
+const int GRID_H = 10;
+const int TILE = 32;
+int tiles[GRID_H][GRID_W];
+int player_x = 5, player_y = 5;
 
-void spawnEntity(int x,int y,int hp,char glyph){
-    entity_x[entity_count]=x;entity_y[entity_count]=y;
-    entity_hp[entity_count]=hp;entity_glyph[entity_count]=glyph;
-    entity_count++;
-}
+const int INTENT_NONE = 0;
+const int INTENT_UP = 1;
+const int INTENT_DOWN = 2;
+const int INTENT_LEFT = 3;
+const int INTENT_RIGHT = 4;
+const int INTENT_ATTACK = 5;
+int pending_intent = INTENT_NONE;
+int turn_count = 0;
+int kills = 0;
 
-bool isAdjacent(int x1,int y1,int x2,int y2){
-    int dx=x1-x2;int dy=y1-y2;
-    if(dx<0)dx=-dx;if(dy<0)dy=-dy;
-    return(dx+dy)==1;
-}
+int enemy_x = 9, enemy_y = 7;
+bool enemy_alive = true;
 
-void movePlayer(int input){
-    if(input==4)entity_x[0]++;
-    if(input==6)entity_x[0]--;
-    if(input==8)entity_y[0]--;
-    if(input==2)entity_y[0]++;
-}
+int player_hp = 20, player_max_hp = 20;
+int enemy_hp = 10, enemy_max_hp = 10;
 
-void moveEnemies(){
-    for(int i=1;i<entity_count;i++){
-        if(isAdjacent(entity_x[i],entity_y[i],entity_x[0],entity_y[0]))continue;
-        if(entity_x[i]>entity_x[0])entity_x[i]--;
-        else if(entity_x[i]<entity_x[0])entity_x[i]++;
-        else if(entity_y[i]>entity_y[0])entity_y[i]--;
-        else if(entity_y[i]<entity_y[0])entity_y[i]++;
+const char* intentName(int intent) {
+    switch(intent) {
+        case INTENT_UP: return "MOVE_UP";
+        case INTENT_DOWN: return "MOVE_DOWN";
+        case INTENT_LEFT: return "MOVE_LEFT";
+        case INTENT_RIGHT: return "MOVE_RIGHT";
+        case INTENT_ATTACK: return "ATTACK";
+        default: return "NONE";
     }
 }
 
-void combatPass(int attacker){
-    for(int i=0;i<entity_count;i++){
-        if(i==attacker)continue;
-        if(isAdjacent(entity_x[attacker],entity_y[attacker],entity_x[i],entity_y[i])){
-            entity_hp[i]-=10;
-            cout<<"HIT|"<<attacker<<"->|"<<i<<"|DMG:10|HP:"<<entity_hp[i]<<endl;
-            return;
+void resolveCommand() {
+    if (pending_intent == INTENT_NONE || pending_intent == INTENT_ATTACK) return;
+    int new_x = player_x;
+    int new_y = player_y;
+    if (pending_intent == INTENT_UP) new_y--;
+    else if (pending_intent == INTENT_DOWN) new_y++;
+    else if (pending_intent == INTENT_LEFT) new_x--;
+    else if (pending_intent == INTENT_RIGHT) new_x++;
+
+    if (new_x < 0 || new_x >= GRID_W || new_y < 0 || new_y >= GRID_H) {
+        pending_intent = INTENT_NONE;
+        return;
+    }
+    if (tiles[new_y][new_x] == 1) {
+        pending_intent = INTENT_NONE;
+        return;
+    }
+    if (enemy_alive && new_x == enemy_x && new_y == enemy_y) {
+        pending_intent = INTENT_ATTACK;
+        return;
+    }
+    player_x = new_x;
+    player_y = new_y;
+    pending_intent = INTENT_NONE;
+}
+
+void resolveCombat() {
+    if (pending_intent != INTENT_ATTACK) return;
+    int dmg = 3;
+    enemy_hp -= dmg;
+    cout << "Damage: " << dmg << endl;
+    cout << "Enemy HP: " << enemy_hp << "/" << enemy_max_hp << endl;
+    pending_intent = INTENT_NONE;
+}
+
+void phaseInput() {
+    pending_intent = INTENT_NONE;
+    if (IsKeyPressed(KEY_W)) pending_intent = INTENT_UP;
+    else if (IsKeyPressed(KEY_S)) pending_intent = INTENT_DOWN;
+    else if (IsKeyPressed(KEY_A)) pending_intent = INTENT_LEFT;
+    else if (IsKeyPressed(KEY_D)) pending_intent = INTENT_RIGHT;
+}
+
+void phaseResolve() {
+    resolveCommand();
+    resolveCombat();
+}
+
+void phaseWorld() {
+    if (!enemy_alive) return;
+    int dx = player_x - enemy_x;
+    int dy = player_y - enemy_y;
+    int move_x = 0, move_y = 0;
+    if (abs(dx) >= abs(dy)) {
+        move_x = (dx > 0) ? 1 : -1;
+    } else {
+        move_y = (dy > 0) ? 1 : -1;
+    }
+    int nx = enemy_x + move_x;
+    int ny = enemy_y + move_y;
+    if (nx >= 0 && nx < GRID_W && ny >= 0 && ny < GRID_H &&
+        tiles[ny][nx] != 1 &&
+        !(nx == player_x && ny == player_y)) {
+        enemy_x = nx;
+        enemy_y = ny;
+    }
+}
+
+void phaseCleanup() {
+    if (enemy_alive && enemy_hp <= 0) {
+        enemy_alive = false;
+        kills++;
+        cout << "Kill confirmed" << endl;
+    }
+    turn_count++;
+}
+
+void initTiles() {
+    for (int y = 0; y < GRID_H; y++) {
+        for (int x = 0; x < GRID_W; x++) {
+            if (y == 0 || y == GRID_H - 1 || x == 0 || x == GRID_W - 1)
+                tiles[y][x] = 1;
+            else
+                tiles[y][x] = 0;
         }
     }
-    cout<<"MISS|no adjacent target"<<endl;
+    tiles[3][4] = 1;
+    tiles[3][5] = 1;
+    tiles[6][7] = 1;
+    tiles[6][8] = 1;
 }
 
-void cleanupPass(){
-    for(int i=entity_count-1;i>=1;i--){
-        if(entity_hp[i]<=0){
-            cout<<"DEATH|entity_"<<i<<endl;
-            int last=entity_count-1;
-            entity_x[i]=entity_x[last];entity_y[i]=entity_y[last];
-            entity_hp[i]=entity_hp[last];entity_glyph[i]=entity_glyph[last];
-            entity_count--;
+int main() {
+    InitWindow(640, 640, "HeapSight RPG");
+    SetTargetFPS(60);
+
+    initTiles();
+
+    int wall_count = 0;
+    for (int y = 0; y < GRID_H; y++)
+        for (int x = 0; x < GRID_W; x++)
+            if (tiles[y][x] == 1) wall_count++;
+
+    cout << "Player: (" << player_x << ", " << player_y << ")" << endl;
+    cout << "Pipeline: INPUT -> RESOLVE -> CLEANUP -> RENDER" << endl;
+    cout << "Turn: " << turn_count << endl;
+    cout << "Enemy: (" << enemy_x << ", " << enemy_y << ")" << endl;
+    cout << "Enemies: 1" << endl;
+    cout << "Combat: bump" << endl;
+    cout << "Player HP: " << player_hp << "/" << player_max_hp << endl;
+    cout << "Enemy HP: " << enemy_hp << "/" << enemy_max_hp << endl;
+    cout << "Kill: hp-to-zero" << endl;
+    cout << "Milestone: micro-dungeon" << endl;
+    cout << "Phases: INPUT -> RESOLVE -> WORLD -> CLEANUP -> RENDER" << endl;
+
+    while (!WindowShouldClose()) {
+        phaseInput();
+        if (pending_intent != INTENT_NONE) {
+            phaseResolve();
+            phaseWorld();
+            phaseCleanup();
         }
-    }
-}
 
-void renderGrid(){
-    char grid[H][W];
-    for(int y=0;y<H;y++)for(int x=0;x<W;x++)grid[y][x]='.';
-    for(int x=0;x<W;x++){grid[0][x]='#';grid[H-1][x]='#';}
-    for(int y=0;y<H;y++){grid[y][0]='#';grid[y][W-1]='#';}
-    for(int i=0;i<entity_count;i++){
-        grid[entity_y[i]][entity_x[i]]=entity_glyph[i];
-    }
-    for(int y=0;y<H;y++){
-        cout<<"GRID_ROW|"<<y<<"|";
-        for(int x=0;x<W;x++)cout<<grid[y][x];
-        cout<<endl;
-    }
-}
+        BeginDrawing();
+        ClearBackground(BLACK);
 
-int main(){
-    spawnEntity(1,1,100,'@');
-    spawnEntity(5,1,30,'E');
-
-    int inputs[]={4,4,5,5,5,5};
-    int num_turns=6;
-    bool won=false;
-    int final_turn=0;
-
-    cout<<"DUNGEON|rpg-v0"<<endl;
-
-    for(int t=0;t<num_turns;t++){
-        int input=inputs[t];
-        if(input!=5) movePlayer(input);
-        moveEnemies();
-        if(input==5) combatPass(0);
-        cleanupPass();
-        renderGrid();
-
-        cout<<"TICK|"<<(t+1)<<"|P:"<<entity_x[0]<<","<<entity_y[0];
-        if(entity_count>1)cout<<"|E:"<<entity_x[1]<<","<<entity_y[1];
-        cout<<endl;
-
-        final_turn=t+1;
-        if(entity_count==1){
-            cout<<"WIN|all enemies defeated"<<endl;
-            won=true;
-            break;
+        for (int y = 0; y < GRID_H; y++) {
+            for (int x = 0; x < GRID_W; x++) {
+                Color c = (tiles[y][x] == 1) ? GRAY : DARKGRAY;
+                DrawRectangle(x * TILE, y * TILE, TILE - 1, TILE - 1, c);
+            }
         }
+        DrawRectangle(player_x * TILE, player_y * TILE, TILE - 1, TILE - 1, GREEN);
+        if (enemy_alive) {
+            DrawRectangle(enemy_x * TILE, enemy_y * TILE, TILE - 1, TILE - 1, RED);
+        }
+
+        DrawText("HeapSight RPG", 400, 10, 20, WHITE);
+        DrawText(TextFormat("Turn: %d", turn_count), 400, 40, 16, WHITE);
+        DrawText(TextFormat("Intent: %s", intentName(pending_intent)), 400, 60, 16, WHITE);
+        DrawText(TextFormat("Player: (%d, %d)", player_x, player_y), 400, 80, 16, WHITE);
+        DrawText(TextFormat("Walls: %d", wall_count), 400, 100, 16, WHITE);
+        if (enemy_alive) {
+            DrawText(TextFormat("Enemy: (%d, %d)", enemy_x, enemy_y), 400, 120, 16, RED);
+            DrawText(TextFormat("Enemy HP: %d/%d", enemy_hp, enemy_max_hp), 400, 160, 16, RED);
+        } else {
+            DrawText("Enemy: DEAD", 400, 120, 16, DARKGRAY);
+        }
+        DrawText(TextFormat("Player HP: %d/%d", player_hp, player_max_hp), 400, 140, 16, GREEN);
+        DrawText(TextFormat("Kills: %d", kills), 400, 180, 16, YELLOW);
+
+        EndDrawing();
     }
 
-    cout<<"TURN|"<<final_turn<<endl;
-    cout<<"HP|"<<entity_hp[0]<<endl;
-    cout<<"GOLD|0"<<endl;
-    if(won)cout<<"GAME_MESSAGE|Micro dungeon complete! Player wins in "<<final_turn<<" turns."<<endl;
-    else cout<<"GAME_MESSAGE|Dungeon not cleared."<<endl;
-
+    CloseWindow();
     return 0;
-}
-`,
+}`,
     tests: [
-      {
-        id: "g1",
-        description: "DUNGEON header present",
-        expectedOutput: "DUNGEON\\|rpg-v0",
-        isPattern: true,
-      },
-      {
-        id: "g2",
-        description: "Grid rows rendered",
-        expectedOutput: "GRID_ROW\\|0\\|##########",
-        isPattern: true,
-      },
-      {
-        id: "g3",
-        description: "Tick 1 shows positions",
-        expectedOutput: "TICK\\|1\\|P:2,1\\|E:4,1",
-        isPattern: true,
-      },
-      {
-        id: "g4",
-        description: "HIT event with damage",
-        expectedOutput: "HIT\\|0->\\|1\\|DMG:10",
-        isPattern: true,
-      },
-      {
-        id: "g5",
-        description: "DEATH event",
-        expectedOutput: "DEATH\\|entity_1",
-        isPattern: true,
-      },
-      {
-        id: "g6",
-        description: "WIN condition met",
-        expectedOutput: "WIN\\|all enemies defeated",
-        isPattern: true,
-      },
-      {
-        id: "g7",
-        description: "HP reported",
-        expectedOutput: "HP\\|100",
-        isPattern: true,
-      },
-      {
-        id: "g8",
-        description: "GOLD reported",
-        expectedOutput: "GOLD\\|0",
-        isPattern: true,
-      },
-      {
-        id: "g9",
-        description: "Game complete message",
-        expectedOutput: "GAME_MESSAGE\\|Micro dungeon complete!",
-        isPattern: true,
-      },
+      { id: "g1", description: "Prints player position", expectedOutput: "Player: (5, 5)", isPattern: false },
+      { id: "g2", description: "Prints initial turn", expectedOutput: "Turn: 0", isPattern: false },
+      { id: "g3", description: "Milestone marker", expectedOutput: "Milestone: micro-dungeon", isPattern: false },
+      { id: "g4", description: "Full pipeline listed", expectedOutput: "Phases: INPUT -> RESOLVE -> WORLD -> CLEANUP -> RENDER", isPattern: false },
+      { id: "g5", description: "Player HP shown", expectedOutput: "Player HP: 20/20", isPattern: false },
     ],
     hints: [
-      "The pipeline inside the loop is: movePlayer (if not attack), moveEnemies, combatPass (if attack), cleanupPass, renderGrid, print TICK, check win.",
-      "Use input==5 to decide combat: if(input==5) combatPass(0); -- input 5 means attack/wait.",
-      "Win check: if(entity_count==1){ cout<<WIN|all enemies defeated<<endl; won=true; break; } -- after renderGrid and TICK.",
+      "Add int kills = 0; at file scope alongside turn_count.",
+      "In phaseCleanup(), after setting enemy_alive = false, add: kills++; cout \"Kill confirmed\" << endl;",
+      "Add the two milestone cout lines to the startup block. Note WORLD is now in the phases list.",
+      "Add DrawText(TextFormat(\"Kills: %d\", kills), 400, 180, 16, YELLOW); to the HUD.",
     ],
-    estimatedMinutes: 20,
-  },
+    estimatedMinutes: 12
+  }
 };

@@ -15,30 +15,93 @@ export interface RunResult {
   allPassed: boolean;
 }
 
+export interface CompileResult {
+  js: string | null;
+  wasm: string | null;
+  compileTimeMs: number | null;
+  output: string;
+  errors: string[];
+}
+
 // ---------------------------------------------------------------------------
-// Backend: Judge0 (server-side GCC compilation via /api/compile)
+// Helper: extract path and lesson number from lesson ID
+// e.g. "rpg-01-boot-dungeon" → { path: "rpg", lesson: 1 }
+// e.g. "platformer-05-jump" → { path: "platformer", lesson: 5 }
 // ---------------------------------------------------------------------------
-async function compileWithJudge0(code: string): Promise<{ output: string; errors: string[] }> {
+export function parseLessonId(lessonId: string): { path: string; lesson: number } {
+  const parts = lessonId.split("-");
+  const path = parts[0]; // "rpg", "platformer", "shooter", "crawler"
+  const lesson = parseInt(parts[1], 10) || 1;
+  return { path, lesson };
+}
+
+// ---------------------------------------------------------------------------
+// Map lesson ID prefix → DB template name (used in lesson_progress.path)
+// Lesson IDs use short prefixes: "shooter", "rpg", "crawler", "platformer"
+// The DB stores template names: "space_shooter", "simple_rpg", etc.
+// ---------------------------------------------------------------------------
+const LESSON_PATH_TO_DB: Record<string, string> = {
+  shooter: "space_shooter",
+  rpg: "simple_rpg",
+  platformer: "platformer",
+  crawler: "dungeon_crawler",
+};
+
+export function lessonDbPath(lessonId: string): string {
+  const { path } = parseLessonId(lessonId);
+  return LESSON_PATH_TO_DB[path] || path;
+}
+
+// ---------------------------------------------------------------------------
+// Backend: WASM (Emscripten + raylib via /api/compile → Cloud Run)
+// ---------------------------------------------------------------------------
+export async function compileWithWasm(
+  code: string,
+  path: string,
+  lesson: number
+): Promise<CompileResult> {
   const res = await fetch("/api/compile", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ source_code: code }),
+    body: JSON.stringify({ code, path, lesson }),
   });
 
   if (res.status === 401) {
-    return { output: "", errors: ["Please sign in to run code."] };
+    return { js: null, wasm: null, compileTimeMs: null, output: "", errors: ["Please sign in to run code."] };
   }
   if (res.status === 429) {
-    return { output: "", errors: ["Rate limit reached. Please wait a minute before running again."] };
+    const data = await res.json().catch(() => ({}));
+    const retryMsg = data.retryAfter ? ` Try again in ${data.retryAfter}s.` : "";
+    return { js: null, wasm: null, compileTimeMs: null, output: "", errors: [`Rate limit reached.${retryMsg}`] };
+  }
+  if (res.status === 504) {
+    return { js: null, wasm: null, compileTimeMs: null, output: "", errors: ["Compilation timed out. Simplify your code and try again."] };
+  }
+  if (res.status === 502) {
+    return { js: null, wasm: null, compileTimeMs: null, output: "", errors: ["Compiler service unavailable. Please try again later."] };
   }
   if (!res.ok) {
-    return { output: "", errors: ["Compilation service unavailable. Please try again later."] };
+    return { js: null, wasm: null, compileTimeMs: null, output: "", errors: ["Compilation service unavailable. Please try again later."] };
   }
 
   const data = await res.json();
+
+  if (!data.success) {
+    return {
+      js: null,
+      wasm: null,
+      compileTimeMs: data.compileTimeMs ?? null,
+      output: "",
+      errors: data.errors ?? ["Compilation failed"],
+    };
+  }
+
   return {
-    output: data.output ?? "",
-    errors: data.errors ?? [],
+    js: data.js,
+    wasm: data.wasm,
+    compileTimeMs: data.compileTimeMs ?? null,
+    output: "",
+    errors: [],
   };
 }
 
@@ -82,24 +145,9 @@ async function compileWithJSCPP(code: string): Promise<{ output: string; errors:
 }
 
 // ---------------------------------------------------------------------------
-// Main entry — selects backend, then runs tests client-side
+// Test runner — validates console output against expected test results
 // ---------------------------------------------------------------------------
-export async function runCppCode(
-  code: string,
-  tests: LessonTest[]
-): Promise<RunResult> {
-  const backend = process.env.NEXT_PUBLIC_CPP_BACKEND ?? "jscpp";
-
-  const { output, errors } =
-    backend === "judge0"
-      ? await compileWithJudge0(code)
-      : await compileWithJSCPP(code);
-
-  if (errors.length > 0) {
-    return { output, errors, testResults: [], allPassed: false };
-  }
-
-  // Run tests against output (identical logic for both backends)
+export function runTests(output: string, tests: LessonTest[]): { testResults: TestResult[]; allPassed: boolean } {
   const trimmedOutput = output.trim();
   const testResults: TestResult[] = tests.map((test) => {
     const expected = test.expectedOutput.trim();
@@ -124,6 +172,22 @@ export async function runCppCode(
   });
 
   const allPassed = testResults.length > 0 && testResults.every((t) => t.passed);
+  return { testResults, allPassed };
+}
 
+// ---------------------------------------------------------------------------
+// Main entry — legacy flow using JSCPP (browser-side, for fallback)
+// ---------------------------------------------------------------------------
+export async function runCppCode(
+  code: string,
+  tests: LessonTest[]
+): Promise<RunResult> {
+  const { output, errors } = await compileWithJSCPP(code);
+
+  if (errors.length > 0) {
+    return { output, errors, testResults: [], allPassed: false };
+  }
+
+  const { testResults, allPassed } = runTests(output, tests);
   return { output, errors, testResults, allPassed };
 }

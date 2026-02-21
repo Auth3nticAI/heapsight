@@ -130,8 +130,8 @@ export default function GamePreviewCanvas() {
   }, [gameFrame]);
 
   return (
-    <div className="h-full flex flex-col rounded-lg border border-[#1a1a2e] bg-surface overflow-hidden">
-      <div className="flex items-center gap-2 px-3 py-1.5 bg-[#0d0d1a] border-b border-[#1a1a2e]">
+    <div className="h-full flex flex-col rounded-lg border border-[#2e2e42] bg-surface overflow-hidden">
+      <div className="flex items-center gap-2 px-3 py-1.5 bg-[#16162e] border-b border-[#2e2e42]">
         <span className="text-[10px] font-mono text-[#555] uppercase tracking-wider">
           Game Preview
         </span>
@@ -146,7 +146,7 @@ export default function GamePreviewCanvas() {
           ref={canvasRef}
           width={380}
           height={280}
-          className="border border-[#1a1a2e] rounded max-w-full h-auto"
+          className="border border-[#2e2e42] rounded max-w-full h-auto"
           aria-label="Game preview showing entity positions and states"
           role="img"
         />

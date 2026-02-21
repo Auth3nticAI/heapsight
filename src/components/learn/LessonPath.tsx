@@ -74,7 +74,7 @@ export default function LessonPath({
     ? RPG_PHASES
     : getGenericPhases(
         template === "platformer" ? "Platformer" :
-        template === "differential_drive_robot" ? "Robotics" :
+        template === "dungeon_crawler" ? "Dungeon Crawler" :
         "Space Shooter"
       );
 

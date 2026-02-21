@@ -32,14 +32,14 @@ export const GAME_TEMPLATES: GameTemplateInfo[] = [
     category: "game",
   },
   {
-    id: "differential_drive_robot",
-    name: "Differential Drive Robot",
-    description: "Program a robot: navigation, sensors, path planning.",
+    id: "dungeon_crawler",
+    name: "Dungeon Crawler",
+    description: "Explore 3D dungeons: cameras, lighting, procedural levels.",
     difficulty: "advanced",
     difficultyLevel: 4,
     difficultyLabel: "Advanced",
-    icon: "robot",
-    category: "robot",
+    icon: "castle",
+    category: "crawler",
   },
 ];
 

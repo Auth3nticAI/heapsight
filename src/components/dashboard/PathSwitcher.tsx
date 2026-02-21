@@ -11,7 +11,7 @@ interface PathOption {
 }
 
 const PATHS: PathOption[] = [
-  { id: "differential_drive_robot", name: "Robotics", icon: "\uD83E\uDD16", description: "Program autonomous robots" },
+  { id: "dungeon_crawler", name: "Dungeon Crawler", icon: "\uD83C\uDFF0", description: "Explore 3D dungeons" },
   { id: "space_shooter", name: "Space Shooter", icon: "\uD83D\uDE80", description: "Build arcade space combat" },
   { id: "platformer", name: "Platformer", icon: "\uD83C\uDFC3", description: "Create a 2D platformer" },
   { id: "simple_rpg", name: "Simple RPG", icon: "\u2694\uFE0F", description: "Design RPG mechanics" },
@@ -74,7 +74,7 @@ export default function PathSwitcher({
   };
 
   return (
-    <div className="mb-6 p-4 rounded-xl border border-[#2a2a3e] bg-surface">
+    <div className="mb-6 p-4 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-[10px] font-mono font-bold text-[#888] uppercase tracking-wider">
           Learning Path
@@ -104,10 +104,10 @@ export default function PathSwitcher({
                 relative p-3.5 sm:p-3 rounded-xl border-2 transition-all text-left min-h-[100px] sm:min-h-[76px] touch-manipulation
                 ${
                   isActive
-                    ? "border-primary/50 bg-primary/[0.05]"
+                    ? "border-teal-500/40 bg-teal-600/[0.07]"
                     : isLocked
-                    ? "border-[#1a1a2e] bg-[#0e0e14] opacity-50"
-                    : "border-[#2a2a3e] bg-[#111118] hover:border-[#3a3a4e] active:scale-[0.98] cursor-pointer"
+                    ? "border-[#ffffff08] bg-[#060610] opacity-50"
+                    : "border-[#ffffff10] bg-[#060610] hover:border-[#ffffff20] active:scale-[0.98] cursor-pointer"
                 }
               `}
             >
@@ -130,9 +130,9 @@ export default function PathSwitcher({
                 <span
                   className={`text-sm sm:text-xs font-semibold truncate ${
                     isActive
-                      ? "text-primary"
+                      ? "text-teal-400"
                       : isLocked
-                      ? "text-[#555]"
+                      ? "text-gray-600"
                       : "text-white"
                   }`}
                 >
@@ -142,7 +142,7 @@ export default function PathSwitcher({
 
               {isActive ? (
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] sm:text-[9px] font-mono text-primary/70">Active</span>
+                  <span className="text-[10px] sm:text-[9px] font-mono text-teal-400/70">Active</span>
                   <span className="text-[10px] sm:text-[9px] font-mono text-[#888]">
                     {pathProgress[path.id] || 0}/{totalLessons}
                   </span>

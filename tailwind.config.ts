@@ -9,12 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#0a0a0f",
-        surface: "#12121a",
+        background: "#1a1a2e",
+        surface: "#22223a",
         primary: "#00ff88",
         danger: "#ff0040",
         warning: "#ffaa00",
-        canvas: "#0d0d1a",
+        canvas: "#16162e",
       },
       fontFamily: {
         mono: ["JetBrains Mono", "Fira Code", "monospace"],

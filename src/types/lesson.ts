@@ -7,7 +7,7 @@ export interface LessonTest {
 
 export interface LessonPart {
   title: string;
-  type: "concept" | "game_builder" | "robot_builder";
+  type: "concept" | "game_builder";
   instructions: string;
   starterCode: string;
   solutionCode: string;

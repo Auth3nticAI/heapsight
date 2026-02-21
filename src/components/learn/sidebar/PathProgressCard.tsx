@@ -35,7 +35,7 @@ interface PathProgressCardProps {
   template: string;
   completedCount: number;
   totalLessons: number;
-  isRobotPath: boolean;
+  isCrawlerPath: boolean;
 }
 
 export default function PathProgressCard({
@@ -43,27 +43,27 @@ export default function PathProgressCard({
   template,
   completedCount,
   totalLessons,
-  isRobotPath,
+  isCrawlerPath,
 }: PathProgressCardProps) {
   const phases = template === "simple_rpg"
     ? RPG_PHASES
     : getGenericPhases(
         template === "platformer" ? "Platformer" :
-        template === "differential_drive_robot" ? "Robotics" :
+        template === "dungeon_crawler" ? "Dungeon Crawler" :
         "Space Shooter"
       );
 
   return (
-    <div className="rounded-xl border border-[#1f2937] bg-[#12121a] p-4">
+    <div className="rounded-2xl border border-[#ffffff10] bg-[#09091a] p-4">
       <div className="flex items-center justify-between mb-3">
         <span className="text-xs font-semibold text-white">
-          {isRobotPath ? "Robotics" : "Game Dev"} Progress
+          {isCrawlerPath ? "Dungeon Crawler" : "Game Dev"} Progress
         </span>
-        <span className="text-[9px] font-mono text-[#888]">{completedCount}/{totalLessons}</span>
+        <span className="text-[9px] font-mono text-gray-500">{completedCount}/{totalLessons}</span>
       </div>
 
       {/* Overall bar */}
-      <div className="w-full bg-[#1a1a2e] rounded-full h-2 overflow-hidden mb-4">
+      <div className="w-full bg-[#ffffff08] rounded-full h-2 overflow-hidden mb-4">
         <div
           className="h-2 rounded-full bg-gradient-to-r from-primary via-[#00cc6e] to-[#00aa55] transition-all duration-700"
           style={{ width: `${(completedCount / totalLessons) * 100}%` }}
@@ -85,7 +85,7 @@ export default function PathProgressCard({
             <div key={i} className="flex items-center gap-2">
               <span className="text-xs shrink-0 w-5 text-center" aria-hidden="true">{phase.icon}</span>
               <div className="flex-1 min-w-0">
-                <div className="w-full bg-[#1a1a2e] rounded-full h-1 overflow-hidden">
+                <div className="w-full bg-[#ffffff08] rounded-full h-1 overflow-hidden">
                   <div
                     className={`h-1 rounded-full transition-all duration-500 ${
                       phaseDone ? "bg-primary" : phaseCompleted > 0 ? "bg-[#3b82f6]" : "bg-[#1a1a2e]"

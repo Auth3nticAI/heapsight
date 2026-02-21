@@ -150,17 +150,17 @@ export const ACHIEVEMENTS: Achievement[] = [
     unlock_criteria: { type: "path_completed", threshold: 1, path: "simple_rpg" },
   },
   {
-    id: "robotics_master",
-    title: "Embedded Engineer",
-    description: "Complete Robotics path",
-    icon: "\uD83E\uDD16",
+    id: "crawler_master",
+    title: "Dungeon Architect",
+    description: "Complete Dungeon Crawler path",
+    icon: "\uD83C\uDFF0",
     category: "mastery",
     rarity: "epic",
     xp_reward: 500,
     unlock_criteria: {
       type: "path_completed",
       threshold: 1,
-      path: "differential_drive_robot",
+      path: "dungeon_crawler",
     },
   },
   {

@@ -30,7 +30,7 @@ function CheckIcon({ className }: { className?: string }) {
 
 interface ProTeaserProps {
   completedCount: number;
-  isRobotPath?: boolean;
+  isCrawlerPath?: boolean;
   nextLockedLessons: Array<{
     number: number;
     title: string;

@@ -3,439 +3,552 @@ import { Lesson } from "@/types/lesson";
 export const lessonRPG14: Lesson = {
   id: "rpg-14-soa-components-v0",
   title: "SoA Components v0",
-  description: "Formalize parallel arrays into named SoA component groups: pos_x[], pos_y[], hp[], glyph[] inside WorldState.",
+  description: "Migrate entity positions into a parallel array indexed by entity ID. This is the Structure of Arrays pattern -- the foundation for cache-friendly ECS design.",
   order: 14,
   xpReward: 100,
   tier: "pro",
-  concepts: ["SoA", "Structure of Arrays", "component arrays", "data layout", "cache efficiency"],
+  concepts: ["SoA", "parallel arrays", "array indexing", "ECS foundation"],
   part1: {
-    title: "Concept: Structure of Arrays",
+    title: "Concept: SoA vs AoS",
     type: "concept",
-    instructions: `# SoA Components v0
+    instructions: `# Concept: SoA vs AoS
 
-## Mental Model
+## Two Ways to Store Multiple Entities
 
-Your WorldState has entity_pos[], ehp[], ealive[], entity_id[] -- four parallel arrays indexed the same way. This IS Structure of Arrays (SoA). But the naming is ad hoc. Formalizing SoA means giving each array a clear component name: pos_x[], pos_y[], hp[], glyph[], alive[], entity_id[]. Each array is one "component." An entity is a set of values at the same index across all component arrays.
+**Array of Structs (AoS)** -- each entity is a struct, you have an array of them:
+\`\`\`cpp
+struct Entity { int x, y, hp; };
+Entity entities[4];  // entities[0].hp, entities[1].x, ...
+\`\`\`
 
-## What Breaks Without This
+**Structure of Arrays (SoA)** -- each component type is its own array, indexed by entity ID:
+\`\`\`cpp
+int pos_x[4];  // pos_x[0], pos_x[1], ...
+int pos_y[4];
+int hp[4];
+\`\`\`
 
-Without formal SoA, you add new entity properties by inventing new array names. enemy_attack_power[], enemy_defense[], enemy_type[] -- the naming becomes inconsistent, arrays get out of sync, and you forget to initialize one. Formalizing the layout means every component array follows the same pattern: same MAX_E size, same indexing, same lifecycle.
-
-## The Fix: Named Component Arrays
-
-Replace Vec2i entity_pos[] with separate int pos_x[] and int pos_y[]. This is pure SoA: one array per component field. Add char glyph[] to store the display character for each entity. The WorldState becomes a table where each row is an entity and each column is a component array.
-
-Why separate x and y? Because some operations only need x (horizontal distance check) or only y (vertical distance check). SoA lets systems read only the data they need. The combat system reads pos_x, pos_y, and hp. The render system reads pos_x, pos_y, glyph, and alive. Each system touches only the arrays it needs.
-
-For 4 entities this makes no measurable difference. For 1000 entities, SoA means the CPU prefetcher loads one tight array instead of striding through a sparse struct array. This is the foundation of data-oriented design.
-
-## Key Concepts
-
-- **SoA (Structure of Arrays)** -- one array per component: pos_x[], pos_y[], hp[], glyph[], alive[]
-- **AoS (Array of Structs)** -- one struct per entity: Entity entities[]. Lesson 12 used this with Vec2i.
-- **Component** -- a single data field stored in a parallel array
-- **Entity = index** -- entity i has pos_x[i], pos_y[i], hp[i], glyph[i], alive[i]
-
-## Performance Insight
-
-SoA is cache-friendly for batch processing. If a system only reads hp[], it loads a contiguous block of ints -- one cache line holds 16 hp values. With AoS, reading hp from Entity structs requires striding through position, glyph, and alive data that the system does not need. At 1000 entities, the SoA version can be 2-4x faster for single-component sweeps.
-
-## Memory Insight
-
-SoA with MAX_E=4: pos_x=16B, pos_y=16B, hp=16B, glyph=4B, alive=4B, entity_id=16B = 72 bytes for entity data. AoS with the same data: 4 structs of 18 bytes each = 72 bytes. Same total memory, different layout. The layout determines access pattern efficiency.
+## Why SoA?
+- **Cache-friendly**: when processing all positions, \`pos_x[]\` and \`pos_y[]\` are contiguous in memory
+- **Entity ID as index**: \`hp[entity_id]\` -- no pointer chasing, no map lookup
+- **Easy to add components**: add a new array, don't change the struct
+- This is the foundation of every modern game engine's Entity Component System
 
 ## Your Task
+Demonstrate both patterns for 2 entities:
+1. Print AoS HP access: \`AoS: entity[0].hp = 20\`
+2. Print SoA HP access: \`SoA: hp[0] = 20\`
+3. Print \`SoA: OK\`
 
-Define WorldState with SoA component arrays: pos_x[], pos_y[], hp[], glyph[], alive[], entity_id[]. Set up player (id=0, glyph '@') and two orcs (id=1,2, glyph 'o'). Print:
-
+Expected output:
 \`\`\`
-DUNGEON|rpg-v0
-SOA|components=6|max_entities=8
-ENTITY|id=0|@|1|1|hp=100
-ENTITY|id=1|o|3|1|hp=10
-ENTITY|id=2|o|6|1|hp=10
-\`\`\`
-
-## Beginner Trap
-
-**Mixing AoS and SoA.** Beginners keep Vec2i entity_pos[] (AoS for position) but use separate hp[] arrays (SoA for health). Pick one layout and commit. For the RPG, we use full SoA: pos_x[] and pos_y[] as separate arrays. Consistency prevents bugs.
-
-## Elite Insight
-
-Unity's DOTS (Data-Oriented Technology Stack) enforces SoA layout for all entity components. Carmack advocated data-oriented design in his 2012 QuakeCon talk: "Think about the data. What do you actually need to read? Put that in a tight array." The RPG's SoA layout follows the same principle on a smaller scale.
-
-## Systems Thinking Connection
-
-The Space Shooter path uses SoA from Lesson 6 for batch processing thousands of bullets. The RPG uses the same layout but for a different reason: clean component separation. The Platformer path prefers AoS because physics needs x,y,vx,vy together. Layout choice depends on access pattern.
-
-## Skill Reinforcement
-
-Lesson 6 introduced parallel arrays informally. Lesson 12 used Vec2i (AoS for position). This lesson formalizes SoA with named component arrays. Lesson 33 will optimize data layout for hot-path access.
-
-## Mastery Check
-
-When is AoS better than SoA? Answer: When you always access all fields of an entity together (e.g., physics needs pos and velocity simultaneously). AoS keeps related data in the same cache line. SoA is better when systems read one component at a time (e.g., damage system reads only hp[]). The RPG uses SoA because different passes read different component subsets.`,
+AoS: entity[0].hp = 20
+SoA: hp[0] = 20
+SoA: OK
+\`\`\``,
     starterCode: `#include <iostream>
 using namespace std;
 
-const int W=10, H=10, TILE=24, MAX_E=8;
+// AoS: array of structs
+struct Entity { int x, y, hp; };
+Entity entities[2] = {{5, 5, 20}, {9, 7, 10}};
 
-struct WorldState {
-    char grid[H][W];
-    // Player state
-    int player_id;
-    // TODO: SoA component arrays:
-    // int pos_x[MAX_E], pos_y[MAX_E]
-    // int hp[MAX_E]
-    // char glyph[MAX_E]
-    // bool alive[MAX_E]
-    // int entity_id[MAX_E]
-    int entity_count;
-    int next_id;
-    int turn;
-    int pgold;
-};
+// SoA: struct of arrays (parallel arrays indexed by entity ID)
+int pos_x[2] = {5, 9};
+int pos_y[2] = {5, 7};
+int hp[2]    = {20, 10};
 
-// TODO: initWorld sets up player at (1,1) glyph '@' hp=100, two orcs
-// TODO: print SOA|components=6|max_entities=8
-// TODO: print ENTITY lines with id, glyph, x, y, hp
-
-int main(){
-    WorldState w;
-    // TODO: init and print
+int main() {
+    // TODO 1: cout << "AoS: entity[0].hp = " << entities[0].hp << endl;
+    // TODO 2: cout << "SoA: hp[0] = " << hp[0] << endl;
+    cout << "SoA: OK" << endl;
     return 0;
 }`,
     solutionCode: `#include <iostream>
 using namespace std;
 
-const int W=10, H=10, TILE=24, MAX_E=8;
+// AoS: array of structs
+struct Entity { int x, y, hp; };
+Entity entities[2] = {{5, 5, 20}, {9, 7, 10}};
 
-struct WorldState {
-    char grid[H][W];
-    int player_id;
-    int pos_x[MAX_E], pos_y[MAX_E];
-    int hp[MAX_E];
-    char glyph[MAX_E];
-    bool alive[MAX_E];
-    int entity_id[MAX_E];
-    int entity_count;
-    int next_id;
-    int turn;
-    int pgold;
-};
+// SoA: struct of arrays (parallel arrays indexed by entity ID)
+int pos_x[2] = {5, 9};
+int pos_y[2] = {5, 7};
+int hp[2]    = {20, 10};
 
-void initWorld(WorldState& w){
-    for(int y=0;y<H;y++) for(int x=0;x<W;x++) w.grid[y][x]='.';
-    for(int x=0;x<W;x++){w.grid[0][x]='#';w.grid[H-1][x]='#';}
-    for(int y=0;y<H;y++){w.grid[y][0]='#';w.grid[y][W-1]='#';}
-    for(int i=0;i<MAX_E;i++){w.pos_x[i]=0;w.pos_y[i]=0;w.hp[i]=0;w.glyph[i]='.';w.alive[i]=false;w.entity_id[i]=-1;}
-    w.next_id=0; w.entity_count=0; w.turn=0; w.pgold=0;
-    // Player: entity 0
-    int pi=w.entity_count++;
-    w.entity_id[pi]=w.next_id++; w.player_id=w.entity_id[pi];
-    w.pos_x[pi]=1; w.pos_y[pi]=1; w.hp[pi]=100; w.glyph[pi]='@'; w.alive[pi]=true;
-    // Orc 1
-    int e1=w.entity_count++;
-    w.entity_id[e1]=w.next_id++;
-    w.pos_x[e1]=3; w.pos_y[e1]=1; w.hp[e1]=10; w.glyph[e1]='o'; w.alive[e1]=true;
-    // Orc 2
-    int e2=w.entity_count++;
-    w.entity_id[e2]=w.next_id++;
-    w.pos_x[e2]=6; w.pos_y[e2]=1; w.hp[e2]=10; w.glyph[e2]='o'; w.alive[e2]=true;
-}
-
-int main(){
-    WorldState w;
-    initWorld(w);
-    cout << "DUNGEON|rpg-v0" << endl;
-    cout << "SOA|components=6|max_entities=" << MAX_E << endl;
-    for(int i=0;i<w.entity_count;i++){
-        if(w.alive[i])
-            cout << "ENTITY|id=" << w.entity_id[i] << "|" << w.glyph[i] << "|" << w.pos_x[i] << "|" << w.pos_y[i] << "|hp=" << w.hp[i] << endl;
-    }
+int main() {
+    cout << "AoS: entity[0].hp = " << entities[0].hp << endl;
+    cout << "SoA: hp[0] = " << hp[0] << endl;
+    cout << "SoA: OK" << endl;
     return 0;
 }`,
     tests: [
-      { id: "t1", description: "SoA header", expectedOutput: "SOA\\|components=6\\|max_entities=8", isPattern: true },
-      { id: "t2", description: "Player with glyph @", expectedOutput: "ENTITY\\|id=0\\|@\\|1\\|1\\|hp=100", isPattern: true },
-      { id: "t3", description: "First orc with glyph o", expectedOutput: "ENTITY\\|id=1\\|o\\|3\\|1\\|hp=10", isPattern: true },
-      { id: "t4", description: "Second orc", expectedOutput: "ENTITY\\|id=2\\|o\\|6\\|1\\|hp=10", isPattern: true },
+      { id: "t1", description: "AoS access", expectedOutput: "AoS: entity[0].hp = 20", isPattern: false },
+      { id: "t2", description: "SoA access", expectedOutput: "SoA: hp[0] = 20", isPattern: false },
+      { id: "t3", description: "SoA verified", expectedOutput: "SoA: OK", isPattern: false },
     ],
     hints: [
-      "Replace Vec2i entity_pos[] with int pos_x[MAX_E] and int pos_y[MAX_E]. Add char glyph[MAX_E] for display characters.",
-      "The player is now entity index 0 with glyph='@'. Orcs are entity indices 1 and 2 with glyph='o'. All share the same component arrays.",
-      "Print each entity as: ENTITY|id=N|glyph|pos_x|pos_y|hp=H. The SOA line prints component count (6: pos_x, pos_y, hp, glyph, alive, entity_id) and MAX_E.",
+      "AoS: entities[0].hp -- access the first entity's hp field.",
+      "SoA: hp[0] -- first element of the hp array. Same data, different layout.",
+      "Both give you 20. The difference is in memory layout, not values.",
     ],
-    estimatedMinutes: 10,
+    estimatedMinutes: 10
   },
   part2: {
-    title: "Build: Full Game with SoA World",
+    title: "Build: SoA Components v0",
     type: "game_builder",
-    instructions: `# Build: Full Game with SoA World
+    instructions: `# Build: SoA Components v0
 
 ## Mental Model
+Replace the named position fields \`Vec2i player\` and \`Vec2i enemy_pos\` in World with a single parallel array \`Vec2i pos[MAX_ENTITIES]\` indexed by entity ID. Access becomes \`world.pos[world.player_id].x\` instead of \`world.player.x\`.
 
-The entire game now runs on SoA component arrays. The player is entity index 0 in every component array. Enemies are indices 1+. Every pass function reads and writes component arrays directly: passPlayerInput reads pos_x, pos_y and writes them. passCombat reads pos_x, pos_y, hp and writes hp. passCleanup reads hp, writes alive and pgold. passRender reads pos_x, pos_y, glyph, alive.
-
-## What Breaks Without This
-
-With ad hoc arrays, adding a new component (e.g., attack_power[]) requires guessing the naming convention, remembering to initialize it, and hoping all pass functions handle it consistently. With formal SoA, the pattern is clear: add the array to WorldState, initialize it in initWorld, and read it in the passes that need it.
-
-## The Fix
-
-Build the full game with SoA WorldState. Player (@) at index 0 pos (1,1), two orcs (o) at indices 1,2 at (3,1) and (6,1). Run the scripted sequence to kill both. Each pass function operates on component arrays. The player is part of the SoA now -- same arrays, just different glyph and role.
-
-## Key Concepts
-
-- **Unified entity model** -- player and enemies share the same SoA arrays
-- **Glyph-based rendering** -- render uses glyph[] to display @ for player, o for orcs
-- **Component-driven passes** -- each pass reads only the component arrays it needs
-
-## Performance Insight
-
-The combat pass reads pos_x[], pos_y[], hp[], alive[] -- four contiguous arrays. It never touches glyph[] or entity_id[]. With SoA, those untouched arrays do not pollute the cache. At 1000 entities, the combat pass loads ~16KB of relevant data instead of ~40KB of mixed entity structs.
-
-## Memory Insight
-
-With MAX_E=8: pos_x=32B, pos_y=32B, hp=32B, glyph=8B, alive=8B, entity_id=32B = 144 bytes. Grid=100B. Total WorldState ~260 bytes. Still fits in L1 cache. No heap allocation. The SoA layout means each component array is independently addressable -- a system can take a pointer to just hp[] without touching anything else.
-
-## Your Task
-
-Build the full game with SoA. Player at (1,1), two orcs at (3,1) and (6,1), 10 HP each. Script: d,d,f,d,d,d,f. Kill both orcs. Output:
-
-\`\`\`
-DUNGEON|rpg-v0
-ENTITY|id=0|@|1|1|hp=100
-ENTITY|id=1|o|3|1|hp=10
-ENTITY|id=2|o|6|1|hp=10
-TURN|1
-HP|100
-GOLD|0
-...
-TURN|7
-HP|100
-GOLD|20
-WIN|hero|all_defeated|gold=20
-GAME_MESSAGE|SoA components operational.
+## Step 1: Add MAX_ENTITIES constant
+\`\`\`cpp
+const int MAX_ENTITIES = 2;
 \`\`\`
 
-## Beginner Trap
+## Step 2: Update struct World
+Replace \`Vec2i player\` and \`Vec2i enemy_pos\` with a SoA array:
+\`\`\`cpp
+struct World {
+    int player_id = 0;
+    int enemy_id  = 1;
+    Vec2i pos[MAX_ENTITIES] = {{5,5},{9,7}}; // pos[player_id], pos[enemy_id]
+    bool enemy_alive = true;
+    int player_hp = 20, player_max_hp = 20;
+    int enemy_hp = 10, enemy_max_hp = 10;
+    int turn_count = 0;
+    int kills = 0;
+};
+\`\`\`
 
-**Accessing the player with a separate variable instead of the SoA.** If the player has its own pos_x but enemies use the array, you have two systems to maintain. Put the player IN the SoA as entity 0. The player is just another entity with a different glyph. This simplifies every pass function.
+## Step 3: Update all position access
+Find and replace in every function and HUD line:
+- \`world.player.x\` -> \`world.pos[world.player_id].x\`
+- \`world.player.y\` -> \`world.pos[world.player_id].y\`
+- \`world.enemy_pos.x\` -> \`world.pos[world.enemy_id].x\`
+- \`world.enemy_pos.y\` -> \`world.pos[world.enemy_id].y\`
 
-## Elite Insight
+## Step 4: Add startup cout
+\`\`\`cpp
+cout << "SoA: OK" << endl;
+\`\`\`
 
-Carmack's .plan from 1999: "I have been pushing the data-oriented philosophy for years." Unity DOTS enforces SoA for all ECS components. The RPG's SoA is the same concept: data layout drives performance. At scale, the difference between AoS and SoA can be 10x for cache-sensitive loops. Your 8-entity dungeon will not feel it, but you are building the habit.
+**Click Run now** -- identical gameplay, positions now accessed via parallel array.
 
 ## Mastery Check
+Question: What happens when you want to add a third entity later?
+Answer: Increase \`MAX_ENTITIES\` to 3 and initialize index 2. The same \`pos[2]\` just works -- no struct to add fields to.
 
-How do you add a new component (e.g., int attack_power[]) to the SoA? Answer: Add int attack_power[MAX_E] to WorldState. Initialize it in initWorld (default 0 for all, set specific values for enemies). Read it in passCombat. No other pass function needs to change. This is the power of SoA: adding components is local to the struct and the systems that use them.`,
+Expected cout output:
+\`\`\`
+Player: (5, 5)
+Pipeline: INPUT -> RESOLVE -> CLEANUP -> RENDER
+Turn: 0
+Enemy: (9, 7)
+Enemies: 1
+Combat: bump
+Player HP: 20/20
+Enemy HP: 10/10
+Kill: hp-to-zero
+Milestone: micro-dungeon
+Phases: INPUT -> RESOLVE -> WORLD -> CLEANUP -> RENDER
+Struct: world
+Vec2i: OK
+IDs: OK
+SoA: OK
+\`\`\``,
     starterCode: `#include <iostream>
-#include <cstdlib>
+#include "raylib.h"
 using namespace std;
 
-const int W=10, H=10, TILE=24, MAX_E=8;
+const int GRID_W = 12;
+const int GRID_H = 10;
+const int TILE = 32;
+int tiles[GRID_H][GRID_W];
 
-struct WorldState {
-    char grid[H][W];
-    int player_id;
-    int pos_x[MAX_E], pos_y[MAX_E];
-    int hp[MAX_E];
-    char glyph[MAX_E];
-    bool alive[MAX_E];
-    int entity_id[MAX_E];
-    int entity_count;
-    int next_id;
-    int turn;
-    int pgold;
+const int INTENT_NONE   = 0;
+const int INTENT_UP     = 1;
+const int INTENT_DOWN   = 2;
+const int INTENT_LEFT   = 3;
+const int INTENT_RIGHT  = 4;
+const int INTENT_ATTACK = 5;
+int pending_intent = INTENT_NONE;
+
+const int NO_ENTITY = -1;
+// TODO 1: Add const int MAX_ENTITIES = 2;
+
+struct Vec2i { int x = 0; int y = 0; };
+enum TileType { TILE_FLOOR = 0, TILE_WALL = 1 };
+
+struct World {
+    int player_id = 0;
+    int enemy_id  = 1;
+    // TODO 2: Replace Vec2i player and Vec2i enemy_pos with:
+    //         Vec2i pos[MAX_ENTITIES] = {{5,5},{9,7}};
+    Vec2i player = {5, 5};
+    Vec2i enemy_pos = {9, 7};
+    bool enemy_alive = true;
+    int player_hp = 20, player_max_hp = 20;
+    int enemy_hp = 10, enemy_max_hp = 10;
+    int turn_count = 0;
+    int kills = 0;
 };
+World world;
 
-void initWorld(WorldState& w){
-    for(int y=0;y<H;y++) for(int x=0;x<W;x++) w.grid[y][x]='.';
-    for(int x=0;x<W;x++){w.grid[0][x]='#';w.grid[H-1][x]='#';}
-    for(int y=0;y<H;y++){w.grid[y][0]='#';w.grid[y][W-1]='#';}
-    for(int i=0;i<MAX_E;i++){w.pos_x[i]=0;w.pos_y[i]=0;w.hp[i]=0;w.glyph[i]='.';w.alive[i]=false;w.entity_id[i]=-1;}
-    w.next_id=0; w.entity_count=0; w.turn=0; w.pgold=0;
-    // Player
-    int pi=w.entity_count++;
-    w.entity_id[pi]=w.next_id++; w.player_id=w.entity_id[pi];
-    w.pos_x[pi]=1; w.pos_y[pi]=1; w.hp[pi]=100; w.glyph[pi]='@'; w.alive[pi]=true;
-    // Orc 1
-    int e1=w.entity_count++;
-    w.entity_id[e1]=w.next_id++;
-    w.pos_x[e1]=3; w.pos_y[e1]=1; w.hp[e1]=10; w.glyph[e1]='o'; w.alive[e1]=true;
-    // Orc 2
-    int e2=w.entity_count++;
-    w.entity_id[e2]=w.next_id++;
-    w.pos_x[e2]=6; w.pos_y[e2]=1; w.hp[e2]=10; w.glyph[e2]='o'; w.alive[e2]=true;
-}
-
-int findPlayer(const WorldState& w){
-    for(int i=0;i<w.entity_count;i++) if(w.entity_id[i]==w.player_id) return i;
-    return -1;
-}
-
-bool canMove(const WorldState& w, int x, int y, int dx, int dy){
-    int nx=x+dx, ny=y+dy;
-    if(nx<0||nx>=W||ny<0||ny>=H) return false;
-    return w.grid[ny][nx]!='#';
-}
-
-// TODO: passPlayerInput(WorldState& w, char key)
-// TODO: passCleanup(WorldState& w)
-// TODO: passRender(const WorldState& w)
-
-int main(){
-    WorldState w;
-    initWorld(w);
-    cout << "DUNGEON|rpg-v0" << endl;
-
-    // Print initial entities
-    for(int i=0;i<w.entity_count;i++){
-        if(w.alive[i])
-            cout << "ENTITY|id=" << w.entity_id[i] << "|" << w.glyph[i] << "|" << w.pos_x[i] << "|" << w.pos_y[i] << "|hp=" << w.hp[i] << endl;
+const char* intentName(int intent) {
+    switch(intent) {
+        case INTENT_UP:     return "MOVE_UP";
+        case INTENT_DOWN:   return "MOVE_DOWN";
+        case INTENT_LEFT:   return "MOVE_LEFT";
+        case INTENT_RIGHT:  return "MOVE_RIGHT";
+        case INTENT_ATTACK: return "ATTACK";
+        default:            return "NONE";
     }
+}
 
-    char inputs[]={'d','d','f','d','d','d','f'};
-    int nticks=7;
+const char* entityName(int id) {
+    if (id == world.player_id) return "Player";
+    if (id == world.enemy_id)  return "Enemy";
+    return "None";
+}
 
-    for(int t=0;t<nticks;t++){
-        w.turn=t+1;
-        // TODO: call passes and check win
+// TODO 3: Update resolveCommand -- world.player.x -> world.pos[world.player_id].x, etc.
+void resolveCommand() {
+    if (pending_intent == INTENT_NONE || pending_intent == INTENT_ATTACK) return;
+    int new_x = world.player.x;
+    int new_y = world.player.y;
+    if (pending_intent == INTENT_UP)    new_y--;
+    else if (pending_intent == INTENT_DOWN)  new_y++;
+    else if (pending_intent == INTENT_LEFT)  new_x--;
+    else if (pending_intent == INTENT_RIGHT) new_x++;
+    if (new_x < 0 || new_x >= GRID_W || new_y < 0 || new_y >= GRID_H) {
+        pending_intent = INTENT_NONE; return;
     }
+    if (tiles[new_y][new_x] == TILE_WALL) { pending_intent = INTENT_NONE; return; }
+    if (world.enemy_alive && new_x == world.enemy_pos.x && new_y == world.enemy_pos.y) {
+        pending_intent = INTENT_ATTACK; return;
+    }
+    world.player.x = new_x;
+    world.player.y = new_y;
+    pending_intent = INTENT_NONE;
+}
+
+void resolveCombat() {
+    if (pending_intent != INTENT_ATTACK) return;
+    int dmg = 3;
+    world.enemy_hp -= dmg;
+    cout << "Damage: " << dmg << endl;
+    cout << "Enemy HP: " << world.enemy_hp << "/" << world.enemy_max_hp << endl;
+    pending_intent = INTENT_NONE;
+}
+
+void phaseInput() {
+    pending_intent = INTENT_NONE;
+    if (IsKeyPressed(KEY_W))      pending_intent = INTENT_UP;
+    else if (IsKeyPressed(KEY_S)) pending_intent = INTENT_DOWN;
+    else if (IsKeyPressed(KEY_A)) pending_intent = INTENT_LEFT;
+    else if (IsKeyPressed(KEY_D)) pending_intent = INTENT_RIGHT;
+}
+
+void phaseResolve() {
+    resolveCommand();
+    resolveCombat();
+}
+
+// TODO 4: Update phaseWorld -- world.enemy_pos.x -> world.pos[world.enemy_id].x, etc.
+void phaseWorld() {
+    if (!world.enemy_alive) return;
+    int dx = world.player.x - world.enemy_pos.x;
+    int dy = world.player.y - world.enemy_pos.y;
+    int move_x = 0, move_y = 0;
+    if (abs(dx) >= abs(dy)) { move_x = (dx > 0) ? 1 : -1; }
+    else { move_y = (dy > 0) ? 1 : -1; }
+    int nx = world.enemy_pos.x + move_x;
+    int ny = world.enemy_pos.y + move_y;
+    if (nx >= 0 && nx < GRID_W && ny >= 0 && ny < GRID_H &&
+        tiles[ny][nx] != TILE_WALL && !(nx == world.player.x && ny == world.player.y)) {
+        world.enemy_pos.x = nx; world.enemy_pos.y = ny;
+    }
+}
+
+void phaseCleanup() {
+    if (world.enemy_alive && world.enemy_hp <= 0) {
+        world.enemy_alive = false;
+        world.kills++;
+        cout << "Kill confirmed" << endl;
+    }
+    world.turn_count++;
+}
+
+void initTiles() {
+    for (int y = 0; y < GRID_H; y++)
+        for (int x = 0; x < GRID_W; x++)
+            tiles[y][x] = (y==0||y==GRID_H-1||x==0||x==GRID_W-1) ? TILE_WALL : TILE_FLOOR;
+    tiles[3][4] = TILE_WALL; tiles[3][5] = TILE_WALL;
+    tiles[6][7] = TILE_WALL; tiles[6][8] = TILE_WALL;
+}
+
+int main() {
+    InitWindow(640, 640, "HeapSight RPG");
+    SetTargetFPS(60);
+    initTiles();
+
+    int wall_count = 0;
+    for (int y = 0; y < GRID_H; y++)
+        for (int x = 0; x < GRID_W; x++)
+            if (tiles[y][x] == TILE_WALL) wall_count++;
+
+    // TODO 5: Update cout to use world.pos[world.player_id].x etc.
+    cout << "Player: (" << world.player.x << ", " << world.player.y << ")" << endl;
+    cout << "Pipeline: INPUT -> RESOLVE -> CLEANUP -> RENDER" << endl;
+    cout << "Turn: " << world.turn_count << endl;
+    cout << "Enemy: (" << world.enemy_pos.x << ", " << world.enemy_pos.y << ")" << endl;
+    cout << "Enemies: 1" << endl;
+    cout << "Combat: bump" << endl;
+    cout << "Player HP: " << world.player_hp << "/" << world.player_max_hp << endl;
+    cout << "Enemy HP: " << world.enemy_hp << "/" << world.enemy_max_hp << endl;
+    cout << "Kill: hp-to-zero" << endl;
+    cout << "Milestone: micro-dungeon" << endl;
+    cout << "Phases: INPUT -> RESOLVE -> WORLD -> CLEANUP -> RENDER" << endl;
+    cout << "Struct: world" << endl;
+    cout << "Vec2i: OK" << endl;
+    cout << "IDs: OK" << endl;
+    // TODO 6: cout << "SoA: OK" << endl;
+
+    while (!WindowShouldClose()) {
+        phaseInput();
+        if (pending_intent != INTENT_NONE) {
+            phaseResolve();
+            phaseWorld();
+            phaseCleanup();
+        }
+        BeginDrawing();
+        ClearBackground(BLACK);
+        for (int y = 0; y < GRID_H; y++)
+            for (int x = 0; x < GRID_W; x++) {
+                Color c = (tiles[y][x] == TILE_WALL) ? GRAY : DARKGRAY;
+                DrawRectangle(x*TILE, y*TILE, TILE-1, TILE-1, c);
+            }
+        // TODO 7: Update DrawRectangle calls to use world.pos[world.player_id].x etc.
+        DrawRectangle(world.player.x*TILE, world.player.y*TILE, TILE-1, TILE-1, GREEN);
+        if (world.enemy_alive)
+            DrawRectangle(world.enemy_pos.x*TILE, world.enemy_pos.y*TILE, TILE-1, TILE-1, RED);
+        DrawText("HeapSight RPG", 400, 10, 20, WHITE);
+        DrawText(TextFormat("Turn: %d", world.turn_count), 400, 40, 16, WHITE);
+        DrawText(TextFormat("Intent: %s", intentName(pending_intent)), 400, 60, 16, WHITE);
+        DrawText(TextFormat("Player: (%d,%d)", world.player.x, world.player.y), 400, 80, 16, WHITE);
+        DrawText(TextFormat("Walls: %d", wall_count), 400, 100, 16, WHITE);
+        if (world.enemy_alive) {
+            DrawText(TextFormat("Enemy:(%d,%d)", world.enemy_pos.x, world.enemy_pos.y), 400, 120, 16, RED);
+            DrawText(TextFormat("Enemy HP:%d/%d", world.enemy_hp, world.enemy_max_hp), 400, 160, 16, RED);
+        } else { DrawText("Enemy: DEAD", 400, 120, 16, DARKGRAY); }
+        DrawText(TextFormat("Player HP:%d/%d", world.player_hp, world.player_max_hp), 400, 140, 16, GREEN);
+        DrawText(TextFormat("Kills: %d", world.kills), 400, 180, 16, YELLOW);
+        DrawText(TextFormat("Player[%d]", world.player_id), 400, 200, 16, WHITE);
+        DrawText(TextFormat("Enemy[%d]",  world.enemy_id),  400, 220, 16, WHITE);
+        EndDrawing();
+    }
+    CloseWindow();
     return 0;
 }`,
     solutionCode: `#include <iostream>
-#include <cstdlib>
+#include "raylib.h"
 using namespace std;
 
-const int W=10, H=10, TILE=24, MAX_E=8;
+const int GRID_W = 12;
+const int GRID_H = 10;
+const int TILE = 32;
+int tiles[GRID_H][GRID_W];
 
-struct WorldState {
-    char grid[H][W];
-    int player_id;
-    int pos_x[MAX_E], pos_y[MAX_E];
-    int hp[MAX_E];
-    char glyph[MAX_E];
-    bool alive[MAX_E];
-    int entity_id[MAX_E];
-    int entity_count;
-    int next_id;
-    int turn;
-    int pgold;
+const int INTENT_NONE   = 0;
+const int INTENT_UP     = 1;
+const int INTENT_DOWN   = 2;
+const int INTENT_LEFT   = 3;
+const int INTENT_RIGHT  = 4;
+const int INTENT_ATTACK = 5;
+int pending_intent = INTENT_NONE;
+
+const int NO_ENTITY = -1;
+const int MAX_ENTITIES = 2;
+
+struct Vec2i { int x = 0; int y = 0; };
+enum TileType { TILE_FLOOR = 0, TILE_WALL = 1 };
+
+struct World {
+    int player_id = 0;
+    int enemy_id  = 1;
+    Vec2i pos[MAX_ENTITIES] = {{5,5},{9,7}};
+    bool enemy_alive = true;
+    int player_hp = 20, player_max_hp = 20;
+    int enemy_hp = 10, enemy_max_hp = 10;
+    int turn_count = 0;
+    int kills = 0;
 };
+World world;
 
-void initWorld(WorldState& w){
-    for(int y=0;y<H;y++) for(int x=0;x<W;x++) w.grid[y][x]='.';
-    for(int x=0;x<W;x++){w.grid[0][x]='#';w.grid[H-1][x]='#';}
-    for(int y=0;y<H;y++){w.grid[y][0]='#';w.grid[y][W-1]='#';}
-    for(int i=0;i<MAX_E;i++){w.pos_x[i]=0;w.pos_y[i]=0;w.hp[i]=0;w.glyph[i]='.';w.alive[i]=false;w.entity_id[i]=-1;}
-    w.next_id=0; w.entity_count=0; w.turn=0; w.pgold=0;
-    int pi=w.entity_count++;
-    w.entity_id[pi]=w.next_id++; w.player_id=w.entity_id[pi];
-    w.pos_x[pi]=1; w.pos_y[pi]=1; w.hp[pi]=100; w.glyph[pi]='@'; w.alive[pi]=true;
-    int e1=w.entity_count++;
-    w.entity_id[e1]=w.next_id++;
-    w.pos_x[e1]=3; w.pos_y[e1]=1; w.hp[e1]=10; w.glyph[e1]='o'; w.alive[e1]=true;
-    int e2=w.entity_count++;
-    w.entity_id[e2]=w.next_id++;
-    w.pos_x[e2]=6; w.pos_y[e2]=1; w.hp[e2]=10; w.glyph[e2]='o'; w.alive[e2]=true;
-}
-
-int findPlayer(const WorldState& w){
-    for(int i=0;i<w.entity_count;i++) if(w.entity_id[i]==w.player_id) return i;
-    return -1;
-}
-
-bool canMove(const WorldState& w, int x, int y, int dx, int dy){
-    int nx=x+dx, ny=y+dy;
-    if(nx<0||nx>=W||ny<0||ny>=H) return false;
-    return w.grid[ny][nx]!='#';
-}
-
-void passPlayerInput(WorldState& w, char key){
-    int pi=findPlayer(w);
-    if(pi<0) return;
-    if(key=='d'||key=='a'||key=='w'||key=='s'){
-        int dx=(key=='d')?1:(key=='a')?-1:0;
-        int dy=(key=='s')?1:(key=='w')?-1:0;
-        if(canMove(w,w.pos_x[pi],w.pos_y[pi],dx,dy)){w.pos_x[pi]+=dx;w.pos_y[pi]+=dy;}
+const char* intentName(int intent) {
+    switch(intent) {
+        case INTENT_UP:     return "MOVE_UP";
+        case INTENT_DOWN:   return "MOVE_DOWN";
+        case INTENT_LEFT:   return "MOVE_LEFT";
+        case INTENT_RIGHT:  return "MOVE_RIGHT";
+        case INTENT_ATTACK: return "ATTACK";
+        default:            return "NONE";
     }
-    if(key=='f'){
-        for(int i=0;i<w.entity_count;i++){
-            if(i==pi||!w.alive[i]) continue;
-            if((abs(w.pos_x[pi]-w.pos_x[i])+abs(w.pos_y[pi]-w.pos_y[i]))==1){
-                w.hp[i]-=10;
+}
+
+const char* entityName(int id) {
+    if (id == world.player_id) return "Player";
+    if (id == world.enemy_id)  return "Enemy";
+    return "None";
+}
+
+void resolveCommand() {
+    if (pending_intent == INTENT_NONE || pending_intent == INTENT_ATTACK) return;
+    int new_x = world.pos[world.player_id].x;
+    int new_y = world.pos[world.player_id].y;
+    if (pending_intent == INTENT_UP)    new_y--;
+    else if (pending_intent == INTENT_DOWN)  new_y++;
+    else if (pending_intent == INTENT_LEFT)  new_x--;
+    else if (pending_intent == INTENT_RIGHT) new_x++;
+    if (new_x < 0 || new_x >= GRID_W || new_y < 0 || new_y >= GRID_H) {
+        pending_intent = INTENT_NONE; return;
+    }
+    if (tiles[new_y][new_x] == TILE_WALL) { pending_intent = INTENT_NONE; return; }
+    if (world.enemy_alive && new_x == world.pos[world.enemy_id].x && new_y == world.pos[world.enemy_id].y) {
+        pending_intent = INTENT_ATTACK; return;
+    }
+    world.pos[world.player_id].x = new_x;
+    world.pos[world.player_id].y = new_y;
+    pending_intent = INTENT_NONE;
+}
+
+void resolveCombat() {
+    if (pending_intent != INTENT_ATTACK) return;
+    int dmg = 3;
+    world.enemy_hp -= dmg;
+    cout << "Damage: " << dmg << endl;
+    cout << "Enemy HP: " << world.enemy_hp << "/" << world.enemy_max_hp << endl;
+    pending_intent = INTENT_NONE;
+}
+
+void phaseInput() {
+    pending_intent = INTENT_NONE;
+    if (IsKeyPressed(KEY_W))      pending_intent = INTENT_UP;
+    else if (IsKeyPressed(KEY_S)) pending_intent = INTENT_DOWN;
+    else if (IsKeyPressed(KEY_A)) pending_intent = INTENT_LEFT;
+    else if (IsKeyPressed(KEY_D)) pending_intent = INTENT_RIGHT;
+}
+
+void phaseResolve() {
+    resolveCommand();
+    resolveCombat();
+}
+
+void phaseWorld() {
+    if (!world.enemy_alive) return;
+    int dx = world.pos[world.player_id].x - world.pos[world.enemy_id].x;
+    int dy = world.pos[world.player_id].y - world.pos[world.enemy_id].y;
+    int move_x = 0, move_y = 0;
+    if (abs(dx) >= abs(dy)) { move_x = (dx > 0) ? 1 : -1; }
+    else { move_y = (dy > 0) ? 1 : -1; }
+    int nx = world.pos[world.enemy_id].x + move_x;
+    int ny = world.pos[world.enemy_id].y + move_y;
+    if (nx >= 0 && nx < GRID_W && ny >= 0 && ny < GRID_H &&
+        tiles[ny][nx] != TILE_WALL && !(nx == world.pos[world.player_id].x && ny == world.pos[world.player_id].y)) {
+        world.pos[world.enemy_id].x = nx; world.pos[world.enemy_id].y = ny;
+    }
+}
+
+void phaseCleanup() {
+    if (world.enemy_alive && world.enemy_hp <= 0) {
+        world.enemy_alive = false;
+        world.kills++;
+        cout << "Kill confirmed" << endl;
+    }
+    world.turn_count++;
+}
+
+void initTiles() {
+    for (int y = 0; y < GRID_H; y++)
+        for (int x = 0; x < GRID_W; x++)
+            tiles[y][x] = (y==0||y==GRID_H-1||x==0||x==GRID_W-1) ? TILE_WALL : TILE_FLOOR;
+    tiles[3][4] = TILE_WALL; tiles[3][5] = TILE_WALL;
+    tiles[6][7] = TILE_WALL; tiles[6][8] = TILE_WALL;
+}
+
+int main() {
+    InitWindow(640, 640, "HeapSight RPG");
+    SetTargetFPS(60);
+    initTiles();
+
+    int wall_count = 0;
+    for (int y = 0; y < GRID_H; y++)
+        for (int x = 0; x < GRID_W; x++)
+            if (tiles[y][x] == TILE_WALL) wall_count++;
+
+    cout << "Player: (" << world.pos[world.player_id].x << ", " << world.pos[world.player_id].y << ")" << endl;
+    cout << "Pipeline: INPUT -> RESOLVE -> CLEANUP -> RENDER" << endl;
+    cout << "Turn: " << world.turn_count << endl;
+    cout << "Enemy: (" << world.pos[world.enemy_id].x << ", " << world.pos[world.enemy_id].y << ")" << endl;
+    cout << "Enemies: 1" << endl;
+    cout << "Combat: bump" << endl;
+    cout << "Player HP: " << world.player_hp << "/" << world.player_max_hp << endl;
+    cout << "Enemy HP: " << world.enemy_hp << "/" << world.enemy_max_hp << endl;
+    cout << "Kill: hp-to-zero" << endl;
+    cout << "Milestone: micro-dungeon" << endl;
+    cout << "Phases: INPUT -> RESOLVE -> WORLD -> CLEANUP -> RENDER" << endl;
+    cout << "Struct: world" << endl;
+    cout << "Vec2i: OK" << endl;
+    cout << "IDs: OK" << endl;
+    cout << "SoA: OK" << endl;
+
+    while (!WindowShouldClose()) {
+        phaseInput();
+        if (pending_intent != INTENT_NONE) {
+            phaseResolve();
+            phaseWorld();
+            phaseCleanup();
+        }
+        BeginDrawing();
+        ClearBackground(BLACK);
+        for (int y = 0; y < GRID_H; y++)
+            for (int x = 0; x < GRID_W; x++) {
+                Color c = (tiles[y][x] == TILE_WALL) ? GRAY : DARKGRAY;
+                DrawRectangle(x*TILE, y*TILE, TILE-1, TILE-1, c);
             }
-        }
+        DrawRectangle(world.pos[world.player_id].x*TILE, world.pos[world.player_id].y*TILE, TILE-1, TILE-1, GREEN);
+        if (world.enemy_alive)
+            DrawRectangle(world.pos[world.enemy_id].x*TILE, world.pos[world.enemy_id].y*TILE, TILE-1, TILE-1, RED);
+        DrawText("HeapSight RPG", 400, 10, 20, WHITE);
+        DrawText(TextFormat("Turn: %d", world.turn_count), 400, 40, 16, WHITE);
+        DrawText(TextFormat("Intent: %s", intentName(pending_intent)), 400, 60, 16, WHITE);
+        DrawText(TextFormat("Player: (%d,%d)", world.pos[world.player_id].x, world.pos[world.player_id].y), 400, 80, 16, WHITE);
+        DrawText(TextFormat("Walls: %d", wall_count), 400, 100, 16, WHITE);
+        if (world.enemy_alive) {
+            DrawText(TextFormat("Enemy:(%d,%d)", world.pos[world.enemy_id].x, world.pos[world.enemy_id].y), 400, 120, 16, RED);
+            DrawText(TextFormat("Enemy HP:%d/%d", world.enemy_hp, world.enemy_max_hp), 400, 160, 16, RED);
+        } else { DrawText("Enemy: DEAD", 400, 120, 16, DARKGRAY); }
+        DrawText(TextFormat("Player HP:%d/%d", world.player_hp, world.player_max_hp), 400, 140, 16, GREEN);
+        DrawText(TextFormat("Kills: %d", world.kills), 400, 180, 16, YELLOW);
+        DrawText(TextFormat("Player[%d]", world.player_id), 400, 200, 16, WHITE);
+        DrawText(TextFormat("Enemy[%d]",  world.enemy_id),  400, 220, 16, WHITE);
+        EndDrawing();
     }
-}
-
-void passCleanup(WorldState& w){
-    int pi=findPlayer(w);
-    for(int i=0;i<w.entity_count;i++){
-        if(i==pi) continue;
-        if(w.alive[i]&&w.hp[i]<=0){
-            w.alive[i]=false;
-            w.pgold+=10;
-        }
-    }
-}
-
-void passRender(const WorldState& w){
-    int pi=findPlayer(w);
-    for(int i=0;i<w.entity_count;i++){
-        if(w.alive[i])
-            cout << "ENTITY|id=" << w.entity_id[i] << "|" << w.glyph[i] << "|" << w.pos_x[i] << "|" << w.pos_y[i] << "|hp=" << w.hp[i] << endl;
-    }
-    cout << "TURN|" << w.turn << endl;
-    if(pi>=0) cout << "HP|" << w.hp[pi] << endl;
-    cout << "GOLD|" << w.pgold << endl;
-}
-
-int main(){
-    WorldState w;
-    initWorld(w);
-    cout << "DUNGEON|rpg-v0" << endl;
-
-    for(int i=0;i<w.entity_count;i++){
-        if(w.alive[i])
-            cout << "ENTITY|id=" << w.entity_id[i] << "|" << w.glyph[i] << "|" << w.pos_x[i] << "|" << w.pos_y[i] << "|hp=" << w.hp[i] << endl;
-    }
-
-    char inputs[]={'d','d','f','d','d','d','f'};
-    int nticks=7;
-
-    for(int t=0;t<nticks;t++){
-        w.turn=t+1;
-        passPlayerInput(w,inputs[t]);
-        passCleanup(w);
-        passRender(w);
-
-        int alive_enemies=0;
-        int pi=findPlayer(w);
-        for(int i=0;i<w.entity_count;i++) if(i!=pi&&w.alive[i]) alive_enemies++;
-        if(alive_enemies==0){
-            cout << "WIN|hero|all_defeated|gold=" << w.pgold << endl;
-            cout << "GAME_MESSAGE|SoA components operational." << endl;
-            break;
-        }
-    }
+    CloseWindow();
     return 0;
 }`,
     tests: [
-      { id: "g1", description: "Dungeon header", expectedOutput: "DUNGEON\\|rpg-v0", isPattern: true },
-      { id: "g2", description: "Player rendered with glyph @", expectedOutput: "ENTITY\\|id=0\\|@", isPattern: true },
-      { id: "g3", description: "Turn counter reaches 7", expectedOutput: "TURN\\|7", isPattern: true },
-      { id: "g4", description: "Gold is 20", expectedOutput: "GOLD\\|20", isPattern: true },
-      { id: "g5", description: "Win state", expectedOutput: "WIN\\|hero\\|all_defeated\\|gold=20", isPattern: true },
-      { id: "g6", description: "SoA message", expectedOutput: "GAME_MESSAGE\\|SoA components operational\\.", isPattern: true },
+      { id: "g1", description: "Player position", expectedOutput: "Player: (5, 5)", isPattern: false },
+      { id: "g2", description: "IDs OK", expectedOutput: "IDs: OK", isPattern: false },
+      { id: "g3", description: "SoA OK", expectedOutput: "SoA: OK", isPattern: false },
     ],
     hints: [
-      "The player is entity index 0 in the SoA. Use findPlayer(w) to get the player index, then access pos_x[pi], pos_y[pi], hp[pi].",
-      "passPlayerInput finds the player index, then moves or attacks. Attack checks Manhattan distance using pos_x and pos_y arrays directly.",
-      "Win check counts alive enemies (entities where i!=pi and alive[i]==true). When count is 0, print WIN and GAME_MESSAGE.",
+      "Add const int MAX_ENTITIES = 2; after const int NO_ENTITY.",
+      "Vec2i pos[MAX_ENTITIES] = {{5,5},{9,7}}; -- brace-init both elements at once.",
+      "Replace world.player.x with world.pos[world.player_id].x everywhere.",
     ],
-    estimatedMinutes: 18,
-  },
+    estimatedMinutes: 15
+  }
 };

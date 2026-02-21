@@ -4,21 +4,13 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-browser";
 import Link from "next/link";
-import { ALL_SPACE_SHOOTER_LESSONS } from "@/data/lessons";
 import { ALL_RPG_LESSONS } from "@/data/lessons/rpg-index";
 import { ALL_PLATFORMER_LESSONS } from "@/data/lessons/platformer-index";
-import { ALL_ROBOT_LESSONS } from "@/data/lessons/robot-index";
+import { ALL_CRAWLER_LESSONS } from "@/data/lessons/crawler-index";
+import { ALL_SHOOTER_LESSONS } from "@/data/lessons/shooter-index";
 
 // ─── Inline SVG Icons ──────────────────────────────────────────────────────
 
-function GearIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <circle cx="12" cy="12" r="3" />
-      <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
-    </svg>
-  );
-}
 
 function SaveIcon({ className }: { className?: string }) {
   return (
@@ -99,14 +91,14 @@ const TEMPLATE_LABELS: Record<string, string> = {
   space_shooter: "Space Shooter",
   platformer: "Platformer",
   simple_rpg: "Simple RPG",
-  differential_drive_robot: "Differential Drive Robot",
+  dungeon_crawler: "Dungeon Crawler",
 };
 
 const TEMPLATE_ICONS: Record<string, string> = {
   space_shooter: "\u{1F680}",
   platformer: "\u{1F3C3}",
   simple_rpg: "\u2694\uFE0F",
-  differential_drive_robot: "\u{1F916}",
+  dungeon_crawler: "\u{1F3F0}",
 };
 
 // ─── Component ──────────────────────────────────────────────────────────────
@@ -268,30 +260,26 @@ export default function SettingsPage() {
     );
   }
 
-  const isRobotPath = template === "differential_drive_robot";
+  const isCrawlerPath = template === "dungeon_crawler";
   const pathLessonCount =
     template === "simple_rpg" ? ALL_RPG_LESSONS.length :
     template === "platformer" ? ALL_PLATFORMER_LESSONS.length :
-    template === "differential_drive_robot" ? ALL_ROBOT_LESSONS.length :
-    ALL_SPACE_SHOOTER_LESSONS.length;
+    template === "dungeon_crawler" ? ALL_CRAWLER_LESSONS.length :
+    ALL_SHOOTER_LESSONS.length;
 
   return (
     <>
       {/* Header */}
-      <header className="border-b border-[#1a1a2e] px-4 sm:px-6 py-4">
+      <header className="border-b border-[#ffffff08] px-4 sm:px-6 py-5">
         <div className="max-w-5xl mx-auto">
-          <div className="lg:hidden md:pl-12">
-            <h1 className="text-xl font-semibold text-white">Settings</h1>
-            <p className="text-xs text-[#666] font-mono mt-0.5">Manage your account</p>
-          </div>
-          <div className="hidden lg:flex items-center gap-3">
-            <GearIcon className="h-6 w-6 text-primary" />
-            <div>
-              <h1 className="text-xl font-semibold text-white">Settings</h1>
-              <p className="text-xs text-[#666] font-mono mt-0.5">
-                Profile, security, and account management
-              </p>
-            </div>
+          <div className="md:pl-12 lg:pl-0">
+            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+              Settings
+            </h1>
+            <p className="text-xs text-[#555] font-mono mt-1 hidden lg:block">
+              Profile, security, and account management
+            </p>
+            <p className="text-xs text-[#555] font-mono mt-1 lg:hidden">Manage your account</p>
           </div>
         </div>
       </header>
@@ -301,7 +289,7 @@ export default function SettingsPage() {
           {/* ─── Main Content ──────────────────────────────────── */}
           <div className="flex-1 space-y-6 min-w-0">
             {/* Profile Section */}
-            <section id="profile" className="p-5 rounded-xl border border-[#1a1a2e] bg-surface">
+            <section id="profile" className="p-5 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
               <h2 className="text-sm font-semibold text-white mb-4">Profile</h2>
 
               {/* Avatar + Name */}
@@ -334,7 +322,7 @@ export default function SettingsPage() {
                   type="email"
                   value={email}
                   disabled
-                  className="w-full bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg px-4 py-3 text-base sm:text-sm font-mono text-[#666] cursor-not-allowed"
+                  className="w-full bg-[#060610] border border-[#ffffff10] rounded-xl px-4 py-3 text-base sm:text-sm font-mono text-gray-500 cursor-not-allowed"
                 />
                 <p className="text-[9px] font-mono text-[#555]">
                   Email cannot be changed. Your display name is derived from your email.
@@ -343,7 +331,7 @@ export default function SettingsPage() {
             </section>
 
             {/* Learning Path */}
-            <section id="path" className="p-5 rounded-xl border border-[#1a1a2e] bg-surface">
+            <section id="path" className="p-5 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
               <h2 className="text-sm font-semibold text-white mb-4">Learning Path</h2>
               {template ? (
                 <div className="flex items-center justify-between">
@@ -354,7 +342,7 @@ export default function SettingsPage() {
                         {TEMPLATE_LABELS[template] || template}
                       </p>
                       <p className="text-[10px] font-mono text-[#666]">
-                        {isRobotPath ? "C++ Robotics Path" : "C++ Game Dev Path"}
+                        {isCrawlerPath ? "C++ Dungeon Crawler Path" : "C++ Game Dev Path"}
                       </p>
                     </div>
                   </div>
@@ -371,7 +359,7 @@ export default function SettingsPage() {
             </section>
 
             {/* Security */}
-            <section id="security" className="p-5 rounded-xl border border-[#1a1a2e] bg-surface">
+            <section id="security" className="p-5 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
               <h2 className="text-sm font-semibold text-white mb-4">Change Password</h2>
 
               <div className="space-y-4">
@@ -385,7 +373,7 @@ export default function SettingsPage() {
                       type={showNewPassword ? "text" : "password"}
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="w-full bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg px-4 py-3 text-base sm:text-sm font-mono text-white placeholder-[#555] focus:border-primary/50 focus:outline-none transition-colors pr-12"
+                      className="w-full bg-[#060610] border border-[#ffffff10] rounded-xl px-4 py-3 text-base sm:text-sm font-mono text-white placeholder-[#444] focus:border-teal-500/40 focus:outline-none transition-colors pr-12"
                       placeholder="Enter new password"
                     />
                     <button
@@ -412,7 +400,7 @@ export default function SettingsPage() {
                       type={showConfirmPassword ? "text" : "password"}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg px-4 py-3 text-base sm:text-sm font-mono text-white placeholder-[#555] focus:border-primary/50 focus:outline-none transition-colors pr-12"
+                      className="w-full bg-[#060610] border border-[#ffffff10] rounded-xl px-4 py-3 text-base sm:text-sm font-mono text-white placeholder-[#444] focus:border-teal-500/40 focus:outline-none transition-colors pr-12"
                       placeholder="Confirm new password"
                     />
                     <button
@@ -444,10 +432,10 @@ export default function SettingsPage() {
                 <button
                   onClick={handleSavePassword}
                   disabled={saving || (!newPassword && !confirmPassword)}
-                  className={`w-full flex items-center justify-center gap-2 py-3 rounded-lg font-semibold text-sm transition-all min-h-[44px] touch-manipulation ${
+                  className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all min-h-[44px] touch-manipulation ${
                     saving || (!newPassword && !confirmPassword)
-                      ? "bg-[#1a1a2e] text-[#555] cursor-not-allowed"
-                      : "bg-primary text-black hover:bg-primary/90"
+                      ? "bg-[#ffffff08] text-gray-500 cursor-not-allowed"
+                      : "bg-teal-600 hover:bg-teal-500 text-white"
                   }`}
                 >
                   <SaveIcon className="h-4 w-4" />
@@ -457,13 +445,13 @@ export default function SettingsPage() {
             </section>
 
             {/* Danger Zone */}
-            <section id="danger" className="p-5 rounded-xl border border-danger/20 bg-surface">
+            <section id="danger" className="p-5 rounded-2xl border border-red-600/20 bg-[#09091a]">
               <h2 className="text-sm font-semibold text-danger mb-4">Danger Zone</h2>
 
               <div className="space-y-3">
                 <button
                   onClick={handleExportData}
-                  className="w-full flex items-center justify-between px-4 py-3 bg-[#0a0a0f] hover:bg-[#111118] border border-[#2a2a3e] rounded-lg text-sm font-mono text-[#ccc] transition-colors min-h-[44px] touch-manipulation"
+                  className="w-full flex items-center justify-between px-4 py-3 bg-[#ffffff08] hover:bg-[#ffffff12] border border-[#ffffff15] rounded-xl text-sm font-mono text-gray-300 transition-colors min-h-[44px] touch-manipulation"
                 >
                   <span>Export My Data</span>
                   <DownloadIcon className="h-4 w-4 text-[#888]" />
@@ -471,7 +459,7 @@ export default function SettingsPage() {
 
                 <button
                   onClick={handleDeleteAccount}
-                  className="w-full flex items-center justify-between px-4 py-3 bg-danger/5 hover:bg-danger/10 border border-danger/20 rounded-lg text-sm font-mono text-danger transition-colors min-h-[44px] touch-manipulation"
+                  className="w-full flex items-center justify-between px-4 py-3 bg-red-600/10 hover:bg-red-600/15 border border-red-600/20 rounded-xl text-sm font-mono text-red-400 transition-colors min-h-[44px] touch-manipulation"
                 >
                   <span>Delete My Account</span>
                   <TrashIcon className="h-4 w-4" />
@@ -483,7 +471,7 @@ export default function SettingsPage() {
           {/* ─── Right Sidebar ─────────────────────────────────── */}
           <div className="lg:w-64 shrink-0 space-y-4">
             {/* Quick Nav */}
-            <div className="p-4 rounded-xl border border-[#1a1a2e] bg-surface">
+            <div className="p-4 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
               <h3 className="text-[10px] font-mono font-bold text-[#888] uppercase tracking-wider mb-3">
                 Settings
               </h3>
@@ -499,8 +487,8 @@ export default function SettingsPage() {
                     onClick={() => scrollToSection(item.id)}
                     className={`w-full text-left px-3 py-2.5 rounded-lg text-xs font-mono transition-colors min-h-[44px] ${
                       activeSection === item.id
-                        ? "bg-primary/10 text-primary"
-                        : "text-[#888] hover:text-white hover:bg-[#111118]"
+                        ? "bg-teal-600/15 text-teal-400"
+                        : "text-gray-500 hover:text-white hover:bg-[#ffffff08]"
                     }`}
                   >
                     {item.label}
@@ -510,7 +498,7 @@ export default function SettingsPage() {
             </div>
 
             {/* Subscription Card */}
-            <div className="p-4 rounded-xl border border-[#1a1a2e] bg-surface">
+            <div className="p-4 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
               <h3 className="text-[10px] font-mono font-bold text-[#888] uppercase tracking-wider mb-3">
                 Subscription
               </h3>
@@ -535,7 +523,7 @@ export default function SettingsPage() {
                   </div>
                   <Link
                     href="/upgrade"
-                    className="flex items-center justify-center gap-2 w-full py-2.5 bg-gradient-to-r from-[#a855f7] to-[#6366f1] hover:from-[#9333ea] hover:to-[#4f46e5] text-white font-semibold text-xs rounded-lg transition-all min-h-[40px] touch-manipulation"
+                    className="flex items-center justify-center gap-2 w-full py-2.5 bg-gradient-to-r from-[#a855f7] to-[#6366f1] hover:from-[#9333ea] hover:to-[#4f46e5] text-white font-semibold text-xs rounded-xl transition-all min-h-[40px] touch-manipulation"
                   >
                     <SparklesIcon className="h-4 w-4" />
                     Upgrade to Pro
@@ -548,7 +536,7 @@ export default function SettingsPage() {
             </div>
 
             {/* Help */}
-            <div className="p-4 rounded-xl border border-[#1a1a2e] bg-surface">
+            <div className="p-4 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
               <h3 className="text-[10px] font-mono font-bold text-[#888] uppercase tracking-wider mb-3">
                 Support
               </h3>

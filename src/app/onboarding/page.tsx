@@ -10,7 +10,7 @@ const TEMPLATE_ICONS: Record<string, string> = {
   rocket: "\uD83D\uDE80",
   runner: "\uD83C\uDFC3",
   sword: "\u2694\uFE0F",
-  robot: "\uD83E\uDD16",
+  castle: "\uD83C\uDFF0",
 };
 
 const PATH_DETAILS: Record<string, { tagline: string; bestFor: string }> = {
@@ -26,9 +26,9 @@ const PATH_DETAILS: Record<string, { tagline: string; bestFor: string }> = {
     tagline: "Build Data-Driven Systems",
     bestFor: "System designers, tool developers",
   },
-  differential_drive_robot: {
-    tagline: "Program Real-Time Embedded Systems",
-    bestFor: "Robotics engineers, embedded devs",
+  dungeon_crawler: {
+    tagline: "Explore 3D Dungeons & Procedural Worlds",
+    bestFor: "3D game devs, graphics programmers",
   },
 };
 
@@ -132,7 +132,7 @@ export default function OnboardingPage() {
                 Welcome to HeapSight
               </h1>
               <p className="text-base text-[#888] max-w-xl mx-auto">
-                Learn C++ by building real games and robots. Earn achievements,
+                Learn C++ by building real games and dungeons. Earn achievements,
                 compete on leaderboards, and master 4 industry paradigms.
               </p>
             </div>
@@ -153,7 +153,7 @@ export default function OnboardingPage() {
                 {
                   icon: "\uD83C\uDFAE",
                   title: "Real Projects",
-                  desc: "Playable games & robots",
+                  desc: "Playable games & dungeons",
                 },
               ].map((f) => (
                 <div
@@ -253,13 +253,13 @@ export default function OnboardingPage() {
               </div>
             </div>
 
-            {/* Robotics */}
+            {/* Dungeon Crawler */}
             <div className="mb-8">
               <h3 className="text-xs font-mono text-[#555] uppercase tracking-wider mb-3">
-                Robotics
+                Dungeon Crawler
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {GAME_TEMPLATES.filter((t) => t.category === "robot").map(
+                {GAME_TEMPLATES.filter((t) => t.category === "crawler").map(
                   (template) => {
                     const details = PATH_DETAILS[template.id];
                     return (

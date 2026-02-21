@@ -36,13 +36,14 @@ export default function LessonEditor({ readOnly = false }: LessonEditorProps) {
   );
 
   return (
-    <div className="h-full w-full min-h-[300px] rounded-lg overflow-hidden border border-[#1a1a2e]">
-      <div className="flex items-center justify-between px-3 py-1.5 bg-[#0d0d1a] border-b border-[#1a1a2e]">
+    <div className="h-full w-full rounded-2xl overflow-hidden border border-[#ffffff10] flex flex-col">
+      <div className="shrink-0 flex items-center justify-between px-3 py-1.5 bg-[#060610] border-b border-[#ffffff08]">
         <span className="text-[10px] font-mono text-[#555] uppercase tracking-wider">
           {currentPart === 2 ? "game.cpp" : "main.cpp"}
         </span>
         <span className="text-[10px] font-mono text-[#444]">C++</span>
       </div>
+      <div className="flex-1 min-h-0">
       <Editor
         height="100%"
         defaultLanguage="cpp"
@@ -65,6 +66,7 @@ export default function LessonEditor({ readOnly = false }: LessonEditorProps) {
           suggest: { showKeywords: true },
         }}
       />
+      </div>
     </div>
   );
 }

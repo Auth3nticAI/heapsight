@@ -3,295 +3,281 @@ import { Lesson } from "@/types/lesson";
 export const lessonRPG01: Lesson = {
   id: "rpg-01-boot-dungeon-grid",
   title: "Boot Dungeon Grid",
-  description: "Render a 10x10 ASCII dungeon room to stdout. The grid is data; the print loop is the renderer.",
+  description: "Render a 12x10 dungeon grid with walls and a player. The grid is data; the renderer is a nested loop.",
   order: 1,
   xpReward: 50,
   tier: "free",
-  concepts: ["cout", "grid as data", "nested loops", "output protocol"],
+  concepts: ["grid as data", "nested loops", "dual output", "tile rendering"],
   part1: {
-    title: "Concept: Boot Dungeon Grid",
+    title: "Concept: Grid as Data",
     type: "concept",
     instructions: `# Boot Dungeon Grid
 
 ## Mental Model
-
-A dungeon is a grid. A grid is a 2D array of tiles. Each tile has a value — floor, wall, empty. The renderer is a nested loop: for every row, for every column, print the tile character. The display is a pure function of the grid data. Change the data; the display changes. This is the first principle of data-driven game design.
+A dungeon is a grid. A grid is a 2D array of integers. Each cell holds a tile type: 0 for floor, 1 for wall. The renderer is a nested loop that reads each cell and prints the corresponding character. Change the data; the display changes. This is the first principle of data-driven game design.
 
 ## What Breaks Without This
-
-Without a grid, dungeon layout is hardcoded strings. Adding a wall means editing a print statement. Moving the player means manually computing which string to update. It does not scale beyond 10 lines of code. With a grid array, the dungeon is data — movable, saveable, loadable, and renderable by a single loop.
+Without a grid, dungeon layout is hardcoded strings. Adding a wall means editing a print statement. Moving the player means manually computing which character to update. It does not scale beyond 10 lines of code. With a grid array, the dungeon is data — movable, saveable, loadable, and renderable by a single loop.
 
 ## The Fix: 2D Array as Grid
-
 \`\`\`cpp
-const int W = 10, H = 10;
-char grid[H][W];
+const int GRID_W = 12;
+const int GRID_H = 10;
+int tiles[GRID_H][GRID_W];
 
-// Fill with floor
-for (int y = 0; y < H; y++)
-    for (int x = 0; x < W; x++)
-        grid[y][x] = '.';
-
-// Add border walls
-for (int x = 0; x < W; x++) { grid[0][x] = '#'; grid[H-1][x] = '#'; }
-for (int y = 0; y < H; y++) { grid[y][0] = '#'; grid[y][W-1] = '#'; }
+// 0 = floor, 1 = wall
+// Border cells are walls, interior cells are floor
 \`\`\`
 
+The player is stored as two integers: \`player_x\` and \`player_y\`. During the print loop, if the current cell matches the player position, print \`@\` instead of the tile character. The player is not IN the grid — the player is rendered ON TOP of the grid. This separation matters: the grid is world data, the player is entity data.
+
 ## Key Concepts
+- Grid as data: a 2D array where each cell holds a tile type
+- Renderer as loop: nested for-loops read data and produce output
+- Entity separate from world: player position is variables, not part of the grid array
+- Wall counting: iterate the grid and count cells where tiles[y][x] == 1
 
-- **2D array** — \`char grid[H][W]\` stores the dungeon. Row-major: \`grid[y][x]\` is row y, column x.
-- **Nested loop** — outer loop over rows (y), inner loop over columns (x). Prints one row per outer iteration.
-- **Tile characters** — \`'#'\` for wall, \`'.'\` for floor, \`'@'\` for player.
-- **Output protocol** — the game renderer reads stdout line-by-line. \`GRID_ROW|y|row_string\` format feeds the visual renderer.
+## Beginner Trap
+**Putting the player character directly into the tiles array.** If you write \`tiles[5][5] = 2\` to mean "player," you mix entity data with world data. When the player moves, you need to restore the old tile value. When you save the dungeon, player position is embedded in the map. Keep them separate: \`tiles[][]\` for the world, \`player_x/player_y\` for the entity.
 
-## Performance Insight
+## Elite Insight
+Nethack stores its dungeon as a 2D grid of tile types. The display function reads each cell and maps it to a character. Every roguelike since 1980 follows this pattern. Your grid is the same architecture — at a smaller scale.
 
-A 10x10 grid is 100 bytes. Even a 256x256 dungeon is 64 KB — trivially fits in L1 cache. Rendering is a sequential memory read: 100 cache-friendly accesses. The bottleneck is cout, not the grid.
-
-## Memory Insight
-
-\`char grid[10][10]\` is 100 bytes on the stack. Stack allocation is free — a single register add at function entry. The array is contiguous in memory, row-major. \`grid[1][0]\` is at address \`grid + 10\` — exactly one row offset.
+## Systems Thinking Connection
+This grid-as-data pattern is the RPG equivalent of the Platformer's tilemap collision grid. Both store world geometry as arrays of integers. The Platformer checks \`grid[y][x]\` for collision. Your RPG checks \`tiles[y][x]\` for walls. Different game, same data structure.
 
 ## Your Task
-
-Initialize a 10x10 dungeon grid with floor tiles (\`'.'\`) and border walls (\`'#'\`). Render it row by row using the GRID_ROW output protocol.
+Create a 12x10 grid with border walls and 4 interior walls. Place the player at (5, 5). Print the grid dimensions, wall count, and player position.
 
 Expected output:
 \`\`\`
-DUNGEON|rpg-v0
-GRID_ROW|0|##########
-GRID_ROW|1|#........#
-...
-GRID_ROW|9|##########
-TURN|0
-GAME_MESSAGE|Dungeon grid initialized.
-\`\`\`
-
-## Beginner Trap
-
-**Row vs column confusion.** \`grid[y][x]\` — first index is the row (y), second is the column (x). Reversing them (\`grid[x][y]\`) transposes the grid — walls appear on the wrong sides.
-
-## Elite Insight
-
-Rogue (1980) stored the dungeon as a 2D char array. Nethack does the same. Dwarf Fortress uses the same principle at vastly larger scale. The 2D grid is the oldest and most proven game data structure. Your code follows the same pattern used by 40+ years of game development.
-
-## Systems Thinking Connection
-
-The Space Shooter stores entities in flat arrays. The RPG stores the dungeon in a 2D grid. Different data structure, same principle: game state is data in memory. The renderer reads the data and draws it. Change the data; the display updates. This is the foundation of every system that follows.
-
-## Skill Reinforcement
-
-This lesson establishes the grid that every future lesson builds on. L02 will place the player on this grid. L05 will use it for collision detection. L20 will load different grids from data files. Get the indexing right here — it propagates everywhere.
-
-## Mastery Check
-
-Question: Why is \`char grid[H][W]\` preferred over \`string grid[H]\`?
-Answer: A char array is a flat memory block — cache-efficient, trivially serializable, zero overhead. A string is a heap-allocated object with a pointer, length, and capacity. For a game grid accessed thousands of times per frame, the char array is the correct choice.`,
+Grid: 12x10
+Walls: 44
+Player: (5, 5)
+\`\`\``,
     starterCode: `#include <iostream>
 using namespace std;
 
-const int W = 10;
-const int H = 10;
+const int GRID_W = 12;
+const int GRID_H = 10;
+int tiles[GRID_H][GRID_W];
+int player_x = 5, player_y = 5;
+
+void initTiles() {
+    // TODO: Fill the grid
+    // Border cells (y==0, y==GRID_H-1, x==0, x==GRID_W-1) should be 1 (wall)
+    // Interior cells should be 0 (floor)
+    // Add 4 interior walls: tiles[3][4], tiles[3][5], tiles[6][7], tiles[6][8]
+}
 
 int main() {
-    char grid[H][W];
+    initTiles();
 
-    // TODO: Fill grid with floor tiles '.'
-    // Use nested loops: for y 0..H, for x 0..W
+    // TODO: Print "Grid: 12x10"
 
-    // TODO: Set border walls to '#'
-    // Row 0 and row H-1: all '#'
-    // Column 0 and column W-1: all '#'
+    // TODO: Count walls and print "Walls: 44"
 
-    cout << "DUNGEON|rpg-v0" << endl;
-
-    // TODO: Render grid using GRID_ROW|y|row protocol
-    // For each row y, print "GRID_ROW|" << y << "|" then each char
-
-    cout << "TURN|0" << endl;
-    cout << "GAME_MESSAGE|Dungeon grid initialized." << endl;
+    // TODO: Print "Player: (5, 5)"
 
     return 0;
 }`,
     solutionCode: `#include <iostream>
 using namespace std;
 
-const int W = 10;
-const int H = 10;
+const int GRID_W = 12;
+const int GRID_H = 10;
+int tiles[GRID_H][GRID_W];
+int player_x = 5, player_y = 5;
+
+void initTiles() {
+    for (int y = 0; y < GRID_H; y++) {
+        for (int x = 0; x < GRID_W; x++) {
+            if (y == 0 || y == GRID_H - 1 || x == 0 || x == GRID_W - 1)
+                tiles[y][x] = 1;
+            else
+                tiles[y][x] = 0;
+        }
+    }
+    tiles[3][4] = 1;
+    tiles[3][5] = 1;
+    tiles[6][7] = 1;
+    tiles[6][8] = 1;
+}
 
 int main() {
-    char grid[H][W];
+    initTiles();
 
-    for (int y = 0; y < H; y++)
-        for (int x = 0; x < W; x++)
-            grid[y][x] = '.';
+    cout << "Grid: " << GRID_W << "x" << GRID_H << endl;
 
-    for (int x = 0; x < W; x++) {
-        grid[0][x] = '#';
-        grid[H-1][x] = '#';
-    }
-    for (int y = 0; y < H; y++) {
-        grid[y][0] = '#';
-        grid[y][W-1] = '#';
-    }
+    int wall_count = 0;
+    for (int y = 0; y < GRID_H; y++)
+        for (int x = 0; x < GRID_W; x++)
+            if (tiles[y][x] == 1) wall_count++;
+    cout << "Walls: " << wall_count << endl;
 
-    cout << "DUNGEON|rpg-v0" << endl;
-
-    for (int y = 0; y < H; y++) {
-        cout << "GRID_ROW|" << y << "|";
-        for (int x = 0; x < W; x++) cout << grid[y][x];
-        cout << endl;
-    }
-
-    cout << "TURN|0" << endl;
-    cout << "GAME_MESSAGE|Dungeon grid initialized." << endl;
+    cout << "Player: (" << player_x << ", " << player_y << ")" << endl;
 
     return 0;
 }`,
     tests: [
-      { id: "t1", description: "Dungeon header", expectedOutput: "DUNGEON|rpg-v0", isPattern: false },
-      { id: "t2", description: "Top wall row", expectedOutput: "GRID_ROW|0|##########", isPattern: false },
-      { id: "t3", description: "Interior row", expectedOutput: "GRID_ROW|1|#........#", isPattern: false },
-      { id: "t4", description: "Bottom wall row", expectedOutput: "GRID_ROW|9|##########", isPattern: false },
+      { id: "t1", description: "Prints grid dimensions", expectedOutput: "Grid: 12x10", isPattern: false },
+      { id: "t2", description: "Prints wall count", expectedOutput: "Walls: 44", isPattern: false },
+      { id: "t3", description: "Prints player position", expectedOutput: "Player: (5, 5)", isPattern: false },
     ],
     hints: [
-      "Fill the grid with dots first: nested loops, grid[y][x] = \'.\'.",
-      "Then overwrite the border: row 0, row H-1, column 0, column W-1 with \'#\'.",
-      "Print with GRID_ROW|y| prefix, then loop x printing each character — no spaces between chars.",
+      "Use nested loops to fill the grid. Check if y==0, y==GRID_H-1, x==0, or x==GRID_W-1 to identify border cells.",
+      "After filling borders, set the 4 interior walls: tiles[3][4]=1, tiles[3][5]=1, tiles[6][7]=1, tiles[6][8]=1.",
+      "Count walls by looping through the grid and incrementing a counter when tiles[y][x]==1. Print with cout.",
     ],
-    estimatedMinutes: 8,
+    estimatedMinutes: 8
   },
   part2: {
-    title: "Build: Dungeon Grid Renderer",
+    title: "Build: Boot Dungeon Grid",
     type: "game_builder",
-    instructions: `# Build: Dungeon Grid Renderer
+    instructions: `# Build: Boot Dungeon Grid
 
 ## Mental Model
-
-The dungeon grid is the visual foundation of the entire RPG. This build extends the basic grid with the game builder output protocol: DUNGEON header, GRID_ROW lines for the renderer, a hero ENTITY placed at tile (1,1), and HUD elements (TURN, HP, GOLD). The renderer reads these lines to draw the dungeon on screen.
+The same grid data that produced ASCII output now drives a raylib canvas. Each tile becomes a colored rectangle. Walls are GRAY, floors are DARKGRAY, and the player is GREEN. The renderer is still a nested loop — it just calls DrawRectangle instead of cout. The data doesn't change. Only the output format changes. This is the dual-output pattern: same data, two renderers.
 
 ## What Breaks Without This
+Without visual rendering, you can't see your dungeon take shape. ASCII output proves the data is correct, but it doesn't feel like a game. The canvas makes the dungeon real — you can see the walls, the floor, and the player. Every lesson from here forward will render to this canvas.
 
-Without the full output protocol, the game renderer has nothing to draw. The grid exists in memory but isn't communicated to the display. The ENTITY line tells the renderer where to draw the hero sprite. The GRID_ROW lines tell it where walls and floors are. Missing any of these means a broken display.
-
-## The Fix: Full Output Protocol
-
-\`\`\`cpp
-cout << "DUNGEON|rpg-v0" << endl;
-for (int y = 0; y < H; y++) {
-    cout << "GRID_ROW|" << y << "|";
-    for (int x = 0; x < W; x++) cout << grid[y][x];
-    cout << endl;
-}
-cout << "ENTITY|hero|player|" << px*TILE << "|" << py*TILE << "|24|24" << endl;
-cout << "TURN|0" << endl;
-cout << "HP|100" << endl;
-cout << "GOLD|0" << endl;
-\`\`\`
+## The Fix: Tile Rendering with Raylib
+Each tile at grid position (x, y) renders as a rectangle at pixel position (x*TILE, y*TILE) with size (TILE-1, TILE-1). The 1-pixel gap between tiles creates a grid effect. The player renders on top as a GREEN rectangle at (player_x*TILE, player_y*TILE).
 
 ## Key Concepts
-
-- **DUNGEON header** — identifies the game type for the renderer.
-- **GRID_ROW protocol** — each row is a separate line with y-index and the full row string.
-- **ENTITY lines** — pixel coordinates = tile * TILE_SIZE. TILE = 24 pixels.
-- **HUD elements** — TURN, HP, GOLD printed after grid for overlay display.
-
-## Performance Insight
-
-The entire render is sequential string output. No computation besides grid access. The cout calls are the bottleneck — in a real engine you'd write to a buffer and flush once. For our console game, this is negligible.
-
-## Memory Insight
-
-Grid + two player position ints = 104 bytes total. The ENTITY line computes pixel coords on the fly: \`px * 24\`. No additional memory for rendering — it's a pure projection of existing data.
+- Grid coordinates to pixel coordinates: multiply by TILE size
+- TILE-1 pixel size creates visible grid lines
+- Player renders on top of tiles, not inside the tile array
+- HUD text in the right margin (x=400+) keeps UI separate from game grid
 
 ## Your Task
+Initialize the tile grid with border walls and 4 interior walls. Render the grid as colored rectangles. Render the player as a GREEN square. Print grid info to cout for test validation.
 
-Build the complete dungeon renderer: grid with player at (1,1), hero ENTITY line at pixel (24,24), and HUD with HP=100, GOLD=0.
+Expected cout output:
+\`\`\`
+Grid: 12x10
+Player: (5, 5)
+Tile: 32px
+\`\`\`
 
 ## Beginner Trap
-
-**Forgetting to place the player glyph on the grid before rendering.** If you print ENTITY but don't set \`grid[py][px] = \'@\'\`, the grid shows dots where the player should be. The ENTITY line is for the sprite renderer; the grid glyph is for the ASCII display.
+**Drawing the player inside the tile loop.** If you check \`if (x == player_x && y == player_y)\` inside the tile loop, you skip drawing the floor tile under the player. Draw ALL tiles first, THEN draw the player on top. Layered rendering: background first, entities second.
 
 ## Elite Insight
-
-Professional game engines separate the world data from the render data. Your grid IS the world data. The print loop IS the renderer. They're cleanly separated: change the grid, the render updates automatically. This is the Model-View pattern — the oldest and most reliable UI architecture.
+Every 2D game engine renders in layers: background tiles, then entities, then UI. Unreal, Unity, Godot — all use this pattern. Your nested loop draws the tile layer. The player DrawRectangle draws the entity layer. The DrawText calls draw the UI layer. Same architecture, simplified.
 
 ## Mastery Check
-
-Question: Why are pixel coordinates \`px * TILE\` instead of just \`px\`?
-Answer: Tiles are logical coordinates (0-9). Pixels are screen coordinates. TILE = 24 means each tile is 24x24 pixels on screen. Multiplying converts from game space to screen space. This separation lets you change tile size without touching game logic.`,
+Question: Why is the rectangle size TILE-1 instead of TILE?
+Answer: The 1-pixel gap between tiles creates visible grid lines, making the dungeon layout easier to read. Without the gap, adjacent tiles blend into a solid block.`,
     starterCode: `#include <iostream>
+#include "raylib.h"
 using namespace std;
 
-const int W = 10, H = 10, TILE = 24;
+const int GRID_W = 12;
+const int GRID_H = 10;
+const int TILE = 32;
+int tiles[GRID_H][GRID_W];
+int player_x = 5, player_y = 5;
+
+void initTiles() {
+    // TODO: Fill the grid with border walls (1) and floor (0)
+    // TODO: Add 4 interior walls: tiles[3][4], tiles[3][5], tiles[6][7], tiles[6][8]
+}
 
 int main() {
-    char grid[H][W];
-    for (int y = 0; y < H; y++)
-        for (int x = 0; x < W; x++)
-            grid[y][x] = '.';
-    for (int x = 0; x < W; x++) { grid[0][x] = '#'; grid[H-1][x] = '#'; }
-    for (int y = 0; y < H; y++) { grid[y][0] = '#'; grid[y][W-1] = '#'; }
+    InitWindow(640, 640, "HeapSight RPG");
+    SetTargetFPS(60);
 
-    int px = 1, py = 1;
-    // TODO: Place player glyph on grid
+    initTiles();
 
-    // TODO: Print DUNGEON header
+    // TODO: Print "Grid: 12x10" using cout
+    // TODO: Print "Player: (5, 5)" using cout
+    // TODO: Print "Tile: 32px" using cout
 
-    // TODO: Print GRID_ROW lines
+    while (!WindowShouldClose()) {
+        BeginDrawing();
+        ClearBackground(BLACK);
 
-    // TODO: Print ENTITY line for hero at pixel (px*TILE, py*TILE) size 24x24
-    // TODO: Print TURN|0
-    // TODO: Print HP|100
-    // TODO: Print GOLD|0
-    // TODO: Print GAME_MESSAGE|Dungeon grid initialized.
+        // TODO: Render tiles as colored rectangles
+        // walls (1) = GRAY, floor (0) = DARKGRAY
+        // Each tile at pixel position (x*TILE, y*TILE), size (TILE-1, TILE-1)
 
+        // TODO: Render player as GREEN rectangle at (player_x*TILE, player_y*TILE)
+
+        DrawText("HeapSight RPG", 400, 10, 20, WHITE);
+
+        EndDrawing();
+    }
+
+    CloseWindow();
     return 0;
 }`,
     solutionCode: `#include <iostream>
+#include "raylib.h"
 using namespace std;
 
-const int W = 10, H = 10, TILE = 24;
+const int GRID_W = 12;
+const int GRID_H = 10;
+const int TILE = 32;
+int tiles[GRID_H][GRID_W];
+int player_x = 5, player_y = 5;
+
+void initTiles() {
+    for (int y = 0; y < GRID_H; y++) {
+        for (int x = 0; x < GRID_W; x++) {
+            if (y == 0 || y == GRID_H - 1 || x == 0 || x == GRID_W - 1)
+                tiles[y][x] = 1;
+            else
+                tiles[y][x] = 0;
+        }
+    }
+    tiles[3][4] = 1;
+    tiles[3][5] = 1;
+    tiles[6][7] = 1;
+    tiles[6][8] = 1;
+}
 
 int main() {
-    char grid[H][W];
-    for (int y = 0; y < H; y++)
-        for (int x = 0; x < W; x++)
-            grid[y][x] = '.';
-    for (int x = 0; x < W; x++) { grid[0][x] = '#'; grid[H-1][x] = '#'; }
-    for (int y = 0; y < H; y++) { grid[y][0] = '#'; grid[y][W-1] = '#'; }
+    InitWindow(640, 640, "HeapSight RPG");
+    SetTargetFPS(60);
 
-    int px = 1, py = 1;
-    grid[py][px] = '@';
+    initTiles();
 
-    cout << "DUNGEON|rpg-v0" << endl;
+    cout << "Grid: " << GRID_W << "x" << GRID_H << endl;
+    cout << "Player: (" << player_x << ", " << player_y << ")" << endl;
+    cout << "Tile: " << TILE << "px" << endl;
 
-    for (int y = 0; y < H; y++) {
-        cout << "GRID_ROW|" << y << "|";
-        for (int x = 0; x < W; x++) cout << grid[y][x];
-        cout << endl;
+    while (!WindowShouldClose()) {
+        BeginDrawing();
+        ClearBackground(BLACK);
+
+        for (int y = 0; y < GRID_H; y++) {
+            for (int x = 0; x < GRID_W; x++) {
+                Color c = (tiles[y][x] == 1) ? GRAY : DARKGRAY;
+                DrawRectangle(x * TILE, y * TILE, TILE - 1, TILE - 1, c);
+            }
+        }
+        DrawRectangle(player_x * TILE, player_y * TILE, TILE - 1, TILE - 1, GREEN);
+
+        DrawText("HeapSight RPG", 400, 10, 20, WHITE);
+
+        EndDrawing();
     }
 
-    cout << "ENTITY|hero|player|" << px * TILE << "|" << py * TILE << "|24|24" << endl;
-    cout << "TURN|0" << endl;
-    cout << "HP|100" << endl;
-    cout << "GOLD|0" << endl;
-    cout << "GAME_MESSAGE|Dungeon grid initialized." << endl;
-
+    CloseWindow();
     return 0;
 }`,
     tests: [
-      { id: "g1", description: "Top border wall row", expectedOutput: "GRID_ROW|0|##########", isPattern: false },
-      { id: "g2", description: "Player on grid row 1", expectedOutput: "GRID_ROW|1|#@.......#", isPattern: false },
-      { id: "g3", description: "Hero entity at pixel 24,24", expectedOutput: "ENTITY|hero|player|24|24|24|24", isPattern: false },
-      { id: "g4", description: "HP display", expectedOutput: "HP|100", isPattern: false },
-      { id: "g5", description: "Game message", expectedOutput: "GAME_MESSAGE|Dungeon grid initialized.", isPattern: false },
+      { id: "g1", description: "Prints grid dimensions", expectedOutput: "Grid: 12x10", isPattern: false },
+      { id: "g2", description: "Prints player position", expectedOutput: "Player: (5, 5)", isPattern: false },
+      { id: "g3", description: "Prints tile size", expectedOutput: "Tile: 32px", isPattern: false },
     ],
     hints: [
-      "Place the player: grid[py][px] = \'@\' before printing the grid.",
-      "ENTITY format: ENTITY|hero|player|px*TILE|py*TILE|24|24 where TILE=24.",
-      "Print grid rows first, then ENTITY, then TURN, HP, GOLD, GAME_MESSAGE.",
+      "Use nested loops: for y from 0 to GRID_H, for x from 0 to GRID_W. Check border conditions to set walls.",
+      "For rendering, DrawRectangle(x*TILE, y*TILE, TILE-1, TILE-1, color). Use GRAY for walls, DARKGRAY for floor.",
+      "Draw the player AFTER the tile loop: DrawRectangle(player_x*TILE, player_y*TILE, TILE-1, TILE-1, GREEN).",
     ],
-    estimatedMinutes: 10,
-  },
+    estimatedMinutes: 10
+  }
 };

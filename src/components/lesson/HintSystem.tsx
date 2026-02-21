@@ -100,7 +100,7 @@ export default function HintSystem({
       {availableHintLevel > 0 && !showHint && (
         <button
           onClick={() => handleShowHint(nextLevel)}
-          className="flex items-center gap-2 text-xs font-mono text-[#555] hover:text-warning border border-[#1a1a2e] hover:border-warning/30 bg-surface rounded-lg px-3 py-2 transition-all"
+          className="flex items-center gap-2 text-xs font-mono text-gray-500 hover:text-warning border border-[#ffffff10] hover:border-warning/30 bg-[#09091a] rounded-xl px-3 py-2 transition-all"
         >
           <svg
             width="14"
@@ -126,7 +126,7 @@ export default function HintSystem({
 
       {/* Hint display */}
       {showHint && currentHint && (
-        <div className="bg-warning/5 border border-warning/20 rounded-lg p-3 space-y-2">
+        <div className="bg-warning/5 border border-warning/20 rounded-xl p-3 space-y-2">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-2">
               <svg
@@ -160,12 +160,12 @@ export default function HintSystem({
             </button>
           </div>
 
-          <div className="text-xs font-mono text-[#ccc] leading-relaxed bg-[#0d0d1a] border border-[#1a1a2e] rounded p-2.5">
+          <div className="text-xs font-mono text-[#ccc] leading-relaxed bg-[#060610] border border-[#ffffff10] rounded-lg p-2.5">
             {currentHint.hint_text}
           </div>
 
           {currentHint.hint_code && (
-            <pre className="text-xs font-mono text-[#e0e0e0] bg-[#0d0d1a] border border-[#1a1a2e] rounded p-2.5 overflow-x-auto">
+            <pre className="text-xs font-mono text-[#e0e0e0] bg-[#060610] border border-[#ffffff10] rounded-lg p-2.5 overflow-x-auto">
               <code>{currentHint.hint_code}</code>
             </pre>
           )}

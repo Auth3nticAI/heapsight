@@ -3,438 +3,544 @@ import { Lesson } from "@/types/lesson";
 export const lessonRPG13: Lesson = {
   id: "rpg-13-entity-ids-v0",
   title: "Entity IDs v0",
-  description: "Use integer IDs instead of raw array indices to reference entities. player_id=0, enemies get sequential IDs.",
+  description: "Assign integer IDs to entities. Use NO_ENTITY=-1 as a sentinel. This lays the groundwork for array-indexed entity lookup in later lessons.",
   order: 13,
   xpReward: 100,
   tier: "pro",
-  concepts: ["entity ID", "ID lookup", "indirection", "stable references", "data integrity"],
+  concepts: ["entity ID", "sentinel value", "integer keys", "NO_ENTITY"],
   part1: {
-    title: "Concept: Entity IDs",
+    title: "Concept: Entity IDs v0",
     type: "concept",
-    instructions: `# Entity IDs v0
+    instructions: `# Concept: Entity IDs v0
 
-## Mental Model
+## Why Entity IDs?
+So far we refer to entities by their variable names: \`world.player\` and \`world.enemy_pos\`. As a game grows, you'll have many enemies, NPCs, and items. Referring to them by position in a flat struct doesn't scale.
 
-Right now, the player is "the entity at index 0 in the entity arrays" and the orc is "the entity at index 1." If you remove entity 0, entity 1 shifts to index 0. Every reference breaks. Integer IDs fix this: player_id=0 always means the player, regardless of where it sits in the array. The ID is a stable name. The index is a fragile position.
+The solution: give every entity an **integer ID**. An entity's ID is its key. You look it up by ID the same way you index an array.
 
-## What Breaks Without This
+## The Sentinel: NO_ENTITY = -1
+We need a value that means "no entity here". Use \`const int NO_ENTITY = -1\`. This plays the same role as \`nullptr\` for pointers, but it's just an int -- no pointers, no heap.
 
-Kill the player's companion (entity 1). Shift all entities down. Now entity 2 (the orc) is at index 1. Your combat system targets "entity 1" -- it hits the orc instead of the (dead) companion. The wrong entity takes damage. IDs that equal array indices break when entities are removed.
+## The Pattern
+\`\`\`cpp
+const int NO_ENTITY = -1;
+const int PLAYER_ID = 0;
+const int ENEMY_ID  = 1;
 
-## The Fix: Integer Entity IDs
-
-Add an entity_id[] array to WorldState. Each entity gets a unique ID at spawn time. The player gets id=0, the first enemy gets id=1, etc. A next_id counter increments with each spawn. To find an entity by ID, scan the array: findEntityByID(world, id) returns the index, or -1 if not found.
-
-This is simple linear search. For 4 entities, it is instant. For 100 entities, it is still fast. For 10,000, you would use a hash map -- but that is Lesson 73. Start simple. The ID concept is what matters, not the lookup speed.
-
-The key insight: IDs are data references. They point to entities the way file paths point to files. The ID does not change when the entity moves, takes damage, or gets shuffled in the array.
-
-## Key Concepts
-
-- **Entity ID** -- a unique integer assigned at spawn, never reused (in this version)
-- **ID vs index** -- ID is stable identity; index is current array position
-- **Lookup function** -- findEntityByID scans entity_id[] and returns the index
-- **next_id counter** -- monotonically increasing, ensures uniqueness
-
-## Performance Insight
-
-Linear scan over 4 entities: 4 comparisons. Over MAX_E=4 with branch prediction, this is a single cache line read. The cost is negligible compared to the safety it provides. In production engines, entity IDs use generation counters and slot maps for O(1) lookup -- we will explore this in later lessons.
-
-## Memory Insight
-
-entity_id[MAX_E] adds 16 bytes (4 ints) to WorldState. next_id adds 4 bytes. Total overhead: 20 bytes for stable entity references. The IDs are stored alongside other entity data in the same cache lines. No heap allocation, no pointers, no indirection beyond a simple array scan.
+const char* entityName(int id) {
+    if (id == PLAYER_ID) return "Player";
+    if (id == ENEMY_ID)  return "Enemy";
+    return "None";
+}
+\`\`\`
 
 ## Your Task
+1. Define \`NO_ENTITY = -1\`, \`PLAYER_ID = 0\`, \`ENEMY_ID = 1\`
+2. Write \`entityName(int id)\` returning the right string
+3. Loop over \`{PLAYER_ID, ENEMY_ID, NO_ENTITY}\` and print each
+4. Print \`IDs: OK\` at the end
 
-Add entity_id[] and next_id to WorldState. Assign player_id=0, spawn two enemies with id=1 and id=2. Write findEntityByID that returns the array index. Print:
-
+Expected output:
 \`\`\`
-DUNGEON|rpg-v0
-ENTITY|id=0|hero|player|24|24|24|24
-ENTITY|id=1|orc|enemy|72|24|24|24
-ENTITY|id=2|orc|enemy|144|24|24|24
-LOOKUP|id=0|index=0
-LOOKUP|id=2|index=2
-LOOKUP|id=99|index=-1
-\`\`\`
-
-## Beginner Trap
-
-**Using the array index as the ID.** If entity_id[i] == i always, the ID adds nothing. IDs must be independent of position. When an entity is removed and the array compacts, entity_id[i] != i -- and your code must handle this. The ID is permanent; the index is transient.
-
-## Elite Insight
-
-Diablo 2 assigns every item, monster, and missile a unique 32-bit ID. The ID persists across save/load. When you hover over a dropped item, the game looks up the ID -- not the position, not the array index. Nethack uses object IDs for the same reason. FromSoftware's Dark Souls tracks entity IDs for network synchronization -- the host and client must agree on which entity has which ID.
-
-## Systems Thinking Connection
-
-Entity IDs are the RPG equivalent of ROS2 node names or the Space Shooter's entity indices in ECS. The principle is universal: give each thing a stable name so you can refer to it without knowing its storage location. In databases, this is a primary key. In filesystems, this is an inode number.
-
-## Skill Reinforcement
-
-Lesson 12 introduced Vec2i for typed coordinates. This lesson adds entity IDs for stable references. Lesson 14 will formalize the parallel arrays into named SoA component groups. Lesson 27 will use IDs for item references in inventory.
-
-## Mastery Check
-
-Why must entity IDs never be reused (in this version)? Answer: If you reuse ID 1 for a new entity after the old one dies, any code still referencing "entity 1" now points to the wrong entity. Generation counters (Lesson 17) solve this by pairing an ID with a generation number, but for now, monotonically increasing IDs are the simplest safe approach.`,
+ID 0: Player
+ID 1: Enemy
+ID -1: None
+IDs: OK
+\`\`\``,
     starterCode: `#include <iostream>
 using namespace std;
 
-const int W=10, H=10, TILE=24, MAX_E=4;
+// TODO 1: Add const int NO_ENTITY = -1;
+// TODO 1: Add const int PLAYER_ID = 0;
+// TODO 1: Add const int ENEMY_ID  = 1;
 
-struct Vec2i { int x; int y; };
+// TODO 2: Write entityName(int id) returning the name string
 
-struct WorldState {
-    char grid[H][W];
-    Vec2i player_pos;
-    int php, pgold;
-    Vec2i entity_pos[MAX_E];
-    int ehp[MAX_E];
-    bool ealive[MAX_E];
-    // TODO: Add entity_id[MAX_E] and next_id
-    int entity_count;
-    int turn;
-    int player_id;
-};
-
-// TODO: Implement findEntityByID(const WorldState& w, int id)
-//   Returns the array index where entity_id[i]==id, or -1
-
-void initWorld(WorldState& w){
-    for(int y=0;y<H;y++) for(int x=0;x<W;x++) w.grid[y][x]='.';
-    for(int x=0;x<W;x++){w.grid[0][x]='#';w.grid[H-1][x]='#';}
-    for(int y=0;y<H;y++){w.grid[y][0]='#';w.grid[y][W-1]='#';}
-    w.player_pos.x=1; w.player_pos.y=1; w.php=100; w.pgold=0;
-    for(int i=0;i<MAX_E;i++){w.entity_pos[i].x=0;w.entity_pos[i].y=0;w.ehp[i]=0;w.ealive[i]=false;}
-    // TODO: Assign player_id=0, spawn enemies with id=1 and id=2
-    // Entity 0: orc at (3,1) hp=10
-    // Entity 1: orc at (6,1) hp=10
-    w.entity_count=2; w.turn=0;
-}
-
-int main(){
-    WorldState w;
-    initWorld(w);
-    cout << "DUNGEON|rpg-v0" << endl;
-    // TODO: Print ENTITY lines with IDs
-    // TODO: Print LOOKUP results for id=0, id=2, id=99
+int main() {
+    // TODO 3: int ids[] = {PLAYER_ID, ENEMY_ID, NO_ENTITY};
+    // for loop: cout << "ID " << ids[i] << ": " << entityName(ids[i]) << endl;
+    cout << "IDs: OK" << endl;
     return 0;
 }`,
     solutionCode: `#include <iostream>
 using namespace std;
 
-const int W=10, H=10, TILE=24, MAX_E=4;
+const int NO_ENTITY = -1;
+const int PLAYER_ID = 0;
+const int ENEMY_ID  = 1;
 
-struct Vec2i { int x; int y; };
-
-struct WorldState {
-    char grid[H][W];
-    Vec2i player_pos;
-    int php, pgold;
-    Vec2i entity_pos[MAX_E];
-    int ehp[MAX_E];
-    bool ealive[MAX_E];
-    int entity_id[MAX_E];
-    int entity_count;
-    int turn;
-    int player_id;
-    int next_id;
-};
-
-int findEntityByID(const WorldState& w, int id){
-    for(int i=0;i<w.entity_count;i++){
-        if(w.entity_id[i]==id) return i;
-    }
-    return -1;
+const char* entityName(int id) {
+    if (id == PLAYER_ID) return "Player";
+    if (id == ENEMY_ID)  return "Enemy";
+    return "None";
 }
 
-void initWorld(WorldState& w){
-    for(int y=0;y<H;y++) for(int x=0;x<W;x++) w.grid[y][x]='.';
-    for(int x=0;x<W;x++){w.grid[0][x]='#';w.grid[H-1][x]='#';}
-    for(int y=0;y<H;y++){w.grid[y][0]='#';w.grid[y][W-1]='#';}
-    w.player_pos.x=1; w.player_pos.y=1; w.php=100; w.pgold=0;
-    for(int i=0;i<MAX_E;i++){w.entity_pos[i].x=0;w.entity_pos[i].y=0;w.ehp[i]=0;w.ealive[i]=false;w.entity_id[i]=-1;}
-    w.next_id=0;
-    w.player_id=w.next_id++;
-    // Enemy 0: orc at (3,1)
-    w.entity_id[0]=w.next_id++;
-    w.entity_pos[0].x=3; w.entity_pos[0].y=1; w.ehp[0]=10; w.ealive[0]=true;
-    // Enemy 1: orc at (6,1)
-    w.entity_id[1]=w.next_id++;
-    w.entity_pos[1].x=6; w.entity_pos[1].y=1; w.ehp[1]=10; w.ealive[1]=true;
-    w.entity_count=2; w.turn=0;
-}
-
-int main(){
-    WorldState w;
-    initWorld(w);
-    cout << "DUNGEON|rpg-v0" << endl;
-    cout << "ENTITY|id=" << w.player_id << "|hero|player|" << w.player_pos.x*TILE << "|" << w.player_pos.y*TILE << "|24|24" << endl;
-    for(int i=0;i<w.entity_count;i++){
-        if(w.ealive[i])
-            cout << "ENTITY|id=" << w.entity_id[i] << "|orc|enemy|" << w.entity_pos[i].x*TILE << "|" << w.entity_pos[i].y*TILE << "|24|24" << endl;
+int main() {
+    int ids[] = {PLAYER_ID, ENEMY_ID, NO_ENTITY};
+    for (int i = 0; i < 3; i++) {
+        cout << "ID " << ids[i] << ": " << entityName(ids[i]) << endl;
     }
-    cout << "LOOKUP|id=0|index=" << findEntityByID(w,0) << endl;
-    cout << "LOOKUP|id=2|index=" << findEntityByID(w,2) << endl;
-    cout << "LOOKUP|id=99|index=" << findEntityByID(w,99) << endl;
+    cout << "IDs: OK" << endl;
     return 0;
 }`,
     tests: [
-      { id: "t1", description: "Player entity with id=0", expectedOutput: "ENTITY\\|id=0\\|hero\\|player", isPattern: true },
-      { id: "t2", description: "Enemy with id=1", expectedOutput: "ENTITY\\|id=1\\|orc\\|enemy\\|72", isPattern: true },
-      { id: "t3", description: "Lookup id=0 returns index 0", expectedOutput: "LOOKUP\\|id=0\\|index=0", isPattern: true },
-      { id: "t4", description: "Lookup id=2 returns index 1", expectedOutput: "LOOKUP\\|id=2\\|index=1", isPattern: true },
-      { id: "t5", description: "Lookup invalid id returns -1", expectedOutput: "LOOKUP\\|id=99\\|index=-1", isPattern: true },
+      { id: "t1", description: "Player ID", expectedOutput: "ID 0: Player", isPattern: false },
+      { id: "t2", description: "Enemy ID", expectedOutput: "ID 1: Enemy", isPattern: false },
+      { id: "t3", description: "Sentinel ID", expectedOutput: "ID -1: None", isPattern: false },
+      { id: "t4", description: "IDs verified", expectedOutput: "IDs: OK", isPattern: false },
     ],
     hints: [
-      "Add int entity_id[MAX_E] and int next_id to WorldState. Each entity gets entity_id[i] = next_id++.",
-      "findEntityByID loops through entity_id[] comparing each to the target id. Return i on match, -1 if not found.",
-      "player_id = next_id++ (gives 0). First enemy: entity_id[0] = next_id++ (gives 1). Second enemy: entity_id[1] = next_id++ (gives 2). findEntityByID(w,0) scans entity_id[] but player_id is separate -- return 0 for enemies array.",
+      "const int NO_ENTITY = -1; -- the sentinel. Like nullptr but safer (just an int).",
+      "entityName() is a simple lookup: if/if/return None. Keep it short.",
+      "int ids[] = {0, 1, -1}; for (int i=0; i<3; i++) -- classic fixed-size array loop.",
     ],
-    estimatedMinutes: 10,
+    estimatedMinutes: 8
   },
   part2: {
-    title: "Build: Game with ID-Based Entity Access",
+    title: "Build: Entity IDs v0",
     type: "game_builder",
-    instructions: `# Build: Game with ID-Based Entity Access
+    instructions: `# Build: Entity IDs v0
 
 ## Mental Model
+Add integer IDs to the World struct so every entity has a unique int key. This doesn't change any behavior -- it's bookkeeping that sets up future lessons where IDs index arrays.
 
-The game now references entities by ID. When the combat system targets an enemy, it uses the ID to find the array index. When the cleanup system removes a dead entity, other IDs remain valid. The game logic says "damage entity with id=1" instead of "damage the entity at index 0." Intent is separated from storage.
-
-## What Breaks Without This
-
-Kill the first enemy. If you compact the array, the second enemy shifts from index 1 to index 0. Any code referencing "index 1" now points to nothing. With IDs, the second enemy keeps its ID regardless of array compaction. The reference stays valid.
-
-## The Fix
-
-Refactor the game to use entity IDs. The attack command targets the nearest enemy by scanning IDs. The cleanup pass marks entities dead by ID. The render pass looks up positions by scanning entity_id[]. Run the scripted sequence: move, move, attack, attack to kill the first orc, then continue to kill the second.
-
-## Key Concepts
-
-- **ID-based targeting** -- combat finds targets by scanning entity_id[], not by raw index
-- **Stable references** -- entity IDs survive removal of other entities
-- **Lookup cost** -- O(n) scan for n entities; acceptable for small n
-
-## Performance Insight
-
-Linear scan for entity lookup: O(n) where n is entity_count. For MAX_E=4, this is 4 comparisons -- trivial. At 100 entities, still fast (100 int comparisons < 1 microsecond). At 10,000, you would want a hash map or slot map. But premature optimization is the root of all evil -- start simple, profile later.
-
-## Memory Insight
-
-Adding entity_id[MAX_E] costs 16 bytes. The next_id counter costs 4 bytes. Total: 20 bytes added to WorldState. No heap allocation. The IDs are contiguous with other entity data in the same struct, so they benefit from cache line prefetching during linear scans.
-
-## Your Task
-
-Build the full game with entity IDs. Hero at (1,1), two orcs at (3,1) and (6,1), each 10 HP. Script: d,d,f,d,d,d,f (move to first, kill, move to second, kill). Output:
-
-\`\`\`
-DUNGEON|rpg-v0
-TURN|1
-HP|100
-GOLD|0
-...
-TURN|7
-HP|100
-GOLD|20
-WIN|hero|all_defeated|gold=20
-GAME_MESSAGE|Entity ID system operational.
+## Step 1: Add NO_ENTITY constant
+After the INTENT constants, add:
+\`\`\`cpp
+const int NO_ENTITY = -1;
 \`\`\`
 
-## Beginner Trap
+## Step 2: Add IDs to World struct
+\`\`\`cpp
+struct World {
+    int player_id = 0;   // entity 0 is always the player
+    int enemy_id  = 1;   // entity 1 is the enemy
+    Vec2i player = {5, 5};
+    // ... rest unchanged
+};
+\`\`\`
 
-**Using entity_id[i] == i assumption.** Your code might hardcode "entity_id[0] is always the first enemy." But after cleanup compacts the array, entity_id[0] could be the SECOND enemy. Always use findEntityByID for lookups, never assume ID equals index.
+## Step 3: Add entityName() function
+After \`intentName()\`, add:
+\`\`\`cpp
+const char* entityName(int id) {
+    if (id == world.player_id) return "Player";
+    if (id == world.enemy_id)  return "Enemy";
+    return "None";
+}
+\`\`\`
 
-## Elite Insight
+## Step 4: Add HUD lines
+Show the IDs in the HUD panel:
+\`\`\`cpp
+DrawText(TextFormat("Player[%d]", world.player_id), 400, 200, 16, WHITE);
+DrawText(TextFormat("Enemy[%d]",  world.enemy_id),  400, 220, 16, WHITE);
+\`\`\`
 
-Baldur's Gate uses 32-bit entity references that survive save/load cycles. When you save with a spell targeting "entity 0x4A2B", loading restores that reference. Valve's Source engine uses EHANDLE -- an entity handle with an index and a serial number (generation). Your entity_id[] is the first step toward that pattern.
+## Step 5: Add startup cout
+\`\`\`cpp
+cout << "IDs: OK" << endl;
+\`\`\`
+
+**Click Run now** -- game behaves identically to L12 but now entities have IDs.
 
 ## Mastery Check
+Question: Why store \`player_id\` in the struct if it's always 0?
+Answer: Consistency. When you generalize to multiple enemies, each has its own ID field. Hard-coding 0 everywhere would require grep-replacing the whole codebase later.
 
-What happens if two entities accidentally get the same ID? Answer: findEntityByID returns the first match. The second entity becomes unreachable by ID. Combat targets the wrong entity. This is why next_id must be monotonically increasing and never reset during a game session.`,
+Expected cout output:
+\`\`\`
+Player: (5, 5)
+Pipeline: INPUT -> RESOLVE -> CLEANUP -> RENDER
+Turn: 0
+Enemy: (9, 7)
+Enemies: 1
+Combat: bump
+Player HP: 20/20
+Enemy HP: 10/10
+Kill: hp-to-zero
+Milestone: micro-dungeon
+Phases: INPUT -> RESOLVE -> WORLD -> CLEANUP -> RENDER
+Struct: world
+Vec2i: OK
+IDs: OK
+\`\`\``,
     starterCode: `#include <iostream>
-#include <cstdlib>
+#include "raylib.h"
 using namespace std;
 
-const int W=10, H=10, TILE=24, MAX_E=4;
+const int GRID_W = 12;
+const int GRID_H = 10;
+const int TILE = 32;
+int tiles[GRID_H][GRID_W];
 
-struct Vec2i { int x; int y; };
-Vec2i vec2iAdd(Vec2i a, Vec2i b){ Vec2i r; r.x=a.x+b.x; r.y=a.y+b.y; return r; }
-bool isAdjacent(Vec2i a, Vec2i b){ return (abs(a.x-b.x)+abs(a.y-b.y))==1; }
+const int INTENT_NONE   = 0;
+const int INTENT_UP     = 1;
+const int INTENT_DOWN   = 2;
+const int INTENT_LEFT   = 3;
+const int INTENT_RIGHT  = 4;
+const int INTENT_ATTACK = 5;
+int pending_intent = INTENT_NONE;
 
-struct WorldState {
-    char grid[H][W];
-    Vec2i player_pos;
-    int php, pgold;
-    Vec2i entity_pos[MAX_E];
-    int ehp[MAX_E];
-    bool ealive[MAX_E];
-    int entity_id[MAX_E];
-    int entity_count;
-    int turn;
-    int player_id;
-    int next_id;
+// TODO 1: Add const int NO_ENTITY = -1;
+
+struct Vec2i { int x = 0; int y = 0; };
+enum TileType { TILE_FLOOR = 0, TILE_WALL = 1 };
+
+struct World {
+    // TODO 2: Add int player_id = 0; int enemy_id = 1;
+    Vec2i player = {5, 5};
+    Vec2i enemy_pos = {9, 7};
+    bool enemy_alive = true;
+    int player_hp = 20, player_max_hp = 20;
+    int enemy_hp = 10, enemy_max_hp = 10;
+    int turn_count = 0;
+    int kills = 0;
 };
+World world;
 
-int findEntityByID(const WorldState& w, int id){
-    for(int i=0;i<w.entity_count;i++) if(w.entity_id[i]==id) return i;
-    return -1;
-}
-
-void initWorld(WorldState& w){
-    for(int y=0;y<H;y++) for(int x=0;x<W;x++) w.grid[y][x]='.';
-    for(int x=0;x<W;x++){w.grid[0][x]='#';w.grid[H-1][x]='#';}
-    for(int y=0;y<H;y++){w.grid[y][0]='#';w.grid[y][W-1]='#';}
-    w.player_pos.x=1; w.player_pos.y=1; w.php=100; w.pgold=0;
-    for(int i=0;i<MAX_E;i++){w.entity_pos[i].x=0;w.entity_pos[i].y=0;w.ehp[i]=0;w.ealive[i]=false;w.entity_id[i]=-1;}
-    w.next_id=0; w.player_id=w.next_id++;
-    w.entity_id[0]=w.next_id++; w.entity_pos[0].x=3; w.entity_pos[0].y=1; w.ehp[0]=10; w.ealive[0]=true;
-    w.entity_id[1]=w.next_id++; w.entity_pos[1].x=6; w.entity_pos[1].y=1; w.ehp[1]=10; w.ealive[1]=true;
-    w.entity_count=2; w.turn=0;
-}
-
-bool canMove(const WorldState& w, Vec2i pos, Vec2i delta){
-    Vec2i np=vec2iAdd(pos,delta);
-    if(np.x<0||np.x>=W||np.y<0||np.y>=H) return false;
-    return w.grid[np.y][np.x]!='#';
-}
-
-// TODO: passPlayerInput, passCleanup, passRender using entity IDs
-
-int main(){
-    WorldState w;
-    initWorld(w);
-    cout << "DUNGEON|rpg-v0" << endl;
-
-    char inputs[]={'d','d','f','d','d','d','f'};
-    int nticks=7;
-
-    for(int t=0;t<nticks;t++){
-        w.turn=t+1;
-        // TODO: call pass functions and check win
+const char* intentName(int intent) {
+    switch(intent) {
+        case INTENT_UP:     return "MOVE_UP";
+        case INTENT_DOWN:   return "MOVE_DOWN";
+        case INTENT_LEFT:   return "MOVE_LEFT";
+        case INTENT_RIGHT:  return "MOVE_RIGHT";
+        case INTENT_ATTACK: return "ATTACK";
+        default:            return "NONE";
     }
+}
+
+// TODO 3: Add entityName(int id) function here
+
+void resolveCommand() {
+    if (pending_intent == INTENT_NONE || pending_intent == INTENT_ATTACK) return;
+    int new_x = world.player.x;
+    int new_y = world.player.y;
+    if (pending_intent == INTENT_UP)    new_y--;
+    else if (pending_intent == INTENT_DOWN)  new_y++;
+    else if (pending_intent == INTENT_LEFT)  new_x--;
+    else if (pending_intent == INTENT_RIGHT) new_x++;
+    if (new_x < 0 || new_x >= GRID_W || new_y < 0 || new_y >= GRID_H) {
+        pending_intent = INTENT_NONE; return;
+    }
+    if (tiles[new_y][new_x] == TILE_WALL) { pending_intent = INTENT_NONE; return; }
+    if (world.enemy_alive && new_x == world.enemy_pos.x && new_y == world.enemy_pos.y) {
+        pending_intent = INTENT_ATTACK; return;
+    }
+    world.player.x = new_x;
+    world.player.y = new_y;
+    pending_intent = INTENT_NONE;
+}
+
+void resolveCombat() {
+    if (pending_intent != INTENT_ATTACK) return;
+    int dmg = 3;
+    world.enemy_hp -= dmg;
+    cout << "Damage: " << dmg << endl;
+    cout << "Enemy HP: " << world.enemy_hp << "/" << world.enemy_max_hp << endl;
+    pending_intent = INTENT_NONE;
+}
+
+void phaseInput() {
+    pending_intent = INTENT_NONE;
+    if (IsKeyPressed(KEY_W))      pending_intent = INTENT_UP;
+    else if (IsKeyPressed(KEY_S)) pending_intent = INTENT_DOWN;
+    else if (IsKeyPressed(KEY_A)) pending_intent = INTENT_LEFT;
+    else if (IsKeyPressed(KEY_D)) pending_intent = INTENT_RIGHT;
+}
+
+void phaseResolve() {
+    resolveCommand();
+    resolveCombat();
+}
+
+void phaseWorld() {
+    if (!world.enemy_alive) return;
+    int dx = world.player.x - world.enemy_pos.x;
+    int dy = world.player.y - world.enemy_pos.y;
+    int move_x = 0, move_y = 0;
+    if (abs(dx) >= abs(dy)) { move_x = (dx > 0) ? 1 : -1; }
+    else { move_y = (dy > 0) ? 1 : -1; }
+    int nx = world.enemy_pos.x + move_x;
+    int ny = world.enemy_pos.y + move_y;
+    if (nx >= 0 && nx < GRID_W && ny >= 0 && ny < GRID_H &&
+        tiles[ny][nx] != TILE_WALL && !(nx == world.player.x && ny == world.player.y)) {
+        world.enemy_pos.x = nx; world.enemy_pos.y = ny;
+    }
+}
+
+void phaseCleanup() {
+    if (world.enemy_alive && world.enemy_hp <= 0) {
+        world.enemy_alive = false;
+        world.kills++;
+        cout << "Kill confirmed" << endl;
+    }
+    world.turn_count++;
+}
+
+void initTiles() {
+    for (int y = 0; y < GRID_H; y++)
+        for (int x = 0; x < GRID_W; x++)
+            tiles[y][x] = (y==0||y==GRID_H-1||x==0||x==GRID_W-1) ? TILE_WALL : TILE_FLOOR;
+    tiles[3][4] = TILE_WALL; tiles[3][5] = TILE_WALL;
+    tiles[6][7] = TILE_WALL; tiles[6][8] = TILE_WALL;
+}
+
+int main() {
+    InitWindow(640, 640, "HeapSight RPG");
+    SetTargetFPS(60);
+    initTiles();
+
+    int wall_count = 0;
+    for (int y = 0; y < GRID_H; y++)
+        for (int x = 0; x < GRID_W; x++)
+            if (tiles[y][x] == TILE_WALL) wall_count++;
+
+    cout << "Player: (" << world.player.x << ", " << world.player.y << ")" << endl;
+    cout << "Pipeline: INPUT -> RESOLVE -> CLEANUP -> RENDER" << endl;
+    cout << "Turn: " << world.turn_count << endl;
+    cout << "Enemy: (" << world.enemy_pos.x << ", " << world.enemy_pos.y << ")" << endl;
+    cout << "Enemies: 1" << endl;
+    cout << "Combat: bump" << endl;
+    cout << "Player HP: " << world.player_hp << "/" << world.player_max_hp << endl;
+    cout << "Enemy HP: " << world.enemy_hp << "/" << world.enemy_max_hp << endl;
+    cout << "Kill: hp-to-zero" << endl;
+    cout << "Milestone: micro-dungeon" << endl;
+    cout << "Phases: INPUT -> RESOLVE -> WORLD -> CLEANUP -> RENDER" << endl;
+    cout << "Struct: world" << endl;
+    cout << "Vec2i: OK" << endl;
+    // TODO 4: cout << "IDs: OK" << endl;
+
+    while (!WindowShouldClose()) {
+        phaseInput();
+        if (pending_intent != INTENT_NONE) {
+            phaseResolve();
+            phaseWorld();
+            phaseCleanup();
+        }
+        BeginDrawing();
+        ClearBackground(BLACK);
+        for (int y = 0; y < GRID_H; y++)
+            for (int x = 0; x < GRID_W; x++) {
+                Color c = (tiles[y][x] == TILE_WALL) ? GRAY : DARKGRAY;
+                DrawRectangle(x*TILE, y*TILE, TILE-1, TILE-1, c);
+            }
+        DrawRectangle(world.player.x*TILE, world.player.y*TILE, TILE-1, TILE-1, GREEN);
+        if (world.enemy_alive)
+            DrawRectangle(world.enemy_pos.x*TILE, world.enemy_pos.y*TILE, TILE-1, TILE-1, RED);
+        DrawText("HeapSight RPG", 400, 10, 20, WHITE);
+        DrawText(TextFormat("Turn: %d", world.turn_count), 400, 40, 16, WHITE);
+        DrawText(TextFormat("Intent: %s", intentName(pending_intent)), 400, 60, 16, WHITE);
+        DrawText(TextFormat("Player: (%d,%d)", world.player.x, world.player.y), 400, 80, 16, WHITE);
+        DrawText(TextFormat("Walls: %d", wall_count), 400, 100, 16, WHITE);
+        if (world.enemy_alive) {
+            DrawText(TextFormat("Enemy:(%d,%d)", world.enemy_pos.x, world.enemy_pos.y), 400, 120, 16, RED);
+            DrawText(TextFormat("Enemy HP:%d/%d", world.enemy_hp, world.enemy_max_hp), 400, 160, 16, RED);
+        } else { DrawText("Enemy: DEAD", 400, 120, 16, DARKGRAY); }
+        DrawText(TextFormat("Player HP:%d/%d", world.player_hp, world.player_max_hp), 400, 140, 16, GREEN);
+        DrawText(TextFormat("Kills: %d", world.kills), 400, 180, 16, YELLOW);
+        // TODO 5: DrawText Player[id] and Enemy[id] here
+        EndDrawing();
+    }
+    CloseWindow();
     return 0;
 }`,
     solutionCode: `#include <iostream>
-#include <cstdlib>
+#include "raylib.h"
 using namespace std;
 
-const int W=10, H=10, TILE=24, MAX_E=4;
+const int GRID_W = 12;
+const int GRID_H = 10;
+const int TILE = 32;
+int tiles[GRID_H][GRID_W];
 
-struct Vec2i { int x; int y; };
-Vec2i vec2iAdd(Vec2i a, Vec2i b){ Vec2i r; r.x=a.x+b.x; r.y=a.y+b.y; return r; }
-bool isAdjacent(Vec2i a, Vec2i b){ return (abs(a.x-b.x)+abs(a.y-b.y))==1; }
+const int INTENT_NONE   = 0;
+const int INTENT_UP     = 1;
+const int INTENT_DOWN   = 2;
+const int INTENT_LEFT   = 3;
+const int INTENT_RIGHT  = 4;
+const int INTENT_ATTACK = 5;
+int pending_intent = INTENT_NONE;
 
-struct WorldState {
-    char grid[H][W];
-    Vec2i player_pos;
-    int php, pgold;
-    Vec2i entity_pos[MAX_E];
-    int ehp[MAX_E];
-    bool ealive[MAX_E];
-    int entity_id[MAX_E];
-    int entity_count;
-    int turn;
-    int player_id;
-    int next_id;
+const int NO_ENTITY = -1;
+
+struct Vec2i { int x = 0; int y = 0; };
+enum TileType { TILE_FLOOR = 0, TILE_WALL = 1 };
+
+struct World {
+    int player_id = 0;
+    int enemy_id  = 1;
+    Vec2i player = {5, 5};
+    Vec2i enemy_pos = {9, 7};
+    bool enemy_alive = true;
+    int player_hp = 20, player_max_hp = 20;
+    int enemy_hp = 10, enemy_max_hp = 10;
+    int turn_count = 0;
+    int kills = 0;
 };
+World world;
 
-int findEntityByID(const WorldState& w, int id){
-    for(int i=0;i<w.entity_count;i++) if(w.entity_id[i]==id) return i;
-    return -1;
-}
-
-void initWorld(WorldState& w){
-    for(int y=0;y<H;y++) for(int x=0;x<W;x++) w.grid[y][x]='.';
-    for(int x=0;x<W;x++){w.grid[0][x]='#';w.grid[H-1][x]='#';}
-    for(int y=0;y<H;y++){w.grid[y][0]='#';w.grid[y][W-1]='#';}
-    w.player_pos.x=1; w.player_pos.y=1; w.php=100; w.pgold=0;
-    for(int i=0;i<MAX_E;i++){w.entity_pos[i].x=0;w.entity_pos[i].y=0;w.ehp[i]=0;w.ealive[i]=false;w.entity_id[i]=-1;}
-    w.next_id=0; w.player_id=w.next_id++;
-    w.entity_id[0]=w.next_id++; w.entity_pos[0].x=3; w.entity_pos[0].y=1; w.ehp[0]=10; w.ealive[0]=true;
-    w.entity_id[1]=w.next_id++; w.entity_pos[1].x=6; w.entity_pos[1].y=1; w.ehp[1]=10; w.ealive[1]=true;
-    w.entity_count=2; w.turn=0;
-}
-
-bool canMove(const WorldState& w, Vec2i pos, Vec2i delta){
-    Vec2i np=vec2iAdd(pos,delta);
-    if(np.x<0||np.x>=W||np.y<0||np.y>=H) return false;
-    return w.grid[np.y][np.x]!='#';
-}
-
-void passPlayerInput(WorldState& w, char key){
-    if(key=='d'||key=='a'||key=='w'||key=='s'){
-        Vec2i delta;
-        delta.x=(key=='d')?1:(key=='a')?-1:0;
-        delta.y=(key=='s')?1:(key=='w')?-1:0;
-        if(canMove(w,w.player_pos,delta)) w.player_pos=vec2iAdd(w.player_pos,delta);
+const char* intentName(int intent) {
+    switch(intent) {
+        case INTENT_UP:     return "MOVE_UP";
+        case INTENT_DOWN:   return "MOVE_DOWN";
+        case INTENT_LEFT:   return "MOVE_LEFT";
+        case INTENT_RIGHT:  return "MOVE_RIGHT";
+        case INTENT_ATTACK: return "ATTACK";
+        default:            return "NONE";
     }
-    if(key=='f'){
-        for(int i=0;i<w.entity_count;i++){
-            if(w.ealive[i]&&isAdjacent(w.player_pos,w.entity_pos[i])){
-                w.ehp[i]-=10;
+}
+
+const char* entityName(int id) {
+    if (id == world.player_id) return "Player";
+    if (id == world.enemy_id)  return "Enemy";
+    return "None";
+}
+
+void resolveCommand() {
+    if (pending_intent == INTENT_NONE || pending_intent == INTENT_ATTACK) return;
+    int new_x = world.player.x;
+    int new_y = world.player.y;
+    if (pending_intent == INTENT_UP)    new_y--;
+    else if (pending_intent == INTENT_DOWN)  new_y++;
+    else if (pending_intent == INTENT_LEFT)  new_x--;
+    else if (pending_intent == INTENT_RIGHT) new_x++;
+    if (new_x < 0 || new_x >= GRID_W || new_y < 0 || new_y >= GRID_H) {
+        pending_intent = INTENT_NONE; return;
+    }
+    if (tiles[new_y][new_x] == TILE_WALL) { pending_intent = INTENT_NONE; return; }
+    if (world.enemy_alive && new_x == world.enemy_pos.x && new_y == world.enemy_pos.y) {
+        pending_intent = INTENT_ATTACK; return;
+    }
+    world.player.x = new_x;
+    world.player.y = new_y;
+    pending_intent = INTENT_NONE;
+}
+
+void resolveCombat() {
+    if (pending_intent != INTENT_ATTACK) return;
+    int dmg = 3;
+    world.enemy_hp -= dmg;
+    cout << "Damage: " << dmg << endl;
+    cout << "Enemy HP: " << world.enemy_hp << "/" << world.enemy_max_hp << endl;
+    pending_intent = INTENT_NONE;
+}
+
+void phaseInput() {
+    pending_intent = INTENT_NONE;
+    if (IsKeyPressed(KEY_W))      pending_intent = INTENT_UP;
+    else if (IsKeyPressed(KEY_S)) pending_intent = INTENT_DOWN;
+    else if (IsKeyPressed(KEY_A)) pending_intent = INTENT_LEFT;
+    else if (IsKeyPressed(KEY_D)) pending_intent = INTENT_RIGHT;
+}
+
+void phaseResolve() {
+    resolveCommand();
+    resolveCombat();
+}
+
+void phaseWorld() {
+    if (!world.enemy_alive) return;
+    int dx = world.player.x - world.enemy_pos.x;
+    int dy = world.player.y - world.enemy_pos.y;
+    int move_x = 0, move_y = 0;
+    if (abs(dx) >= abs(dy)) { move_x = (dx > 0) ? 1 : -1; }
+    else { move_y = (dy > 0) ? 1 : -1; }
+    int nx = world.enemy_pos.x + move_x;
+    int ny = world.enemy_pos.y + move_y;
+    if (nx >= 0 && nx < GRID_W && ny >= 0 && ny < GRID_H &&
+        tiles[ny][nx] != TILE_WALL && !(nx == world.player.x && ny == world.player.y)) {
+        world.enemy_pos.x = nx; world.enemy_pos.y = ny;
+    }
+}
+
+void phaseCleanup() {
+    if (world.enemy_alive && world.enemy_hp <= 0) {
+        world.enemy_alive = false;
+        world.kills++;
+        cout << "Kill confirmed" << endl;
+    }
+    world.turn_count++;
+}
+
+void initTiles() {
+    for (int y = 0; y < GRID_H; y++)
+        for (int x = 0; x < GRID_W; x++)
+            tiles[y][x] = (y==0||y==GRID_H-1||x==0||x==GRID_W-1) ? TILE_WALL : TILE_FLOOR;
+    tiles[3][4] = TILE_WALL; tiles[3][5] = TILE_WALL;
+    tiles[6][7] = TILE_WALL; tiles[6][8] = TILE_WALL;
+}
+
+int main() {
+    InitWindow(640, 640, "HeapSight RPG");
+    SetTargetFPS(60);
+    initTiles();
+
+    int wall_count = 0;
+    for (int y = 0; y < GRID_H; y++)
+        for (int x = 0; x < GRID_W; x++)
+            if (tiles[y][x] == TILE_WALL) wall_count++;
+
+    cout << "Player: (" << world.player.x << ", " << world.player.y << ")" << endl;
+    cout << "Pipeline: INPUT -> RESOLVE -> CLEANUP -> RENDER" << endl;
+    cout << "Turn: " << world.turn_count << endl;
+    cout << "Enemy: (" << world.enemy_pos.x << ", " << world.enemy_pos.y << ")" << endl;
+    cout << "Enemies: 1" << endl;
+    cout << "Combat: bump" << endl;
+    cout << "Player HP: " << world.player_hp << "/" << world.player_max_hp << endl;
+    cout << "Enemy HP: " << world.enemy_hp << "/" << world.enemy_max_hp << endl;
+    cout << "Kill: hp-to-zero" << endl;
+    cout << "Milestone: micro-dungeon" << endl;
+    cout << "Phases: INPUT -> RESOLVE -> WORLD -> CLEANUP -> RENDER" << endl;
+    cout << "Struct: world" << endl;
+    cout << "Vec2i: OK" << endl;
+    cout << "IDs: OK" << endl;
+
+    while (!WindowShouldClose()) {
+        phaseInput();
+        if (pending_intent != INTENT_NONE) {
+            phaseResolve();
+            phaseWorld();
+            phaseCleanup();
+        }
+        BeginDrawing();
+        ClearBackground(BLACK);
+        for (int y = 0; y < GRID_H; y++)
+            for (int x = 0; x < GRID_W; x++) {
+                Color c = (tiles[y][x] == TILE_WALL) ? GRAY : DARKGRAY;
+                DrawRectangle(x*TILE, y*TILE, TILE-1, TILE-1, c);
             }
-        }
+        DrawRectangle(world.player.x*TILE, world.player.y*TILE, TILE-1, TILE-1, GREEN);
+        if (world.enemy_alive)
+            DrawRectangle(world.enemy_pos.x*TILE, world.enemy_pos.y*TILE, TILE-1, TILE-1, RED);
+        DrawText("HeapSight RPG", 400, 10, 20, WHITE);
+        DrawText(TextFormat("Turn: %d", world.turn_count), 400, 40, 16, WHITE);
+        DrawText(TextFormat("Intent: %s", intentName(pending_intent)), 400, 60, 16, WHITE);
+        DrawText(TextFormat("Player: (%d,%d)", world.player.x, world.player.y), 400, 80, 16, WHITE);
+        DrawText(TextFormat("Walls: %d", wall_count), 400, 100, 16, WHITE);
+        if (world.enemy_alive) {
+            DrawText(TextFormat("Enemy:(%d,%d)", world.enemy_pos.x, world.enemy_pos.y), 400, 120, 16, RED);
+            DrawText(TextFormat("Enemy HP:%d/%d", world.enemy_hp, world.enemy_max_hp), 400, 160, 16, RED);
+        } else { DrawText("Enemy: DEAD", 400, 120, 16, DARKGRAY); }
+        DrawText(TextFormat("Player HP:%d/%d", world.player_hp, world.player_max_hp), 400, 140, 16, GREEN);
+        DrawText(TextFormat("Kills: %d", world.kills), 400, 180, 16, YELLOW);
+        DrawText(TextFormat("Player[%d]", world.player_id), 400, 200, 16, WHITE);
+        DrawText(TextFormat("Enemy[%d]",  world.enemy_id),  400, 220, 16, WHITE);
+        EndDrawing();
     }
-}
-
-void passCleanup(WorldState& w){
-    for(int i=0;i<w.entity_count;i++){
-        if(w.ealive[i]&&w.ehp[i]<=0){
-            w.ealive[i]=false;
-            w.pgold+=10;
-        }
-    }
-}
-
-void passRender(const WorldState& w){
-    cout << "ENTITY|id=" << w.player_id << "|hero|player|" << w.player_pos.x*TILE << "|" << w.player_pos.y*TILE << "|24|24" << endl;
-    for(int i=0;i<w.entity_count;i++){
-        if(w.ealive[i])
-            cout << "ENTITY|id=" << w.entity_id[i] << "|orc|enemy|" << w.entity_pos[i].x*TILE << "|" << w.entity_pos[i].y*TILE << "|24|24" << endl;
-    }
-    cout << "TURN|" << w.turn << endl;
-    cout << "HP|" << w.php << endl;
-    cout << "GOLD|" << w.pgold << endl;
-}
-
-int main(){
-    WorldState w;
-    initWorld(w);
-    cout << "DUNGEON|rpg-v0" << endl;
-
-    char inputs[]={'d','d','f','d','d','d','f'};
-    int nticks=7;
-
-    for(int t=0;t<nticks;t++){
-        w.turn=t+1;
-        passPlayerInput(w,inputs[t]);
-        passCleanup(w);
-        passRender(w);
-
-        int alive=0;
-        for(int i=0;i<w.entity_count;i++) if(w.ealive[i]) alive++;
-        if(alive==0){
-            cout << "WIN|hero|all_defeated|gold=" << w.pgold << endl;
-            cout << "GAME_MESSAGE|Entity ID system operational." << endl;
-            break;
-        }
-    }
+    CloseWindow();
     return 0;
 }`,
     tests: [
-      { id: "g1", description: "Dungeon header", expectedOutput: "DUNGEON\\|rpg-v0", isPattern: true },
-      { id: "g2", description: "Entity rendered with ID", expectedOutput: "ENTITY\\|id=0\\|hero", isPattern: true },
-      { id: "g3", description: "Turn counter reaches 7", expectedOutput: "TURN\\|7", isPattern: true },
-      { id: "g4", description: "Gold is 20 after two kills", expectedOutput: "GOLD\\|20", isPattern: true },
-      { id: "g5", description: "Win message", expectedOutput: "WIN\\|hero\\|all_defeated\\|gold=20", isPattern: true },
-      { id: "g6", description: "Entity ID system message", expectedOutput: "GAME_MESSAGE\\|Entity ID system operational\\.", isPattern: true },
+      { id: "g1", description: "Player position", expectedOutput: "Player: (5, 5)", isPattern: false },
+      { id: "g2", description: "Vec2i OK", expectedOutput: "Vec2i: OK", isPattern: false },
+      { id: "g3", description: "IDs OK", expectedOutput: "IDs: OK", isPattern: false },
     ],
     hints: [
-      "Entity IDs are printed in ENTITY lines: ENTITY|id=N|name|type|x|y|w|h. The render pass reads entity_id[i] for each alive entity.",
-      "passPlayerInput uses isAdjacent(w.player_pos, w.entity_pos[i]) to find attackable enemies. passCleanup awards 10 gold per kill.",
-      "Script d,d,f moves to (3,1) adjacent to orc at (3,1), then attacks. After kill, d,d,d moves to (6,1) adjacent to second orc. Final f kills it. Total gold: 20.",
+      "Add const int NO_ENTITY = -1; after the INTENT constants.",
+      "In struct World, add: int player_id = 0; int enemy_id = 1; as the first two fields.",
+      "entityName() checks world.player_id first, then world.enemy_id, else returns None.",
     ],
-    estimatedMinutes: 15,
-  },
+    estimatedMinutes: 12
+  }
 };

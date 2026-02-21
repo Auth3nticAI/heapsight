@@ -337,7 +337,7 @@ export default function Home() {
               { icon: "\uD83D\uDE80", name: "Space Shooter", paradigm: "ECS Architecture" },
               { icon: "\uD83C\uDFC3", name: "Platformer", paradigm: "State Machines" },
               { icon: "\u2694\uFE0F", name: "Simple RPG", paradigm: "Data-Driven OOP" },
-              { icon: "\uD83E\uDD16", name: "Robotics", paradigm: "Embedded Systems" },
+              { icon: "\uD83E\uDD16", name: "Dungeon Crawler", paradigm: "3D Graphics" },
             ].map((p) => (
               <div key={p.name} className="p-4 rounded-xl border border-[#2a2a3e] bg-surface text-center">
                 <div className="text-3xl mb-2">{p.icon}</div>

@@ -34,7 +34,7 @@ function XCircleIcon({ className }: { className?: string }) {
 const FEATURES: { label: string; free: string | boolean; pro: string | boolean; isNew?: boolean; description?: string }[] = [
   { label: "Lessons", free: "5", pro: "100 per path" },
   { label: "Game Path", free: true, pro: true },
-  { label: "Robot Path", free: true, pro: true },
+  { label: "Crawler Path", free: true, pro: true },
   { label: "Both Paths", free: false, pro: true },
   { label: "AI Tutor", free: false, pro: true, isNew: true, description: "Instant error explanations" },
   { label: "Export Projects", free: false, pro: true },
@@ -56,7 +56,7 @@ const FAQ = [
     a: "Yes. Switch plans anytime from your account settings. If upgrading to yearly, you'll be credited for unused time on your monthly plan.",
   },
   {
-    q: "Can I switch between game and robot paths?",
+    q: "Can I switch between game and crawler paths?",
     a: "Pro unlocks both paths. You can switch at any time from your account.",
   },
 ];

@@ -14,36 +14,36 @@ function renderMarkdown(md: string): string {
   const html = md
     // Code blocks
     .replace(/```(\w+)?\n([\s\S]*?)```/g, (_m, _lang, code) => {
-      return `<pre class="bg-[#0d0d1a] border border-[#1a1a2e] rounded-lg p-3 my-2 overflow-x-auto"><code class="text-xs font-mono text-[#e0e0e0]">${escapeHtml(code.trim())}</code></pre>`;
+      return `<pre class="bg-[#060610] border border-[#ffffff10] rounded-lg p-3 my-3 overflow-x-auto"><code class="text-xs font-mono text-[#e0e0e0]">${escapeHtml(code.trim())}</code></pre>`;
     })
     // Inline code (escaped to prevent XSS)
     .replace(/`([^`]+)`/g, (_m, code) => {
-      return `<code class="bg-[#1a1a2e] text-primary px-1.5 py-0.5 rounded text-xs font-mono">${escapeHtml(code)}</code>`;
+      return `<code class="bg-[#ffffff10] text-teal-400 px-1.5 py-0.5 rounded text-xs font-mono">${escapeHtml(code)}</code>`;
     })
     // Headers
     .replace(
       /^### (.+)$/gm,
-      '<h3 class="text-sm font-semibold text-white mt-4 mb-1">$1</h3>'
+      '<h3 class="text-sm font-semibold text-[#E8E6EA] mt-5 mb-1.5">$1</h3>'
     )
     .replace(
       /^## (.+)$/gm,
-      '<h2 class="text-base font-semibold text-white mt-4 mb-2">$1</h2>'
+      '<h2 class="text-base font-semibold text-[#E8E6EA] mt-5 mb-2">$1</h2>'
     )
     .replace(
       /^# (.+)$/gm,
-      '<h1 class="text-lg font-bold text-white mb-2">$1</h1>'
+      '<h1 class="text-lg font-bold text-[#E8E6EA] mb-3">$1</h1>'
     )
     // Bold
-    .replace(/\*\*(.+?)\*\*/g, '<strong class="text-white">$1</strong>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong class="text-[#E8E6EA]">$1</strong>')
     // List items
     .replace(
       /^- (.+)$/gm,
-      '<li class="text-sm text-[#aaa] ml-4 list-disc">$1</li>'
+      '<li class="text-sm text-[#bbb] ml-4 list-disc mb-1">$1</li>'
     )
     // Paragraphs (lines that aren't already HTML)
     .replace(
       /^(?!<[hlupod])([\w"].+)$/gm,
-      '<p class="text-sm text-[#aaa] my-1">$1</p>'
+      '<p class="text-sm text-[#bbb] mb-[1.5em]">$1</p>'
     );
 
   return html;
@@ -71,10 +71,10 @@ export default function LessonInstructions({
   const hasMoreHints = activeHint < part.hints.length - 1;
 
   return (
-    <div className="h-full flex flex-col rounded-lg border border-[#1a1a2e] bg-surface overflow-hidden">
-      <div className="flex items-center justify-between px-3 py-1.5 bg-[#0d0d1a] border-b border-[#1a1a2e]">
+    <div className="h-full flex flex-col rounded-2xl border border-[#ffffff10] bg-[#09091a] overflow-hidden">
+      <div className="flex items-center justify-between px-3 py-1.5 bg-[#060610] border-b border-[#ffffff08]">
         <span className="text-[10px] font-mono text-[#555] uppercase tracking-wider">
-          {part.type === "robot_builder" ? "Robot Builder" : part.type === "game_builder" ? "Game Builder" : "Instructions"}
+          {part.type === "game_builder" ? "Game Builder" : "Instructions"}
         </span>
         <div className="flex items-center gap-1.5 overflow-x-auto max-w-[60%] scrollbar-none">
           {concepts.map((c) => (
@@ -89,12 +89,12 @@ export default function LessonInstructions({
       </div>
 
       <div
-        className="flex-1 overflow-y-auto p-4 prose-invert"
+        className="flex-1 overflow-y-auto p-4 prose-invert leading-[1.6]"
         dangerouslySetInnerHTML={{ __html: instructionsHtml }}
       />
 
       {/* Hints */}
-      <div className="border-t border-[#1a1a2e] p-3">
+      <div className="border-t border-[#ffffff08] p-3">
         {activeHint >= 0 && (
           <div className="space-y-2 mb-2">
             {part.hints.slice(0, activeHint + 1).map((hint, i) => (

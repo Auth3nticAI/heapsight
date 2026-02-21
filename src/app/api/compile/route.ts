@@ -1,178 +1,143 @@
-import { createClient } from "@/lib/supabase-server";
 import { NextResponse } from "next/server";
 
-// In-memory rate limiter: userId -> { count, resetAt }
+// ---------------------------------------------------------------------------
+// In-memory rate limiter: IP -> { count, resetAt }
+// ---------------------------------------------------------------------------
 const rateLimits = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT = 20;
-const RATE_WINDOW_MS = 60_000;
-const MAX_SOURCE_LENGTH = 10_000;
+const RATE_LIMIT = 10; // max compilations per window
+const RATE_WINDOW_MS = 60_000; // 1 minute
 
+const VALID_PATHS = ["rpg", "platformer", "shooter", "crawler"] as const;
+const MAX_CODE_SIZE = 50 * 1024; // 50KB
+const COMPILE_TIMEOUT_MS = 20_000; // 20s fetch timeout
+
+function getClientIp(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) return forwarded.split(",")[0].trim();
+  return "unknown";
+}
+
+function checkRateLimit(ip: string): { allowed: boolean; retryAfter: number } {
+  const now = Date.now();
+  const entry = rateLimits.get(ip);
+
+  if (entry && now < entry.resetAt) {
+    if (entry.count >= RATE_LIMIT) {
+      const retryAfter = Math.ceil((entry.resetAt - now) / 1000);
+      return { allowed: false, retryAfter };
+    }
+    entry.count++;
+    return { allowed: true, retryAfter: 0 };
+  }
+
+  rateLimits.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+  return { allowed: true, retryAfter: 0 };
+}
+
+// ---------------------------------------------------------------------------
+// POST /api/compile — Proxy to Cloud Run compiler service
+// ---------------------------------------------------------------------------
 export async function POST(request: Request) {
-  // 1. Authenticate via Supabase session
-  const supabase = createClient();
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
-
-  if (authError || !user) {
+  // 1. Rate limit by IP
+  const ip = getClientIp(request);
+  const { allowed, retryAfter } = checkRateLimit(ip);
+  if (!allowed) {
     return NextResponse.json(
-      { error: "Unauthorized. Please sign in." },
-      { status: 401 }
+      { error: "Rate limit exceeded", retryAfter },
+      { status: 429 }
     );
   }
 
-  // 2. Rate limit per user
-  const now = Date.now();
-  const userLimit = rateLimits.get(user.id);
-
-  if (userLimit && now < userLimit.resetAt) {
-    if (userLimit.count >= RATE_LIMIT) {
-      return NextResponse.json(
-        { error: "Rate limit exceeded. Please wait a minute." },
-        { status: 429 }
-      );
-    }
-    userLimit.count++;
-  } else {
-    rateLimits.set(user.id, { count: 1, resetAt: now + RATE_WINDOW_MS });
-  }
-
-  // 3. Validate request body
-  let body: { source_code?: string };
+  // 2. Parse body
+  let body: { code?: unknown; path?: unknown; lesson?: unknown };
   try {
     body = await request.json();
   } catch {
     return NextResponse.json(
-      { error: "Invalid JSON body." },
+      { error: "Invalid JSON body" },
       { status: 400 }
     );
   }
 
-  const sourceCode = body.source_code;
-  if (!sourceCode || typeof sourceCode !== "string") {
+  // 3. Validate inputs
+  const { code, path, lesson } = body;
+
+  if (typeof code !== "string" || code.length === 0) {
     return NextResponse.json(
-      { error: "source_code is required." },
+      { error: "Missing or empty 'code' field" },
+      { status: 400 }
+    );
+  }
+  if (code.length > MAX_CODE_SIZE) {
+    return NextResponse.json(
+      { error: `Code exceeds ${MAX_CODE_SIZE / 1024}KB size limit` },
+      { status: 400 }
+    );
+  }
+  if (typeof path !== "string" || !VALID_PATHS.includes(path as typeof VALID_PATHS[number])) {
+    return NextResponse.json(
+      { error: `Invalid path. Must be one of: ${VALID_PATHS.join(", ")}` },
+      { status: 400 }
+    );
+  }
+  const lessonNum = Number(lesson);
+  if (!Number.isInteger(lessonNum) || lessonNum < 1 || lessonNum > 100) {
+    return NextResponse.json(
+      { error: "'lesson' must be an integer between 1 and 100" },
       { status: 400 }
     );
   }
 
-  if (sourceCode.length > MAX_SOURCE_LENGTH) {
+  // 4. Forward to compiler service
+  const compileUrl = process.env.COMPILE_SERVICE_URL;
+  if (!compileUrl) {
     return NextResponse.json(
-      { error: `Source code exceeds ${MAX_SOURCE_LENGTH} character limit.` },
-      { status: 400 }
-    );
-  }
-
-  // 4. Build Judge0 submission
-  const apiUrl = process.env.JUDGE0_API_URL;
-  if (!apiUrl) {
-    return NextResponse.json(
-      { error: "Compilation service not configured." },
+      { error: "Compilation service not configured" },
       { status: 503 }
     );
   }
 
-  const encodedSource = Buffer.from(sourceCode).toString("base64");
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), COMPILE_TIMEOUT_MS);
 
-  const submission = {
-    source_code: encodedSource,
-    language_id: 54, // C++ (GCC 9.2.0)
-    cpu_time_limit: 5,
-    memory_limit: 128000,
-  };
-
-  // 5. Submit to Judge0 (synchronous wait mode)
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
-
-  const apiKey = process.env.JUDGE0_API_KEY;
-  const apiHost = process.env.JUDGE0_API_HOST;
-  if (apiKey && apiKey !== "your-rapidapi-key-here") {
-    headers["X-RapidAPI-Key"] = apiKey;
-  }
-  if (apiHost) {
-    headers["X-RapidAPI-Host"] = apiHost;
-  }
-
-  let judge0Response: Response;
   try {
-    judge0Response = await fetch(
-      `${apiUrl}/submissions?base64_encoded=true&wait=true`,
-      {
-        method: "POST",
-        headers,
-        body: JSON.stringify(submission),
-      }
-    );
-  } catch (err) {
-    console.error("Judge0 fetch error:", err);
+    const compilerRes = await fetch(`${compileUrl}/compile`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      // Map "crawler" → "robotics" for the deployed compiler service
+      // TODO: remove this mapping after redeploying the compiler Docker image
+      body: JSON.stringify({ code, path: path === "crawler" ? "robotics" : path, lesson: lessonNum }),
+      signal: controller.signal,
+    });
+
+    const result = await compilerRes.json();
+
+    const headers: Record<string, string> = {};
+    if (result.compileTimeMs != null) {
+      headers["X-Compile-Time-Ms"] = String(result.compileTimeMs);
+    }
+
+    return NextResponse.json(result, { status: 200, headers });
+  } catch (err: unknown) {
+    if (err instanceof Error && err.name === "AbortError") {
+      return NextResponse.json(
+        { error: "Compilation timed out" },
+        { status: 504 }
+      );
+    }
+    console.error("Compiler service error:", err);
     return NextResponse.json(
-      { error: "Compilation service unavailable." },
+      { error: "Compiler service unavailable" },
       { status: 502 }
     );
+  } finally {
+    clearTimeout(timeout);
   }
+}
 
-  if (!judge0Response.ok) {
-    console.error("Judge0 HTTP error:", judge0Response.status);
-    return NextResponse.json(
-      { error: "Compilation service error." },
-      { status: 502 }
-    );
-  }
-
-  const result = await judge0Response.json();
-
-  // 6. Decode base64 fields
-  const decode = (b64: string | null): string => {
-    if (!b64) return "";
-    try {
-      return Buffer.from(b64, "base64").toString("utf-8");
-    } catch {
-      return b64;
-    }
-  };
-
-  const stdout = decode(result.stdout);
-  const stderr = decode(result.stderr);
-  const compileOutput = decode(result.compile_output);
-  const statusId: number = result.status?.id ?? 0;
-
-  // 7. Map Judge0 status to error messages
-  let errors: string[] = [];
-
-  if (statusId === 6) {
-    // Compilation Error
-    errors = [`Compilation Error: ${compileOutput || "Unknown compilation error"}`];
-  } else if (statusId === 5) {
-    // Time Limit Exceeded
-    errors = ["Runtime Error: Code execution timed out (infinite loop?)"];
-  } else if (statusId >= 7 && statusId <= 12) {
-    // Runtime errors (SIGSEGV, SIGFPE, SIGABRT, etc.)
-    const signalNames: Record<number, string> = {
-      7: "Memory limit exceeded",
-      8: "Output limit exceeded",
-      9: "Segmentation fault (SIGSEGV)",
-      10: "Floating point exception (SIGFPE)",
-      11: "Runtime error (SIGABRT)",
-      12: "Internal error",
-    };
-    const desc = signalNames[statusId] || "Unknown runtime error";
-    errors = [`Runtime Error: ${desc}${stderr ? ` — ${stderr.trim()}` : ""}`];
-  } else if (statusId !== 3) {
-    // 3 = Accepted (success). Anything else unexpected
-    if (stderr) {
-      errors = [`Error: ${stderr.trim()}`];
-    }
-  }
-
-  return NextResponse.json({
-    output: stdout,
-    errors,
-    compile_output: compileOutput,
-    status_id: statusId,
-    time: result.time,
-    memory: result.memory,
-  });
+// ---------------------------------------------------------------------------
+// GET /api/compile — Health check
+// ---------------------------------------------------------------------------
+export async function GET() {
+  return NextResponse.json({ status: "ok" });
 }

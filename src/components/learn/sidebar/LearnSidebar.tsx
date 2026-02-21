@@ -19,7 +19,7 @@ interface LearnSidebarProps {
   lessons: PathLesson[];
   template: string;
   totalLessons: number;
-  isRobotPath: boolean;
+  isCrawlerPath: boolean;
 }
 
 export default function LearnSidebar({
@@ -37,7 +37,7 @@ export default function LearnSidebar({
   lessons,
   template,
   totalLessons,
-  isRobotPath,
+  isCrawlerPath,
 }: LearnSidebarProps) {
   return (
     <aside className="hidden lg:block w-[280px] shrink-0">
@@ -69,7 +69,7 @@ export default function LearnSidebar({
           template={template}
           completedCount={completedCount}
           totalLessons={totalLessons}
-          isRobotPath={isRobotPath}
+          isCrawlerPath={isCrawlerPath}
         />
       </div>
     </aside>

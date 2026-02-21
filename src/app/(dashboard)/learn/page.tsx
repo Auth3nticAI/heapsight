@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ALL_SPACE_SHOOTER_LESSONS } from "@/data/lessons";
 import { ALL_RPG_LESSONS } from "@/data/lessons/rpg-index";
 import { ALL_PLATFORMER_LESSONS } from "@/data/lessons/platformer-index";
-import { ALL_ROBOT_LESSONS } from "@/data/lessons/robot-index";
+import { ALL_CRAWLER_LESSONS } from "@/data/lessons/crawler-index";
+import { ALL_SHOOTER_LESSONS } from "@/data/lessons/shooter-index";
 import { createClient } from "@/lib/supabase-browser";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { LessonStatus } from "@/types/lesson";
-import { ROBOT_LESSON_TITLES } from "@/data/game-templates/differential-drive-robot/lesson-titles";
+import { CRAWLER_LESSON_TITLES } from "@/data/game-templates/dungeon-crawler/lesson-titles";
 import PaywallModal from "@/components/PaywallModal";
 import { getLessonMeta, getLevelInfo } from "@/lib/lesson-metadata";
 import { getUserAchievementIds } from "@/lib/achievement-manager";
@@ -55,7 +55,7 @@ const TEMPLATE_LABELS: Record<string, string> = {
   space_shooter: "Space Shooter",
   platformer: "Platformer",
   simple_rpg: "Simple RPG",
-  differential_drive_robot: "Differential Drive Robot",
+  dungeon_crawler: "Dungeon Crawler",
 };
 
 // ─── Component ──────────────────────────────────────────────────────────────
@@ -92,7 +92,7 @@ export default function LearnPage() {
       setTemplate(profile.selected_game_template);
       setUserTier(profile.tier || "free");
 
-      const isRobot = profile.selected_game_template === "differential_drive_robot";
+      const isCrawler = profile.selected_game_template === "dungeon_crawler";
 
       const { data: streakData } = await supabase
         .from("user_streaks")
@@ -138,8 +138,9 @@ export default function LearnPage() {
       const activeLessons =
         tmpl === "simple_rpg" ? ALL_RPG_LESSONS :
         tmpl === "platformer" ? ALL_PLATFORMER_LESSONS :
-        tmpl === "differential_drive_robot" ? ALL_ROBOT_LESSONS :
-        ALL_SPACE_SHOOTER_LESSONS;
+        tmpl === "dungeon_crawler" ? ALL_CRAWLER_LESSONS :
+        tmpl === "space_shooter" ? ALL_SHOOTER_LESSONS :
+        ALL_SHOOTER_LESSONS;
 
       const cards: PathLesson[] = activeLessons.map((lesson, i) => {
         const saved = progressMap.get(lesson.id);
@@ -157,13 +158,13 @@ export default function LearnPage() {
           status = prevSaved?.status === "completed" ? "available" : "locked";
         }
 
-        const robotInfo = isRobot ? ROBOT_LESSON_TITLES[lesson.id] : null;
+        const crawlerInfo = isCrawler ? CRAWLER_LESSON_TITLES[lesson.id] : null;
         const meta = getLessonMeta(lesson.id);
 
         return {
           id: lesson.id,
-          title: robotInfo?.title || lesson.title,
-          description: robotInfo?.description || lesson.description,
+          title: crawlerInfo?.title || lesson.title,
+          description: crawlerInfo?.description || lesson.description,
           order: lesson.order,
           xpReward: lesson.xpReward,
           tier: lesson.tier,
@@ -190,7 +191,7 @@ export default function LearnPage() {
     );
   }
 
-  const isRobotPath = template === "differential_drive_robot";
+  const isCrawlerPath = template === "dungeon_crawler";
   const totalLessons = lessons.length || 100;
   const freeCount = lessons.filter((l) => l.tier === "free").length;
   const levelInfo = getLevelInfo(totalXp);
@@ -202,25 +203,25 @@ export default function LearnPage() {
   return (
     <>
       {/* ─── Header Bar ─────────────────────────────────────────────── */}
-      <header className="border-b border-[#1a1a2e] px-4 sm:px-6 py-4">
+      <header className="border-b border-[#ffffff08] px-4 sm:px-6 py-4">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="lg:hidden md:pl-12">
-            <h1 className="text-xl font-semibold text-white">HeapSight</h1>
-            <p className="text-xs text-[#666] font-mono mt-0.5">
+            <h1 className="text-xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">HeapSight</h1>
+            <p className="text-xs text-[#555] font-mono mt-0.5">
               Learn C++ by Building {template ? TEMPLATE_LABELS[template] || "a Project" : "a Project"}
             </p>
           </div>
           <div className="hidden lg:block">
-            <h2 className="text-lg font-semibold text-white">Learn</h2>
-            <p className="text-xs text-[#666] font-mono mt-0.5">
+            <h2 className="text-xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">Learn</h2>
+            <p className="text-xs text-[#555] font-mono mt-0.5">
               {template ? TEMPLATE_LABELS[template] : "Select a path"}
             </p>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
-            <div className="flex items-center gap-1.5 bg-[#1a1a0e] px-3 py-1.5 rounded-full border border-[#3a3a1e]">
+            <div className="flex items-center gap-1.5 bg-[#ffffff08] px-3 py-1.5 rounded-full border border-[#ffffff10]">
               <ZapIcon className="h-4 w-4 text-[#fbbf24]" />
               <span className="text-sm font-mono font-bold text-[#fbbf24]">{totalXp}</span>
-              <span className="text-[10px] font-mono text-[#888]">XP</span>
+              <span className="text-[10px] font-mono text-gray-500">XP</span>
             </div>
             <StreakDisplay
               streakCount={streak?.current_streak || 0}
@@ -231,7 +232,7 @@ export default function LearnPage() {
             <div className="flex items-center gap-2">
               <div className="relative w-9 h-9">
                 <svg className="w-9 h-9 -rotate-90" viewBox="0 0 36 36">
-                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#1a1a2e" strokeWidth="3" />
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#ffffff10" strokeWidth="3" />
                   <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#00ff88" strokeWidth="3" strokeDasharray={`${(completedCount / totalLessons) * 100}, 100`} />
                 </svg>
                 <span className="absolute inset-0 flex items-center justify-center text-[10px] font-mono text-[#888]">
@@ -252,8 +253,8 @@ export default function LearnPage() {
           {/* Mobile-only: compact daily goal banner */}
           <div className="lg:hidden mb-4">
             {!completedToday ? (
-              <div className="flex items-center gap-3 p-3 rounded-lg border border-[#1a2a3a] bg-[#0e1a2a]">
-                <div className="h-8 w-8 rounded-full bg-[#1a2a4a] flex items-center justify-center shrink-0">
+              <div className="flex items-center gap-3 p-3 rounded-xl border border-[#ffffff10] bg-[#09091a]">
+                <div className="h-8 w-8 rounded-full bg-[#ffffff08] flex items-center justify-center shrink-0">
                   <TargetIcon className="h-4 w-4 text-[#60a5fa]" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -268,9 +269,9 @@ export default function LearnPage() {
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-3 p-3 rounded-lg border border-primary/20 bg-[#0a1a12]">
-                <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                  <span className="text-primary text-sm">{"\u2713"}</span>
+              <div className="flex items-center gap-3 p-3 rounded-xl border border-teal-500/20 bg-teal-900/10">
+                <div className="h-8 w-8 rounded-full bg-teal-500/20 flex items-center justify-center shrink-0">
+                  <span className="text-teal-400 text-sm">{"\u2713"}</span>
                 </div>
                 <p className="text-xs font-semibold text-white">Daily Goal Complete!</p>
               </div>
@@ -282,17 +283,17 @@ export default function LearnPage() {
             <div>
               <div className="flex items-center gap-3 mb-1">
                 <h2 className="text-lg font-semibold text-white">
-                  {isRobotPath ? "C++ Robotics Path" : "C++ Game Dev Path"}
+                  {isCrawlerPath ? "C++ Dungeon Crawler Path" : "C++ Game Dev Path"}
                 </h2>
                 {template && (() => {
                   const diff = getPathDifficulty(template);
                   return (
-                    <span className="flex items-center gap-1.5 text-[9px] font-mono text-[#888] bg-[#1a1a2e] px-2 py-0.5 rounded-full border border-[#2a2a3e]">
+                    <span className="flex items-center gap-1.5 text-[9px] font-mono text-gray-400 bg-[#ffffff08] px-2 py-0.5 rounded-full border border-[#ffffff10]">
                       <span className="inline-flex gap-0.5">
                         {Array.from({ length: 4 }, (_, i) => (
                           <svg
                             key={i}
-                            className={`h-2.5 w-2.5 ${i < diff.level ? "text-[#fbbf24]" : "text-[#2a2a3e]"}`}
+                            className={`h-2.5 w-2.5 ${i < diff.level ? "text-[#fbbf24]" : "text-[#ffffff12]"}`}
                             viewBox="0 0 24 24"
                             fill={i < diff.level ? "currentColor" : "none"}
                             stroke="currentColor"
@@ -308,11 +309,11 @@ export default function LearnPage() {
                 })()}
               </div>
               <p className="text-xs text-[#666] font-mono">
-                100 lessons &middot; {userTier === "pro" ? "all unlocked" : `${freeCount} free`} &middot; Each lesson: concept + {isRobotPath ? "robot builder" : "game builder"}
+                100 lessons &middot; {userTier === "pro" ? "all unlocked" : `${freeCount} free`} &middot; Each lesson: concept + {isCrawlerPath ? "crawler builder" : "game builder"}
               </p>
             </div>
             {template && (
-              <Link href="/paths" className="text-[10px] font-mono bg-primary/10 text-primary px-2.5 py-1 rounded-lg border border-primary/20 hover:bg-primary/20 transition-colors shrink-0">
+              <Link href="/paths" className="text-[10px] font-mono bg-teal-600/10 text-teal-400 px-2.5 py-1 rounded-lg border border-teal-500/20 hover:bg-teal-600/20 transition-colors shrink-0">
                 {TEMPLATE_LABELS[template]} &rarr;
               </Link>
             )}
@@ -343,7 +344,7 @@ export default function LearnPage() {
           lessons={lessons}
           template={template || "space_shooter"}
           totalLessons={totalLessons}
-          isRobotPath={isRobotPath}
+          isCrawlerPath={isCrawlerPath}
         />
       </div>
 

@@ -24,7 +24,7 @@ function SparklesIcon({ className }: { className?: string }) {
 const PRO_FEATURES = [
   { icon: "AI Tutor", desc: "Instant error explanations" },
   { icon: "100 Lessons/Path", desc: "400 total lessons" },
-  { icon: "Both Paths", desc: "Game + Robotics" },
+  { icon: "Both Paths", desc: "Game + Crawler" },
   { icon: "Export", desc: "Download your projects" },
   { icon: "Certificate", desc: "Proof of completion" },
   { icon: "Support", desc: "Priority assistance" },

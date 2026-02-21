@@ -5,19 +5,12 @@ import { createClient } from "@/lib/supabase-browser";
 import { ACHIEVEMENTS, getRarityColor, getRarityGradient } from "@/lib/achievements";
 import { getUserAchievementIds } from "@/lib/achievement-manager";
 import { getLevelInfo } from "@/lib/lesson-metadata";
-import { ALL_SPACE_SHOOTER_LESSONS } from "@/data/lessons";
 import { ALL_RPG_LESSONS } from "@/data/lessons/rpg-index";
 import { ALL_PLATFORMER_LESSONS } from "@/data/lessons/platformer-index";
-import { ALL_ROBOT_LESSONS } from "@/data/lessons/robot-index";
+import { ALL_CRAWLER_LESSONS } from "@/data/lessons/crawler-index";
+import { ALL_SHOOTER_LESSONS } from "@/data/lessons/shooter-index";
 import Link from "next/link";
 
-function BarChartIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M12 20V10M18 20V4M6 20v-4" />
-    </svg>
-  );
-}
 
 function FlameIcon({ className }: { className?: string }) {
   return (
@@ -96,20 +89,16 @@ export default function ProgressPage() {
   return (
     <>
       {/* Header */}
-      <header className="border-b border-[#1a1a2e] px-4 sm:px-6 py-4">
+      <header className="border-b border-[#ffffff08] px-4 sm:px-6 py-5">
         <div className="max-w-4xl mx-auto">
-          <div className="lg:hidden md:pl-12">
-            <h1 className="text-xl font-semibold text-white">Progress</h1>
-            <p className="text-xs text-[#666] font-mono mt-0.5">Your stats &amp; achievements</p>
-          </div>
-          <div className="hidden lg:flex items-center gap-3">
-            <BarChartIcon className="h-6 w-6 text-primary" />
-            <div>
-              <h1 className="text-xl font-semibold text-white">Progress</h1>
-              <p className="text-xs text-[#666] font-mono mt-0.5">
-                Detailed statistics, achievements, and streak history
-              </p>
-            </div>
+          <div className="md:pl-12 lg:pl-0">
+            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+              Progress
+            </h1>
+            <p className="text-xs text-[#555] font-mono mt-1 hidden lg:block">
+              Detailed statistics, achievements, and streak history
+            </p>
+            <p className="text-xs text-[#555] font-mono mt-1 lg:hidden">Your stats &amp; achievements</p>
           </div>
         </div>
       </header>
@@ -122,54 +111,50 @@ export default function ProgressPage() {
               label: "Total XP",
               value: stats.totalXp.toLocaleString(),
               icon: <ZapIcon className="h-5 w-5 text-[#fbbf24]" />,
-              color: "border-[#fbbf24]/20 bg-[#1a1a0e]",
             },
             {
               label: "Lessons Done",
               value: `${stats.completedLessons}/${
                 stats.template === "simple_rpg" ? ALL_RPG_LESSONS.length :
                 stats.template === "platformer" ? ALL_PLATFORMER_LESSONS.length :
-                stats.template === "differential_drive_robot" ? ALL_ROBOT_LESSONS.length :
-                ALL_SPACE_SHOOTER_LESSONS.length
+                stats.template === "dungeon_crawler" ? ALL_CRAWLER_LESSONS.length :
+                ALL_SHOOTER_LESSONS.length
               }`,
               icon: <span className="text-xl">{"\u2713"}</span>,
-              color: "border-primary/20 bg-[#0a1a12]",
             },
             {
               label: "Current Streak",
               value: `${stats.currentStreak} day${stats.currentStreak !== 1 ? "s" : ""}`,
               icon: <FlameIcon className="h-5 w-5 text-[#f97316]" />,
-              color: "border-[#f97316]/20 bg-[#1a0e0e]",
             },
             {
               label: "Days Active",
               value: stats.totalDaysActive.toString(),
               icon: <span className="text-xl">{"\uD83D\uDCC5"}</span>,
-              color: "border-[#a855f7]/20 bg-[#1a0e2e]",
             },
           ].map((stat) => (
-            <div key={stat.label} className={`p-4 rounded-xl border ${stat.color}`}>
+            <div key={stat.label} className="p-4 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
               <div className="flex items-center gap-2 mb-2">{stat.icon}</div>
               <p className="text-lg font-bold text-white font-mono">{stat.value}</p>
-              <p className="text-[9px] font-mono text-[#888] uppercase">{stat.label}</p>
+              <p className="text-[9px] font-mono text-gray-500 uppercase">{stat.label}</p>
             </div>
           ))}
         </div>
 
         {/* Level Progress */}
-        <div className="mb-8 p-5 rounded-xl border border-[#2a1a3e]/50 bg-gradient-to-r from-[#1a1028] to-[#12182a]">
+        <div className="mb-8 p-5 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
-              <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded bg-gradient-to-r from-[#a855f7] to-[#6366f1] text-white">
+              <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-lg bg-gradient-to-r from-[#a855f7] to-[#6366f1] text-white">
                 LVL {levelInfo.level}
               </span>
               <span className="text-base font-bold text-white">{levelInfo.title}</span>
             </div>
-            <span className="text-xs font-mono text-[#888] shrink-0">
+            <span className="text-xs font-mono text-gray-500 shrink-0">
               {levelInfo.xpInLevel}/{levelInfo.xpForNext} XP
             </span>
           </div>
-          <div className="w-full bg-[#1a1a2e] rounded-full h-3 overflow-hidden">
+          <div className="w-full bg-[#ffffff08] rounded-full h-3 overflow-hidden">
             <div
               className="h-3 rounded-full bg-gradient-to-r from-[#a855f7] to-[#6366f1] transition-all duration-700 relative overflow-hidden"
               style={{ width: `${levelInfo.progress}%` }}
@@ -180,7 +165,7 @@ export default function ProgressPage() {
         </div>
 
         {/* Streak History */}
-        <div className="mb-8 p-5 rounded-xl border border-[#1a1a2e] bg-surface">
+        <div className="mb-8 p-5 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
           <div className="flex items-center gap-2 mb-4">
             <FlameIcon className="h-5 w-5 text-[#f97316]" />
             <h3 className="text-sm font-semibold text-white">Streak Stats</h3>
@@ -188,21 +173,21 @@ export default function ProgressPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <div>
               <p className="text-2xl font-bold text-[#f97316] font-mono">{stats.currentStreak}</p>
-              <p className="text-[9px] font-mono text-[#888] uppercase">Current Streak</p>
+              <p className="text-[9px] font-mono text-gray-500 uppercase">Current Streak</p>
             </div>
             <div>
               <p className="text-2xl font-bold text-white font-mono">{stats.longestStreak}</p>
-              <p className="text-[9px] font-mono text-[#888] uppercase">Longest Streak</p>
+              <p className="text-[9px] font-mono text-gray-500 uppercase">Longest Streak</p>
             </div>
             <div>
               <p className="text-2xl font-bold text-[#60a5fa] font-mono">{stats.totalDaysActive}</p>
-              <p className="text-[9px] font-mono text-[#888] uppercase">Total Days</p>
+              <p className="text-[9px] font-mono text-gray-500 uppercase">Total Days</p>
             </div>
           </div>
 
           {/* Streak milestones */}
-          <div className="mt-4 pt-4 border-t border-[#1a1a2e]">
-            <p className="text-[9px] font-mono text-[#666] mb-2">MILESTONES</p>
+          <div className="mt-4 pt-4 border-t border-[#ffffff08]">
+            <p className="text-[9px] font-mono text-gray-500 mb-2">MILESTONES</p>
             <div className="flex flex-wrap gap-2">
               {[7, 14, 30, 60, 100, 365].map((milestone) => {
                 const reached = stats.longestStreak >= milestone;
@@ -212,7 +197,7 @@ export default function ProgressPage() {
                     className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold border ${
                       reached
                         ? "bg-[#f97316]/10 text-[#f97316] border-[#f97316]/30"
-                        : "bg-[#1a1a2e] text-[#444] border-[#2a2a3e]"
+                        : "bg-[#ffffff05] text-[#444] border-[#ffffff08]"
                     }`}
                   >
                     {milestone}d {reached ? "\u2713" : ""}
@@ -235,7 +220,7 @@ export default function ProgressPage() {
           </div>
 
           {/* Achievement progress bar */}
-          <div className="w-full bg-[#1a1a2e] rounded-full h-2 overflow-hidden mb-6">
+          <div className="w-full bg-[#ffffff08] rounded-full h-2 overflow-hidden mb-6">
             <div
               className="h-2 rounded-full bg-gradient-to-r from-[#fbbf24] to-[#f59e0b] transition-all duration-500"
               style={{ width: `${(unlockedCount / totalAchievements) * 100}%` }}
@@ -261,7 +246,7 @@ export default function ProgressPage() {
                         className={`p-4 rounded-xl border transition-all ${
                           unlocked
                             ? `bg-gradient-to-br ${getRarityGradient(achievement.rarity)} ${getRarityColor(achievement.rarity)}`
-                            : "bg-[#111118] border-[#1a1a2e] opacity-50"
+                            : "bg-[#09091a] border-[#ffffff08] opacity-50"
                         }`}
                       >
                         <div className="flex items-start gap-3">
@@ -304,7 +289,7 @@ export default function ProgressPage() {
           <div className="mt-6 text-center">
             <Link
               href="/learn"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-black font-semibold text-sm rounded-lg hover:bg-primary/90 transition-colors min-h-[44px] touch-manipulation"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-600 hover:bg-teal-500 text-white font-semibold text-sm rounded-xl transition-colors min-h-[44px] touch-manipulation"
             >
               Continue Learning to Unlock More &rarr;
             </Link>

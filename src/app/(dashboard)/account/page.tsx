@@ -4,22 +4,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-browser";
 import Link from "next/link";
-import { ALL_SPACE_SHOOTER_LESSONS } from "@/data/lessons";
 import { ALL_RPG_LESSONS } from "@/data/lessons/rpg-index";
 import { ALL_PLATFORMER_LESSONS } from "@/data/lessons/platformer-index";
-import { ALL_ROBOT_LESSONS } from "@/data/lessons/robot-index";
+import { ALL_CRAWLER_LESSONS } from "@/data/lessons/crawler-index";
+import { ALL_SHOOTER_LESSONS } from "@/data/lessons/shooter-index";
 import { getLevelInfo } from "@/lib/lesson-metadata";
 
 // ─── Inline SVG Icons ──────────────────────────────────────────────────────
 
-function UserIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
-  );
-}
 
 function ZapIcon({ className }: { className?: string }) {
   return (
@@ -71,14 +63,14 @@ const TEMPLATE_LABELS: Record<string, string> = {
   space_shooter: "Space Shooter",
   platformer: "Platformer",
   simple_rpg: "Simple RPG",
-  differential_drive_robot: "Differential Drive Robot",
+  dungeon_crawler: "Dungeon Crawler",
 };
 
 const TEMPLATE_ICONS: Record<string, string> = {
   space_shooter: "\u{1F680}",
   platformer: "\u{1F3C3}",
   simple_rpg: "\u2694\uFE0F",
-  differential_drive_robot: "\u{1F916}",
+  dungeon_crawler: "\u{1F3F0}",
 };
 
 // ─── Component ──────────────────────────────────────────────────────────────
@@ -153,35 +145,31 @@ export default function AccountPage() {
   const pathLessons =
     profile.template === "simple_rpg" ? ALL_RPG_LESSONS :
     profile.template === "platformer" ? ALL_PLATFORMER_LESSONS :
-    profile.template === "differential_drive_robot" ? ALL_ROBOT_LESSONS :
-    ALL_SPACE_SHOOTER_LESSONS;
+    profile.template === "dungeon_crawler" ? ALL_CRAWLER_LESSONS :
+    ALL_SHOOTER_LESSONS;
   const freeCount = pathLessons.filter((l) => l.tier === "free").length;
-  const isRobotPath = profile.template === "differential_drive_robot";
+  const isCrawlerPath = profile.template === "dungeon_crawler";
 
   return (
     <>
       {/* Header */}
-      <header className="border-b border-[#1a1a2e] px-4 sm:px-6 py-4">
+      <header className="border-b border-[#ffffff08] px-4 sm:px-6 py-5">
         <div className="max-w-3xl mx-auto">
-          <div className="lg:hidden md:pl-12">
-            <h1 className="text-xl font-semibold text-white">Account</h1>
-            <p className="text-xs text-[#666] font-mono mt-0.5">Your profile overview</p>
-          </div>
-          <div className="hidden lg:flex items-center gap-3">
-            <UserIcon className="h-6 w-6 text-primary" />
-            <div>
-              <h1 className="text-xl font-semibold text-white">Account</h1>
-              <p className="text-xs text-[#666] font-mono mt-0.5">
-                Your profile, stats, and subscription
-              </p>
-            </div>
+          <div className="md:pl-12 lg:pl-0">
+            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+              Account
+            </h1>
+            <p className="text-xs text-[#555] font-mono mt-1 hidden lg:block">
+              Your profile, stats, and subscription
+            </p>
+            <p className="text-xs text-[#555] font-mono mt-1 lg:hidden">Your profile overview</p>
           </div>
         </div>
       </header>
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 space-y-6">
         {/* Profile Card */}
-        <section className="p-5 rounded-xl border border-[#1a1a2e] bg-surface">
+        <section className="p-5 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
           <div className="flex items-center gap-4 mb-5">
             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#7c3aed] to-[#3b82f6] flex items-center justify-center text-white text-2xl font-bold shrink-0">
               {displayName.charAt(0).toUpperCase()}
@@ -211,7 +199,7 @@ export default function AccountPage() {
                 {levelInfo.xpInLevel}/{levelInfo.xpForNext} XP
               </span>
             </div>
-            <div className="w-full bg-[#1a1a2e] rounded-full h-2 overflow-hidden">
+            <div className="w-full bg-[#ffffff08] rounded-full h-2 overflow-hidden">
               <div
                 className="h-2 rounded-full bg-gradient-to-r from-[#a855f7] to-[#6366f1] transition-all duration-500"
                 style={{ width: `${levelInfo.progress}%` }}
@@ -221,21 +209,21 @@ export default function AccountPage() {
 
           {/* Stats Row */}
           <div className="grid grid-cols-3 gap-2 sm:gap-3">
-            <div className="p-3 rounded-lg bg-[#0a0a0f] border border-[#1a1a2e] text-center">
+            <div className="p-3 rounded-xl bg-[#060610] border border-[#ffffff10] text-center">
               <div className="flex items-center justify-center gap-1 mb-1">
                 <ZapIcon className="h-3.5 w-3.5 text-[#fbbf24]" />
               </div>
               <p className="text-sm sm:text-base font-bold text-white font-mono">{profile.totalXp.toLocaleString()}</p>
               <p className="text-[8px] font-mono text-[#666] uppercase">Total XP</p>
             </div>
-            <div className="p-3 rounded-lg bg-[#0a0a0f] border border-[#1a1a2e] text-center">
+            <div className="p-3 rounded-xl bg-[#060610] border border-[#ffffff10] text-center">
               <div className="flex items-center justify-center gap-1 mb-1">
                 <FlameIcon className="h-3.5 w-3.5 text-[#f97316]" />
               </div>
               <p className="text-base font-bold text-white font-mono">{profile.currentStreak}</p>
               <p className="text-[8px] font-mono text-[#666] uppercase">Streak</p>
             </div>
-            <div className="p-3 rounded-lg bg-[#0a0a0f] border border-[#1a1a2e] text-center">
+            <div className="p-3 rounded-xl bg-[#060610] border border-[#ffffff10] text-center">
               <div className="flex items-center justify-center gap-1 mb-1">
                 <span className="text-sm">{"\u2713"}</span>
               </div>
@@ -246,7 +234,7 @@ export default function AccountPage() {
         </section>
 
         {/* Learning Path */}
-        <section className="p-5 rounded-xl border border-[#1a1a2e] bg-surface">
+        <section className="p-5 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-white">Learning Path</h2>
             <Link
@@ -258,7 +246,7 @@ export default function AccountPage() {
           </div>
           {profile.template ? (
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-[#0a0a0f] border border-[#1a1a2e] flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-[#060610] border border-[#ffffff10] flex items-center justify-center">
                 <span className="text-2xl">{TEMPLATE_ICONS[profile.template] || "?"}</span>
               </div>
               <div>
@@ -266,7 +254,7 @@ export default function AccountPage() {
                   {TEMPLATE_LABELS[profile.template] || profile.template}
                 </p>
                 <p className="text-[10px] font-mono text-[#666]">
-                  {isRobotPath ? "C++ Robotics Path" : "C++ Game Dev Path"}
+                  {isCrawlerPath ? "C++ Dungeon Crawler Path" : "C++ Game Dev Path"}
                 </p>
               </div>
             </div>
@@ -276,7 +264,7 @@ export default function AccountPage() {
         </section>
 
         {/* Subscription */}
-        <section className="p-5 rounded-xl border border-[#1a1a2e] bg-surface">
+        <section className="p-5 rounded-2xl border border-[#ffffff10] bg-[#09091a]">
           <h2 className="text-sm font-semibold text-white mb-4">Subscription</h2>
           {profile.tier === "pro" ? (
             <div className="flex items-start gap-3">
@@ -305,7 +293,7 @@ export default function AccountPage() {
               </div>
               <Link
                 href="/upgrade"
-                className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-[#a855f7] to-[#6366f1] hover:from-[#9333ea] hover:to-[#4f46e5] text-white font-semibold text-sm rounded-lg transition-all min-h-[44px] touch-manipulation"
+                className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-[#a855f7] to-[#6366f1] hover:from-[#9333ea] hover:to-[#4f46e5] text-white font-semibold text-sm rounded-xl transition-all min-h-[44px] touch-manipulation"
               >
                 <SparklesIcon className="h-4 w-4" />
                 Upgrade to Pro &mdash; $67
@@ -321,14 +309,14 @@ export default function AccountPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Link
             href="/settings"
-            className="flex items-center justify-center gap-2 p-4 rounded-xl border border-[#1a1a2e] bg-surface hover:bg-[#111118] transition-colors min-h-[44px] touch-manipulation"
+            className="flex items-center justify-center gap-2 p-4 rounded-xl border border-[#ffffff10] bg-[#ffffff08] hover:bg-[#ffffff12] transition-colors min-h-[44px] touch-manipulation"
           >
             <GearIcon className="h-5 w-5 text-[#888]" />
             <span className="text-sm font-semibold text-white">Edit Settings</span>
           </Link>
           <button
             onClick={handleSignOut}
-            className="flex items-center justify-center gap-2 p-4 rounded-xl border border-danger/20 bg-surface hover:bg-danger/5 transition-colors min-h-[44px] touch-manipulation"
+            className="flex items-center justify-center gap-2 p-4 rounded-xl border border-red-600/20 bg-red-600/10 hover:bg-red-600/15 transition-colors min-h-[44px] touch-manipulation"
           >
             <LogOutIcon className="h-5 w-5 text-danger" />
             <span className="text-sm font-semibold text-danger">Sign Out</span>

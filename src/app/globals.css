@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --background: #0a0a0f;
+  --background: #1a1a2e;
   --foreground: #e0e0e0;
 }
 
@@ -92,16 +92,16 @@ pre[class*="language-"] {
 }
 
 ::-webkit-scrollbar-track {
-  background: #12121a;
+  background: #22223a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333;
+  background: #444;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #666;
 }
 
 /* Mobile touch targets */

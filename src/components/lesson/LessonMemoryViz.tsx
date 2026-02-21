@@ -47,11 +47,11 @@ function extractMemoryFromCode(code: string): MemorySlot[] {
   return slots.slice(0, 8);
 }
 
-const TYPE_COLORS: Record<MemorySlot["type"], { bg: string; border: string }> = {
-  empty: { bg: "#1a1a2e", border: "#2a2a3e" },
-  stack: { bg: "#00ff88", border: "#00cc6a" },
-  heap: { bg: "#ffaa00", border: "#cc8800" },
-  pointer: { bg: "#6366f1", border: "#4f46e5" },
+const TYPE_COLORS: Record<MemorySlot["type"], { bg: string; border: string; label: string; value: string }> = {
+  empty: { bg: "#22223a", border: "#2e2e42", label: "#555", value: "#555" },
+  stack: { bg: "#1a3a2a", border: "#2d6b4f", label: "#E8E6EA", value: "#4ade80" },
+  heap: { bg: "#3a2a1a", border: "#6b4f2d", label: "#E8E6EA", value: "#fbbf24" },
+  pointer: { bg: "#2a2a4a", border: "#4f46e5", label: "#E8E6EA", value: "#818cf8" },
 };
 
 export default function LessonMemoryViz() {
@@ -60,8 +60,8 @@ export default function LessonMemoryViz() {
   const slots = useMemo(() => extractMemoryFromCode(code), [code]);
 
   return (
-    <div className="h-full flex flex-col rounded-lg border border-[#1a1a2e] bg-surface overflow-hidden">
-      <div className="flex items-center gap-2 px-3 py-1.5 bg-[#0d0d1a] border-b border-[#1a1a2e]">
+    <div className="h-full flex flex-col rounded-2xl border border-[#ffffff10] bg-[#09091a] overflow-hidden">
+      <div className="flex items-center gap-2 px-3 py-1.5 bg-[#060610] border-b border-[#ffffff08]">
         <span className="text-[10px] font-mono text-[#555] uppercase tracking-wider">
           Memory
         </span>
@@ -71,30 +71,28 @@ export default function LessonMemoryViz() {
       </div>
 
       <div className="flex-1 p-3 overflow-y-auto">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-1.5">
+        <div className="flex flex-wrap gap-2">
           {slots.map((slot, i) => {
             const colors = TYPE_COLORS[slot.type];
             return (
               <div
                 key={i}
-                className="aspect-square rounded-md flex flex-col items-center justify-center border transition-all duration-300"
+                className="rounded-md flex flex-col items-center justify-center border transition-all duration-300 p-3 min-w-[140px]"
                 style={{
                   backgroundColor: colors.bg,
                   borderColor: colors.border,
                 }}
               >
                 <span
-                  className="text-[10px] sm:text-[8px] font-mono leading-tight text-center break-all px-0.5"
-                  style={{
-                    color: slot.type === "empty" ? "#444" : "#000",
-                  }}
+                  className="text-sm font-mono leading-tight text-center"
+                  style={{ color: colors.label }}
                 >
                   {slot.label}
                 </span>
                 {slot.type !== "empty" && (
                   <span
-                    className="text-[9px] sm:text-[7px] font-mono mt-0.5"
-                    style={{ color: "#000" }}
+                    className="text-xs font-mono mt-1 font-semibold"
+                    style={{ color: colors.value }}
                   >
                     {slot.value}
                   </span>
@@ -107,9 +105,9 @@ export default function LessonMemoryViz() {
         {/* Legend */}
         <div className="flex gap-3 mt-3 flex-wrap">
           {[
-            { color: "#1a1a2e", label: "Free" },
-            { color: "#00ff88", label: "Stack" },
-            { color: "#6366f1", label: "Pointer" },
+            { color: "#22223a", label: "Free" },
+            { color: "#2d6b4f", label: "Stack" },
+            { color: "#4f46e5", label: "Pointer" },
           ].map(({ color, label }) => (
             <div key={label} className="flex items-center gap-1">
               <div

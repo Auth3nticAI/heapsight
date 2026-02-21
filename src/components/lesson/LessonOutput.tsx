@@ -22,8 +22,8 @@ export default function LessonOutput({ lessonId, userId, userTier, userCode }: L
   const allPassed = testResults.length > 0 && passedCount === testResults.length;
 
   return (
-    <div className="h-full flex flex-col rounded-lg border border-[#1a1a2e] bg-surface overflow-hidden">
-      <div className="flex items-center gap-2 px-3 py-1.5 bg-[#0d0d1a] border-b border-[#1a1a2e]">
+    <div className="h-full flex flex-col rounded-2xl border border-[#ffffff10] bg-[#09091a] overflow-hidden">
+      <div className="flex items-center gap-2 px-3 py-1.5 bg-[#060610] border-b border-[#ffffff08]">
         <span className="text-[10px] font-mono text-[#555] uppercase tracking-wider">
           Output
         </span>
@@ -41,7 +41,7 @@ export default function LessonOutput({ lessonId, userId, userTier, userCode }: L
             <div className="text-[9px] font-mono text-[#555] uppercase mb-1">
               Console
             </div>
-            <pre className="text-xs font-mono text-[#e0e0e0] bg-[#0d0d1a] border border-[#1a1a2e] rounded p-2.5 whitespace-pre-wrap break-words">
+            <pre className="text-xs font-mono text-[#e0e0e0] bg-[#060610] border border-[#ffffff10] rounded-lg p-2.5 whitespace-pre-wrap break-words">
               {output || (isRunning ? "..." : "")}
             </pre>
           </div>

@@ -1,28 +1,30 @@
 "use client";
 
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useCallback, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import { getSpaceShooterLessonById, getNextSpaceShooterLesson } from "@/data/lessons";
+import { getShooterLessonById, getNextShooterLesson } from "@/data/lessons/shooter-index";
 import { getRPGLessonById, getNextRPGLesson } from "@/data/lessons/rpg-index";
 import { getPlatformerLessonById, getNextPlatformerLesson } from "@/data/lessons/platformer-index";
-import { getRobotLessonById, getNextRobotLesson } from "@/data/lessons/robot-index";
+import { getCrawlerLessonById, getNextCrawlerLesson } from "@/data/lessons/crawler-index";
 import { getGameVariant } from "@/data/game-templates";
 import { useLessonStore } from "@/store/lesson-store";
-import { runCppCode } from "@/lib/cpp-runner";
-import { parseGameOutput } from "@/lib/game-protocol";
-import { parseRobotFrames } from "@/lib/robot-protocol";
+import { compileWithWasm, parseLessonId, lessonDbPath, runTests, runCppCode } from "@/lib/cpp-runner";
+// Legacy protocol parsers — kept for potential fallback use
+// import { parseGameOutput } from "@/lib/game-protocol";
+// import { parseCrawlerFrames } from "@/lib/crawler-protocol";
 import { createClient } from "@/lib/supabase-browser";
 import { getTemplateInfo } from "@/data/templates-info";
-import { ROBOT_LESSON_TITLES } from "@/data/game-templates/differential-drive-robot/lesson-titles";
+import { CRAWLER_LESSON_TITLES } from "@/data/game-templates/dungeon-crawler/lesson-titles";
 import type { GameTemplate } from "@/types/game";
 import type { LessonPart } from "@/types/lesson";
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 import LessonEditor from "@/components/lesson/LessonEditor";
 import LessonInstructions from "@/components/lesson/LessonInstructions";
 import LessonOutput from "@/components/lesson/LessonOutput";
 import HintSystem from "@/components/lesson/HintSystem";
 import LessonMemoryViz from "@/components/lesson/LessonMemoryViz";
-import GamePreviewCanvas from "@/components/lesson/GamePreviewCanvas";
+import GameCanvasWrapper from "@/components/GameCanvasWrapper";
 import PartProgressIndicator from "@/components/lesson/PartProgressIndicator";
 import PaywallModal from "@/components/PaywallModal";
 import Link from "next/link";
@@ -36,15 +38,16 @@ import AchievementUnlocked from "@/components/feedback/AchievementUnlocked";
 import LevelUpCelebration from "@/components/feedback/LevelUpCelebration";
 import type { Achievement } from "@/lib/achievements";
 
-const RobotPreviewCanvas = dynamic(
-  () => import("@/components/lesson/RobotPreviewCanvas"),
-  { ssr: false }
-);
+// Legacy CrawlerPreviewCanvas — replaced by WasmGameCanvas
+// const CrawlerPreviewCanvas = dynamic(
+//   () => import("@/components/lesson/CrawlerPreviewCanvas"),
+//   { ssr: false }
+// );
 
 export default function LessonPage() {
   const params = useParams();
   const lessonId = params.id as string;
-  const lesson = getSpaceShooterLessonById(lessonId) ?? getRPGLessonById(lessonId) ?? getPlatformerLessonById(lessonId) ?? getRobotLessonById(lessonId);
+  const lesson = getShooterLessonById(lessonId) ?? getSpaceShooterLessonById(lessonId) ?? getRPGLessonById(lessonId) ?? getPlatformerLessonById(lessonId) ?? getCrawlerLessonById(lessonId);
 
   const currentPart = useLessonStore((s) => s.currentPart);
   const part1Code = useLessonStore((s) => s.part1Code);
@@ -63,15 +66,19 @@ export default function LessonPage() {
   const markPart1Complete = useLessonStore((s) => s.markPart1Complete);
   const markPart2Complete = useLessonStore((s) => s.markPart2Complete);
   const setCurrentPart = useLessonStore((s) => s.setCurrentPart);
-  const setGameFrame = useLessonStore((s) => s.setGameFrame);
-  const setRobotFrames = useLessonStore((s) => s.setRobotFrames);
+  // Legacy frame setters — kept in store but unused in WASM flow
+  // const setGameFrame = useLessonStore((s) => s.setGameFrame);
+  // const setCrawlerFrames = useLessonStore((s) => s.setCrawlerFrames);
+  const wasmJs = useLessonStore((s) => s.wasmJs);
+  const wasmWasm = useLessonStore((s) => s.wasmWasm);
+  const setWasmOutput = useLessonStore((s) => s.setWasmOutput);
 
   const [xpEarned, setXpEarned] = useState(0);
   const [showPaywall, setShowPaywall] = useState(false);
   const [userTier, setUserTier] = useState<"free" | "pro">("free");
   const [userTemplate, setUserTemplate] = useState<GameTemplate | null>(null);
   const [runSuccess, setRunSuccess] = useState(false);
-  const [mobileTab, setMobileTab] = useState<"instructions" | "code" | "preview" | "output">("instructions");
+  const [leftTab, setLeftTab] = useState<"lesson" | "game" | "output" | "memory">("lesson");
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationType, setCelebrationType] = useState<"streak" | "level" | "daily_goal">("streak");
   const [celebrationDetail, setCelebrationDetail] = useState("");
@@ -85,10 +92,13 @@ export default function LessonPage() {
   const [showBonusXP, setShowBonusXP] = useState(false);
   const [bonusXPAmount, setBonusXPAmount] = useState(0);
 
-  const templateInfo = userTemplate ? getTemplateInfo(userTemplate) : null;
-  const isRobotTemplate = templateInfo?.category === "robot";
+  // Ref to track if we're waiting for console output to run submit validation
+  const pendingSubmitRef = useRef(false);
 
-  // Get active part data — may use game/robot variant for Part 2
+  const templateInfo = userTemplate ? getTemplateInfo(userTemplate) : null;
+  const isCrawlerTemplate = templateInfo?.category === "crawler";
+
+  // Get active part data — may use game/crawler variant for Part 2
   const gameVariant =
     lesson && userTemplate ? getGameVariant(lesson.id, userTemplate) : null;
 
@@ -99,7 +109,7 @@ export default function LessonPage() {
     if (gameVariant) {
       return {
         ...lesson.part2,
-        ...(isRobotTemplate ? { type: "robot_builder" as const } : {}),
+        ...(isCrawlerTemplate ? { type: "game_builder" as const } : {}),
         ...(gameVariant.instructions ? { instructions: gameVariant.instructions } : {}),
         starterCode: gameVariant.starterCode,
         solutionCode: gameVariant.solutionCode,
@@ -147,18 +157,19 @@ export default function LessonPage() {
           return;
         }
 
-        // Look up variant starter code (robot or game) for Part 2 fallback
+        // Look up variant starter code (crawler or game) for Part 2 fallback
         const variant = template ? getGameVariant(lesson.id, template) : null;
         const part2Starter = variant?.starterCode || lesson.part2.starterCode;
 
-        // Load saved progress (path-isolated)
+        // Load saved progress (path-isolated, derived from lesson ID)
+        const dbPath = lessonDbPath(lesson.id);
         const { data } = await supabase
           .from("lesson_progress")
           .select("part1_user_code, part2_user_code, part1_status, part2_status, status")
           .eq("user_id", user.id)
           .eq("lesson_id", lesson.id)
-          .eq("path", template || "")
-          .single();
+          .eq("path", dbPath)
+          .maybeSingle();
 
         if (data) {
           const p1Code = data.part1_user_code || lesson.part1.starterCode;
@@ -202,34 +213,50 @@ export default function LessonPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, lessonId]);
 
+  // Extract lesson path and number for the WASM compiler
+  const { path: lessonPath, lesson: lessonNumber } = lesson ? parseLessonId(lesson.id) : { path: "rpg", lesson: 1 };
+
   const handleRun = useCallback(async () => {
     if (!activePart || isRunning) return;
     setIsRunning(true);
     setErrors([]);
     setTestResults([]);
+    setWasmOutput(null, null, null);
 
-    const result = await runCppCode(activeCode, activePart.tests);
+    if (currentPart === 2) {
+      // Part 2: WASM compilation via Cloud Run
+      const result = await compileWithWasm(activeCode, lessonPath, lessonNumber);
 
-    setOutput(result.output);
-    setErrors(result.errors);
-    setTestResults(result.testResults);
-    setIsRunning(false);
+      if (result.errors.length > 0) {
+        setErrors(result.errors);
+        setIsRunning(false);
+        setLeftTab("output");
+        return;
+      }
 
-    // Auto-switch to output tab on mobile
-    setMobileTab("output");
+      // Store WASM artifacts — WasmGameCanvas will load and run them
+      setWasmOutput(result.js, result.wasm, result.compileTimeMs);
+      setIsRunning(false);
 
-    // Success flash
-    if (result.errors.length === 0 && result.output) {
+      // Auto-switch to game tab to see the compiled game
+      setLeftTab("game");
+
       setRunSuccess(true);
       setTimeout(() => setRunSuccess(false), 800);
-    }
+    } else {
+      // Part 1: JSCPP fallback for concept lessons (cout-based)
+      const result = await runCppCode(activeCode, activePart.tests);
 
-    // Parse output for Part 2 visualization
-    if (currentPart === 2 && result.output) {
-      if (isRobotTemplate) {
-        setRobotFrames(parseRobotFrames(result.output));
-      } else {
-        setGameFrame(parseGameOutput(result.output));
+      setOutput(result.output);
+      setErrors(result.errors);
+      setTestResults(result.testResults);
+      setIsRunning(false);
+
+      setLeftTab("output");
+
+      if (result.errors.length === 0 && result.output) {
+        setRunSuccess(true);
+        setTimeout(() => setRunSuccess(false), 800);
       }
     }
 
@@ -243,7 +270,7 @@ export default function LessonPage() {
       const updateData: Record<string, string> = {
         user_id: user.id,
         lesson_id: lesson.id,
-        path: userTemplate || "",
+        path: lessonDbPath(lesson.id),
         status: "in_progress",
       };
       if (currentPart === 1) {
@@ -258,32 +285,56 @@ export default function LessonPage() {
         .from("lesson_progress")
         .upsert(updateData, { onConflict: "user_id,lesson_id,path" });
     }
-  }, [activePart, activeCode, currentPart, isRunning, lesson, isRobotTemplate, setIsRunning, setOutput, setErrors, setTestResults, setGameFrame, setRobotFrames]);
+  }, [activePart, activeCode, currentPart, isRunning, lesson, lessonPath, lessonNumber, userTemplate, setIsRunning, setOutput, setErrors, setTestResults, setWasmOutput]);
 
   const handleSubmit = useCallback(async () => {
     if (!activePart || !lesson || isRunning) return;
 
-    setIsRunning(true);
-    setErrors([]);
-    setTestResults([]);
+    if (currentPart === 2) {
+      // Part 2: WASM flow
+      // If game is already running (wasmJs loaded), check current test results
+      const currentTestResults = useLessonStore.getState().testResults;
+      const alreadyPassed = currentTestResults.length > 0 && currentTestResults.every((t) => t.passed);
 
-    const result = await runCppCode(activeCode, activePart.tests);
+      if (!alreadyPassed) {
+        // Need to compile first, then wait for console output
+        setIsRunning(true);
+        setErrors([]);
+        setTestResults([]);
+        setWasmOutput(null, null, null);
 
-    setOutput(result.output);
-    setErrors(result.errors);
-    setTestResults(result.testResults);
-    setIsRunning(false);
+        const result = await compileWithWasm(activeCode, lessonPath, lessonNumber);
 
-    // Parse output for Part 2 visualization
-    if (currentPart === 2 && result.output) {
-      if (isRobotTemplate) {
-        setRobotFrames(parseRobotFrames(result.output));
-      } else {
-        setGameFrame(parseGameOutput(result.output));
+        if (result.errors.length > 0) {
+          setErrors(result.errors);
+          setIsRunning(false);
+          setLeftTab("output");
+          return;
+        }
+
+        setWasmOutput(result.js, result.wasm, result.compileTimeMs);
+        pendingSubmitRef.current = true;
+        setIsRunning(false);
+        setLeftTab("game");
+        return; // Completion flow triggered by handleWasmConsoleOutput when tests pass
       }
-    }
 
-    if (!result.allPassed) return;
+      // Tests already pass — proceed to completion flow below
+    } else {
+      // Part 1: JSCPP flow
+      setIsRunning(true);
+      setErrors([]);
+      setTestResults([]);
+
+      const result = await runCppCode(activeCode, activePart.tests);
+
+      setOutput(result.output);
+      setErrors(result.errors);
+      setTestResults(result.testResults);
+      setIsRunning(false);
+
+      if (!result.allPassed) return;
+    }
 
     const supabase = createClient();
     const {
@@ -305,14 +356,16 @@ export default function LessonPage() {
       }
     }
 
+    const progressPath = lessonDbPath(lesson.id);
+
     if (currentPart === 1) {
       // Complete Part 1, transition to Part 2
-      console.log("SUBMIT PART1:", { lessonId: lesson.id, path: userTemplate || "", userTemplate });
+      console.log("SUBMIT PART1:", { lessonId: lesson.id, path: progressPath, userTemplate });
       await supabase.from("lesson_progress").upsert(
         {
           user_id: user.id,
           lesson_id: lesson.id,
-          path: userTemplate || "",
+          path: progressPath,
           status: "in_progress",
           part1_status: "completed",
           part1_user_code: activeCode,
@@ -322,15 +375,15 @@ export default function LessonPage() {
 
       markPart1Complete();
       setCurrentPart(2);
-      setMobileTab("instructions"); // Show Part 2 instructions on mobile
+      setLeftTab("lesson"); // Show Part 2 instructions
     } else {
       // Complete Part 2 — lesson fully done
-      console.log("SUBMIT PART2:", { lessonId: lesson.id, path: userTemplate || "", userTemplate });
+      console.log("SUBMIT PART2:", { lessonId: lesson.id, path: progressPath, userTemplate });
       const upsertResult = await supabase.from("lesson_progress").upsert(
         {
           user_id: user.id,
           lesson_id: lesson.id,
-          path: userTemplate || "",
+          path: progressPath,
           status: "completed",
           part2_status: "completed",
           part2_user_code: activeCode,
@@ -358,7 +411,7 @@ export default function LessonPage() {
       const { data: xpResult, error: xpError } = await supabase.rpc("award_lesson_xp", {
         p_lesson_id: lesson.id,
         p_xp_amount: lesson.xpReward,
-        p_path: userTemplate || "",
+        p_path: progressPath,
       });
 
       if (xpError) {
@@ -370,7 +423,7 @@ export default function LessonPage() {
 
       markPart2Complete();
       setXpEarned(isFirstCompletion ? lesson.xpReward : 0);
-      setMobileTab("output"); // Show completion on mobile
+      setLeftTab("output"); // Show completion results
 
       // Celebration confetti (only on first completion)
       if (isFirstCompletion) {
@@ -452,11 +505,13 @@ export default function LessonPage() {
       }
 
       // Show paywall after completing last free lesson (when next is pro)
+      // Use lessonPath (from lesson ID) not userTemplate — ensures correct path lookup
       const next =
-        userTemplate === "simple_rpg" ? getNextRPGLesson(lesson.id) :
-        userTemplate === "platformer" ? getNextPlatformerLesson(lesson.id) :
-        userTemplate === "differential_drive_robot" ? getNextRobotLesson(lesson.id) :
-        getNextSpaceShooterLesson(lesson.id);
+        lessonPath === "rpg" ? getNextRPGLesson(lesson.id) :
+        lessonPath === "platformer" ? getNextPlatformerLesson(lesson.id) :
+        lessonPath === "crawler" ? getNextCrawlerLesson(lesson.id) :
+        lessonPath === "shooter" ? (getNextShooterLesson(lesson.id) ?? getNextSpaceShooterLesson(lesson.id)) :
+        undefined;
       if (next && next.tier === "pro" && userTier === "free") {
         setShowPaywall(true);
       } else if (!next) {
@@ -464,7 +519,7 @@ export default function LessonPage() {
         setShowPaywall(false);
       }
     }
-  }, [activePart, activeCode, currentPart, lesson, isRunning, userTemplate, userTier, gameVariant, isRobotTemplate, setIsRunning, setOutput, setErrors, setTestResults, setGameFrame, setRobotFrames, markPart1Complete, markPart2Complete, setCurrentPart]);
+  }, [activePart, activeCode, currentPart, lesson, isRunning, userTemplate, userTier, gameVariant, lessonPath, lessonNumber, setIsRunning, setOutput, setErrors, setTestResults, setWasmOutput, markPart1Complete, markPart2Complete, setCurrentPart]);
 
   const handleReset = useCallback(() => {
     if (!activePart) return;
@@ -475,11 +530,34 @@ export default function LessonPage() {
     }
   }, [activePart, currentPart, setPart1Code, setPart2Code]);
 
+  // Handle console output from WasmGameCanvas (Part 2)
+  // This fires when the WASM game prints to cout — used for test validation
+  const handleWasmConsoleOutput = useCallback((lines: string[]) => {
+    if (!activePart) return;
+    const consoleOutput = lines.join("\n");
+    setOutput(consoleOutput);
+
+    // Run tests against the console output
+    const { testResults: results, allPassed } = runTests(consoleOutput, activePart.tests);
+    setTestResults(results);
+
+    // If this was a submit and all tests pass, trigger the completion flow
+    if (pendingSubmitRef.current && allPassed) {
+      pendingSubmitRef.current = false;
+      // Re-trigger handleSubmit — it will see tests already pass and run the completion flow
+      setTimeout(() => handleSubmit(), 0);
+    }
+  }, [activePart, setOutput, setTestResults, handleSubmit]);
+
+  const handleWasmError = useCallback((error: string) => {
+    setErrors([error]);
+  }, [setErrors]);
+
   if (!lesson) {
     return (
       <main className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-xl text-white mb-2">Lesson not found</h1>
+          <h1 className="text-xl text-[#E8E6EA] mb-2">Lesson not found</h1>
           <Link href="/learn" className="text-primary text-sm hover:underline">
             Back to lessons
           </Link>
@@ -489,30 +567,34 @@ export default function LessonPage() {
   }
 
   const allPassed = testResults.length > 0 && testResults.every((t) => t.passed);
+  // Derive next lesson from the CURRENT lesson's path (parsed from ID), not userTemplate.
+  // This ensures shooter-XX lessons find the next shooter lesson even if
+  // the user's profile template is something else (e.g. "simple_rpg").
   const nextLesson =
-    userTemplate === "simple_rpg" ? getNextRPGLesson(lesson.id) :
-    userTemplate === "platformer" ? getNextPlatformerLesson(lesson.id) :
-    userTemplate === "differential_drive_robot" ? getNextRobotLesson(lesson.id) :
-    getNextSpaceShooterLesson(lesson.id);
+    lessonPath === "rpg" ? getNextRPGLesson(lesson.id) :
+    lessonPath === "platformer" ? getNextPlatformerLesson(lesson.id) :
+    lessonPath === "crawler" ? getNextCrawlerLesson(lesson.id) :
+    lessonPath === "shooter" ? (getNextShooterLesson(lesson.id) ?? getNextSpaceShooterLesson(lesson.id)) :
+    undefined;
   const lessonFullyComplete = part1Completed && part2Completed;
 
-  // Show robot-specific title when on robot path
-  const robotTitle = isRobotTemplate ? ROBOT_LESSON_TITLES[lesson.id] : null;
-  const displayTitle = robotTitle?.title || lesson.title;
+  // Show crawler-specific title when on crawler path
+  const crawlerTitle = isCrawlerTemplate ? CRAWLER_LESSON_TITLES[lesson.id] : null;
+  const displayTitle = crawlerTitle?.title || lesson.title;
 
   // Block free users from pro lessons (full-page paywall)
   if (lesson.tier === "pro" && userTier === "free" && showPaywall) {
     return (
       <main className="min-h-screen bg-background">
-        <header className="border-b border-[#1a1a2e] px-4 py-2 flex items-center gap-3 shrink-0">
+        <header className="border-b border-[#2e2e42] px-4 py-2 flex items-center gap-3 shrink-0">
           <Link
             href="/learn"
-            className="text-[#555] hover:text-white transition-colors text-sm"
+            className="text-[#555] hover:text-[#E8E6EA] transition-colors text-sm"
           >
             &larr; Lessons
           </Link>
-          <div className="w-px h-4 bg-[#2a2a3e]" />
-          <h1 className="text-sm font-semibold text-white">
+          <div className="w-px h-4 bg-[#3a3a4e]" />
+          <h1 className="text-sm font-semibold text-[#E8E6EA]">
             {lesson.order}. {displayTitle}
           </h1>
         </header>
@@ -529,16 +611,16 @@ export default function LessonPage() {
   return (
     <main className="h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="border-b border-[#1a1a2e] px-3 sm:px-4 py-2 flex items-center justify-between shrink-0 gap-2">
+      <header className="border-b border-[#2e2e42] px-3 sm:px-4 py-2 flex items-center justify-between shrink-0 gap-2">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <Link
             href="/learn"
-            className="text-[#555] hover:text-white transition-colors text-sm shrink-0"
+            className="text-[#555] hover:text-[#E8E6EA] transition-colors text-sm shrink-0"
           >
             &larr;<span className="hidden sm:inline"> Lessons</span>
           </Link>
-          <div className="w-px h-4 bg-[#2a2a3e] shrink-0" />
-          <h1 className="text-sm font-semibold text-white truncate">
+          <div className="w-px h-4 bg-[#3a3a4e] shrink-0" />
+          <h1 className="text-sm font-semibold text-[#E8E6EA] truncate">
             {lesson.order}. {displayTitle}
           </h1>
           <span className="hidden sm:inline text-[10px] font-mono bg-primary/10 text-primary px-2 py-0.5 rounded shrink-0">
@@ -556,86 +638,111 @@ export default function LessonPage() {
         </div>
       </header>
 
-      {/* Content area with mobile tabs */}
-      <div className="flex-1 flex flex-col min-h-0">
-        {/* Mobile tab bar */}
-        <div className="flex lg:hidden border-b border-[#1a1a2e] bg-[#0d0d1a] shrink-0" role="tablist">
-          {([
-            { id: "instructions" as const, label: "Lesson" },
-            { id: "code" as const, label: "Code" },
-            { id: "preview" as const, label: currentPart === 1 ? "Memory" : isRobotTemplate ? "Robot" : "Game" },
-            { id: "output" as const, label: "Output" },
-          ]).map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setMobileTab(tab.id)}
-              className={`flex-1 py-2.5 text-xs font-mono transition-colors min-h-[44px] ${
-                mobileTab === tab.id
-                  ? "text-primary border-b-2 border-primary bg-primary/[0.05]"
-                  : "text-[#555] hover:text-[#888]"
-              }`}
-              role="tab"
-              aria-selected={mobileTab === tab.id}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
+      {/* Content area — 2-panel split: left tabbed, right editor */}
+      <div className="flex-1 flex flex-col lg:flex-row min-h-0 gap-2 p-2">
 
-        {/* Panels: mobile = single active panel | desktop = 2x2 grid */}
-        <div className="flex-1 min-h-0 flex flex-col lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-2 p-2">
-          {/* Instructions + DB Hint System */}
-          <div className={`min-h-0 overflow-hidden flex flex-col ${mobileTab === "instructions" ? "flex-1" : "hidden"} lg:block`}>
-            {activePart && (
-              <div className="h-full flex flex-col">
-                <div className="flex-1 min-h-0">
-                  <LessonInstructions part={activePart} concepts={lesson.concepts} />
-                </div>
-                {userId && lesson && (
-                  <div className="shrink-0 p-2">
-                    <HintSystem
-                      lessonId={lesson.id}
-                      userId={userId}
-                      sessionStartTime={sessionStartTime}
-                      onHintUsed={() => setHintsUsed((h) => h + 1)}
-                    />
+        {/* LEFT PANEL: Tabbed */}
+        <div className="flex flex-col lg:w-1/2 min-h-0 h-[45vh] lg:h-auto">
+          {/* Tab bar */}
+          <div
+            className="flex shrink-0 bg-[#0d0d1a] border-b border-[#ffffff08] px-2"
+            role="tablist"
+          >
+            {(
+              [
+                { id: "lesson" as const, label: "Lesson", show: true },
+                {
+                  id: "game" as const,
+                  label: isCrawlerTemplate ? "Crawler" : "Game",
+                  show: currentPart === 2,
+                },
+                { id: "output" as const, label: "Output", show: true },
+                { id: "memory" as const, label: "Memory", show: true },
+              ] as const
+            )
+              .filter((t) => t.show)
+              .map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setLeftTab(tab.id)}
+                  className={`px-3 py-2.5 text-xs font-mono transition-colors border-b-2 -mb-px min-h-[44px] ${
+                    leftTab === tab.id
+                      ? "bg-[#ffffff08] text-white border-teal-400"
+                      : "text-gray-500 hover:text-gray-300 border-transparent"
+                  }`}
+                  role="tab"
+                  aria-selected={leftTab === tab.id}
+                >
+                  {tab.label}
+                </button>
+              ))}
+          </div>
+
+          {/* Tab content */}
+          <div className="flex-1 min-h-0 overflow-hidden">
+            {/* Lesson tab */}
+            <div className={`h-full flex flex-col ${leftTab === "lesson" ? "" : "hidden"}`}>
+              {activePart && (
+                <>
+                  <div className="flex-1 min-h-0">
+                    <LessonInstructions part={activePart} concepts={lesson.concepts} />
                   </div>
-                )}
+                  {userId && lesson && (
+                    <div className="shrink-0 p-2">
+                      <HintSystem
+                        lessonId={lesson.id}
+                        userId={userId}
+                        sessionStartTime={sessionStartTime}
+                        onHintUsed={() => setHintsUsed((h) => h + 1)}
+                      />
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Game tab — Part 2 only */}
+            {leftTab === "game" && currentPart === 2 && (
+              <div className="h-full">
+                <GameCanvasWrapper
+                  compiled={wasmJs && wasmWasm ? { js: wasmJs, wasm: wasmWasm } : null}
+                  path={lessonPath as "rpg" | "platformer" | "shooter" | "crawler"}
+                  onConsoleOutput={handleWasmConsoleOutput}
+                  onError={handleWasmError}
+                />
+              </div>
+            )}
+
+            {/* Output tab */}
+            {leftTab === "output" && (
+              <div className="h-full">
+                <LessonOutput
+                  lessonId={lesson?.id}
+                  userId={userId || undefined}
+                  userTier={userTier}
+                  userCode={activeCode}
+                />
+              </div>
+            )}
+
+            {/* Memory tab */}
+            {leftTab === "memory" && (
+              <div className="h-full">
+                <LessonMemoryViz />
               </div>
             )}
           </div>
+        </div>
 
-          {/* Code Editor */}
-          <div className={`min-h-0 overflow-hidden ${mobileTab === "code" ? "flex-1" : "hidden"} lg:block`}>
-            <LessonEditor />
-          </div>
-
-          {/* Memory Viz (Part 1) or Game/Robot Preview (Part 2) */}
-          <div className={`min-h-0 overflow-hidden ${mobileTab === "preview" ? "flex-1" : "hidden"} lg:block`}>
-            {currentPart === 1 ? (
-              <LessonMemoryViz />
-            ) : isRobotTemplate ? (
-              <RobotPreviewCanvas />
-            ) : (
-              <GamePreviewCanvas />
-            )}
-          </div>
-
-          {/* Output + AI Error Explainer */}
-          <div className={`min-h-0 overflow-hidden ${mobileTab === "output" ? "flex-1" : "hidden"} lg:block`}>
-            <LessonOutput
-              lessonId={lesson?.id}
-              userId={userId || undefined}
-              userTier={userTier}
-              userCode={activeCode}
-            />
-          </div>
+        {/* RIGHT PANEL: Code editor */}
+        <div className="flex-1 lg:w-1/2 min-h-0 min-h-[250px] lg:min-h-0">
+          <LessonEditor />
         </div>
       </div>
 
       {/* Action bar — safe-area-inset for notch phones */}
       <div
-        className="border-t border-[#1a1a2e] px-3 sm:px-4 py-2 sm:py-2.5 shrink-0"
+        className="border-t border-[#2e2e42] px-3 sm:px-4 py-2 sm:py-2.5 shrink-0"
         style={{ paddingBottom: "max(0.5rem, env(safe-area-inset-bottom, 0.5rem))" }}
       >
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -646,7 +753,7 @@ export default function LessonPage() {
               className={`flex-1 sm:flex-initial px-3 sm:px-4 py-2 text-sm font-mono rounded-lg transition-all disabled:opacity-50 border min-h-[44px] ${
                 runSuccess
                   ? "bg-primary/20 text-primary border-primary/30"
-                  : "bg-[#1a1a2e] text-white border-[#2a2a3e] hover:bg-[#2a2a3e]"
+                  : "bg-[#2e2e42] text-[#E8E6EA] border-[#3a3a4e] hover:bg-[#3a3a4e]"
               }`}
             >
               {isRunning ? (
@@ -704,7 +811,7 @@ export default function LessonPage() {
             {lessonFullyComplete && nextLesson && nextLesson.tier === "pro" && userTier === "free" && (
               <button
                 onClick={() => setShowPaywall(true)}
-                className="px-3 sm:px-4 py-2 bg-[#a855f7] text-white text-sm font-semibold rounded-lg hover:bg-[#a855f7]/90 transition-colors min-h-[44px]"
+                className="px-3 sm:px-4 py-2 bg-[#a855f7] text-[#E8E6EA] text-sm font-semibold rounded-lg hover:bg-[#a855f7]/90 transition-colors min-h-[44px]"
               >
                 {"\uD83D\uDD12"} Unlock Next
               </button>
