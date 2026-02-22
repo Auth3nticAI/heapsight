@@ -15,6 +15,21 @@ import { lessonRPG12 } from "./lesson-rpg-12-types-and-coordinates";
 import { lessonRPG13 } from "./lesson-rpg-13-entity-ids-v0";
 import { lessonRPG14 } from "./lesson-rpg-14-soa-components-v0";
 import { lessonRPG15 } from "./lesson-rpg-15-milestone-stable-update-order";
+import { lessonRPG16 } from "./lesson-rpg-16-command-queue-formalized";
+import { lessonRPG17 } from "./lesson-rpg-17-resolve-pass-isolated";
+import { lessonRPG18 } from "./lesson-rpg-18-combat-pass-isolated";
+import { lessonRPG19 } from "./lesson-rpg-19-cleanup-pass-isolated";
+import { lessonRPG20 } from "./lesson-rpg-20-milestone-room-transition";
+import { lessonRPG21 } from "./lesson-rpg-21-deterministic-rng-v0";
+import { lessonRPG22 } from "./lesson-rpg-22-no-rand-rule";
+import { lessonRPG23 } from "./lesson-rpg-23-state-signature-v0";
+import { lessonRPG24 } from "./lesson-rpg-24-save-file-v0";
+import { lessonRPG25 } from "./lesson-rpg-25-milestone-restart-resume";
+import { lessonRPG26 } from "./lesson-rpg-26-inventory-v0";
+import { lessonRPG27 } from "./lesson-rpg-27-items-as-ids";
+import { lessonRPG28 } from "./lesson-rpg-28-loot-drop-deterministic";
+import { lessonRPG29 } from "./lesson-rpg-29-allocation-counter";
+import { lessonRPG30 } from "./lesson-rpg-30-gate-a-heap-freeze";
 
 export const ALL_RPG_LESSONS: Lesson[] = [
   lessonRPG00,
@@ -33,6 +48,21 @@ export const ALL_RPG_LESSONS: Lesson[] = [
   lessonRPG13,
   lessonRPG14,
   lessonRPG15,
+  lessonRPG16,
+  lessonRPG17,
+  lessonRPG18,
+  lessonRPG19,
+  lessonRPG20,
+  lessonRPG21,
+  lessonRPG22,
+  lessonRPG23,
+  lessonRPG24,
+  lessonRPG25,
+  lessonRPG26,
+  lessonRPG27,
+  lessonRPG28,
+  lessonRPG29,
+  lessonRPG30,
 ].sort((a, b) => a.order - b.order);
 
 export function getRPGLessonById(id: string): Lesson | undefined {

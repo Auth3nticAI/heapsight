@@ -14,6 +14,21 @@ import { lessonCrawler12 } from "./lesson-crawler-12-interaction-system";
 import { lessonCrawler13 } from "./lesson-crawler-13-push-blocks";
 import { lessonCrawler14 } from "./lesson-crawler-14-pressure-plates";
 import { lessonCrawler15 } from "./lesson-crawler-15-milestone-puzzle-room";
+import { lessonCrawler16 } from "./lesson-crawler-16-sphere-collision";
+import { lessonCrawler17 } from "./lesson-crawler-17-slope-detection";
+import { lessonCrawler18 } from "./lesson-crawler-18-moving-platforms";
+import { lessonCrawler19 } from "./lesson-crawler-19-key-lock-system";
+import { lessonCrawler20 } from "./lesson-crawler-20-milestone-multi-floor";
+import { lessonCrawler21 } from "./lesson-crawler-21-ambient-light";
+import { lessonCrawler22 } from "./lesson-crawler-22-point-light";
+import { lessonCrawler23 } from "./lesson-crawler-23-multiple-lights";
+import { lessonCrawler24 } from "./lesson-crawler-24-torch-flicker";
+import { lessonCrawler25 } from "./lesson-crawler-25-milestone-atmospheric-dungeon";
+import { lessonCrawler26 } from "./lesson-crawler-26-fog";
+import { lessonCrawler27 } from "./lesson-crawler-27-color-zones";
+import { lessonCrawler28 } from "./lesson-crawler-28-dynamic-light";
+import { lessonCrawler29 } from "./lesson-crawler-29-alloc-counter";
+import { lessonCrawler30 } from "./lesson-crawler-30-gate-a-heap-freeze";
 
 export const ALL_CRAWLER_LESSONS: Lesson[] = [
   lessonCrawler1,
@@ -31,6 +46,21 @@ export const ALL_CRAWLER_LESSONS: Lesson[] = [
   lessonCrawler13,
   lessonCrawler14,
   lessonCrawler15,
+  lessonCrawler16,
+  lessonCrawler17,
+  lessonCrawler18,
+  lessonCrawler19,
+  lessonCrawler20,
+  lessonCrawler21,
+  lessonCrawler22,
+  lessonCrawler23,
+  lessonCrawler24,
+  lessonCrawler25,
+  lessonCrawler26,
+  lessonCrawler27,
+  lessonCrawler28,
+  lessonCrawler29,
+  lessonCrawler30,
 ].sort((a, b) => a.order - b.order);
 
 export function getCrawlerLessonById(id: string): Lesson | undefined {

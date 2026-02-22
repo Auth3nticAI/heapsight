@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase-browser";
 
 interface PaywallModalProps {
   isOpen: boolean;
@@ -13,32 +12,9 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
 
   if (!isOpen) return null;
 
-  const handleUpgrade = async () => {
+  const handleUpgrade = () => {
     setLoading(true);
-    try {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      const res = await fetch("/api/checkout/onetime", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user?.id || "",
-          email: user?.email || "",
-          isEarlyBird: true,
-        }),
-      });
-
-      const { url } = await res.json();
-      window.location.href = url;
-    } catch (err) {
-      console.error("Checkout error:", err);
-      alert("Something went wrong. Try again.");
-    } finally {
-      setLoading(false);
-    }
+    window.location.href = "/api/polar/checkout?billing=yearly";
   };
 
   return (
@@ -94,7 +70,7 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
           disabled={loading}
           className="w-full py-3.5 bg-gradient-to-r from-[#246BFD] to-[#0040C3] text-white font-bold rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm min-h-[44px] touch-manipulation"
         >
-          {loading ? "Redirecting to Stripe..." : "Unlock Everything \u2014 $67"}
+          {loading ? "Redirecting to checkout..." : "Unlock Everything \u2014 $67"}
         </button>
 
         <button

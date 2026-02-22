@@ -778,7 +778,7 @@ export default function HeapSightLanding() {
         {/* Code Demo card */}
         <div
           style={{
-            marginTop: "80px",
+            marginTop: "40px",
             maxWidth: "1200px",
             marginLeft: "auto",
             marginRight: "auto",

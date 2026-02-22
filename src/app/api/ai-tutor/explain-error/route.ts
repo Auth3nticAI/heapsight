@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     const { error_message, user_code, lesson_id } = await request.json();
 
     // Auth
-    const supabase = createClient();
+    const supabase = await createClient();
     const {
       data: { user },
       error: authError,

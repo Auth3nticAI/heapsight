@@ -64,36 +64,13 @@ const FAQ = [
 export default function UpgradePage() {
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("yearly");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const price = billingPeriod === "monthly" ? 29 : 199;
   const monthlyEquivalent = billingPeriod === "yearly" ? Math.round(199 / 12) : 29;
 
-  const handleUpgrade = async () => {
+  const handleUpgrade = () => {
     setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch("/api/checkout/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ billingPeriod }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Checkout failed");
-      }
-
-      if (data.url) {
-        window.location.href = data.url;
-      }
-    } catch (err: unknown) {
-      console.error("Upgrade error:", err);
-      setError(err instanceof Error ? err.message : "Something went wrong");
-      setIsLoading(false);
-    }
+    window.location.href = `/api/polar/checkout?billing=${billingPeriod}`;
   };
 
   return (
@@ -175,12 +152,6 @@ export default function UpgradePage() {
                 </p>
               )}
 
-              {/* Error */}
-              {error && (
-                <div className="bg-danger/10 border border-danger/20 rounded-lg p-3 mb-4">
-                  <p className="text-xs font-mono text-danger">{error}</p>
-                </div>
-              )}
 
               <button
                 onClick={handleUpgrade}

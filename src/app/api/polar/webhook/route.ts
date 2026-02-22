@@ -1,12 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import {
-  validateEvent,
-  WebhookVerificationError,
-} from "@polar-sh/sdk/webhooks";
+import { Webhooks } from "@polar-sh/nextjs";
 import { createClient } from "@supabase/supabase-js";
 
-// Lazy-init admin client inside handler — not at module scope,
-// because env vars may not be available during Next.js build.
 function getSupabaseAdmin() {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
     throw new Error("Missing Supabase env vars");
@@ -18,143 +12,51 @@ function getSupabaseAdmin() {
   );
 }
 
-export async function POST(request: NextRequest) {
-  const body = await request.text();
-  const headers: Record<string, string> = {};
-  request.headers.forEach((value, key) => {
-    headers[key] = value;
-  });
+type AnyData = Record<string, unknown>;
 
-  let event;
-
-  try {
-    event = validateEvent(body, headers, process.env.POLAR_WEBHOOK_SECRET!);
-  } catch (error) {
-    if (error instanceof WebhookVerificationError) {
-      console.error("[Polar Webhook] Invalid signature");
-      return NextResponse.json({ error: "Invalid signature" }, { status: 403 });
-    }
-    throw error;
-  }
-
-  // Use unknown cast to work with Polar SDK types safely
-  // The SDK uses camelCase (customerId, subscriptionId) but we access via generic record
-  const data = event.data as unknown as Record<string, unknown>;
-
-  try {
-    switch (event.type) {
-      case "subscription.active":
-        await handleSubscriptionActive(data);
-        break;
-
-      case "subscription.canceled":
-        await handleSubscriptionCanceled(data);
-        break;
-
-      case "subscription.revoked":
-        await handleSubscriptionRevoked(data);
-        break;
-
-      case "subscription.updated":
-        await handleSubscriptionUpdated(data);
-        break;
-
-      case "order.paid":
-        await handleOrderPaid(data);
-        break;
-
-      default:
-        console.log(`[Polar Webhook] Unhandled: ${event.type}`);
-    }
-
-    return NextResponse.json({ received: true }, { status: 202 });
-  } catch (error) {
-    console.error("[Polar Webhook] Handler error:", error);
-    return NextResponse.json({ error: "Handler failed" }, { status: 500 });
-  }
-}
-
-type WebhookData = Record<string, unknown>;
-
-async function handleSubscriptionActive(data: WebhookData) {
+async function activatePro(data: AnyData) {
   const metadata = data.metadata as Record<string, string> | undefined;
   const userId = metadata?.supabase_user_id;
   if (!userId) {
-    console.error("[Polar Webhook] No user ID in metadata");
+    console.error("[Polar Webhook] subscription.active: no user ID in metadata");
     return;
   }
-
-  const customerId = data.customerId as string;
-  const subscriptionId = data.id as string;
-
-  console.log(`[Polar Webhook] Activating subscription for user ${userId}`);
-
   await getSupabaseAdmin()
     .from("profiles")
     .update({
       tier: "pro",
-      polar_customer_id: customerId,
-      polar_subscription_id: subscriptionId,
+      polar_customer_id: data.customerId as string,
+      polar_subscription_id: data.id as string,
     })
     .eq("id", userId);
-
-  console.log(`[Polar Webhook] User ${userId} upgraded to Pro`);
+  console.log(`[Polar Webhook] subscription.active: user ${userId} → Pro`);
 }
 
-async function handleSubscriptionCanceled(data: WebhookData) {
+async function downgradeFree(data: AnyData) {
   const customerId = data.customerId as string;
-
   const { data: profile } = await getSupabaseAdmin()
     .from("profiles")
     .select("id")
     .eq("polar_customer_id", customerId)
     .single();
-
   if (profile) {
-    console.log(`[Polar Webhook] Downgrading user ${profile.id} to Free`);
-
     await getSupabaseAdmin()
       .from("profiles")
       .update({ tier: "free", polar_subscription_id: null })
       .eq("id", profile.id);
+    console.log(`[Polar Webhook] downgraded: user ${profile.id} → Free`);
   }
 }
 
-async function handleSubscriptionRevoked(data: WebhookData) {
-  const customerId = data.customerId as string;
-
-  const { data: profile } = await getSupabaseAdmin()
-    .from("profiles")
-    .select("id")
-    .eq("polar_customer_id", customerId)
-    .single();
-
-  if (profile) {
-    console.log(`[Polar Webhook] Revoking subscription for user ${profile.id}`);
-
-    await getSupabaseAdmin()
-      .from("profiles")
-      .update({ tier: "free", polar_subscription_id: null })
-      .eq("id", profile.id);
-  }
-}
-
-async function handleSubscriptionUpdated(data: WebhookData) {
+async function handleSubscriptionUpdated(data: AnyData) {
   const customerId = data.customerId as string;
   const status = data.status as string;
-
   const { data: profile } = await getSupabaseAdmin()
     .from("profiles")
     .select("id, tier")
     .eq("polar_customer_id", customerId)
     .single();
-
   if (!profile) return;
-
-  console.log(
-    `[Polar Webhook] Subscription updated for user ${profile.id}: ${status}`
-  );
-
   if (status === "canceled" || status === "revoked") {
     await getSupabaseAdmin()
       .from("profiles")
@@ -166,31 +68,42 @@ async function handleSubscriptionUpdated(data: WebhookData) {
       .update({ tier: "pro", polar_subscription_id: data.id as string })
       .eq("id", profile.id);
   }
+  console.log(`[Polar Webhook] subscription.updated: user ${profile.id}, status=${status}`);
 }
 
-async function handleOrderPaid(data: WebhookData) {
+async function handleOrderPaid(data: AnyData) {
   const subscriptionId = data.subscriptionId as string | null;
   if (!subscriptionId) return;
-
   const customerId = data.customerId as string;
-
   const { data: profile } = await getSupabaseAdmin()
     .from("profiles")
     .select("id, tier")
     .eq("polar_customer_id", customerId)
     .single();
-
   if (profile && profile.tier !== "pro") {
-    console.log(
-      `[Polar Webhook] Restoring Pro access for user ${profile.id}`
-    );
-
     await getSupabaseAdmin()
       .from("profiles")
-      .update({
-        tier: "pro",
-        polar_subscription_id: subscriptionId,
-      })
+      .update({ tier: "pro", polar_subscription_id: subscriptionId })
       .eq("id", profile.id);
+    console.log(`[Polar Webhook] order.paid: user ${profile.id} → Pro restored`);
   }
 }
+
+export const POST = Webhooks({
+  webhookSecret: process.env.POLAR_WEBHOOK_SECRET!,
+  onSubscriptionActive: async ({ data }) => {
+    await activatePro(data as unknown as AnyData);
+  },
+  onSubscriptionCanceled: async ({ data }) => {
+    await downgradeFree(data as unknown as AnyData);
+  },
+  onSubscriptionRevoked: async ({ data }) => {
+    await downgradeFree(data as unknown as AnyData);
+  },
+  onSubscriptionUpdated: async ({ data }) => {
+    await handleSubscriptionUpdated(data as unknown as AnyData);
+  },
+  onOrderPaid: async ({ data }) => {
+    await handleOrderPaid(data as unknown as AnyData);
+  },
+});

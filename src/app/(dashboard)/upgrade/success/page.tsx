@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createClient } from "@/lib/supabase-browser";
 
 function CheckIcon({ className }: { className?: string }) {
   return (
@@ -33,27 +32,49 @@ const PRO_FEATURES = [
 export default function UpgradeSuccessPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const sessionId = searchParams.get("checkout_id") || searchParams.get("session_id");
+  const checkoutId = searchParams.get("checkout_id") || searchParams.get("session_id");
   const [isVerifying, setIsVerifying] = useState(true);
   const [verified, setVerified] = useState(false);
 
   useEffect(() => {
+    if (!checkoutId) {
+      setIsVerifying(false);
+      return;
+    }
+
     const verify = async () => {
-      // Give webhook time to process
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Up to 5 attempts with 2s gap — handles webhook latency + direct verification
+      for (let attempt = 0; attempt < 5; attempt++) {
+        if (attempt > 0) {
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
 
-      const supabase = createClient();
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("tier")
-        .single();
+        try {
+          const res = await fetch("/api/polar/verify-checkout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ checkoutId }),
+          });
 
-      setVerified(profile?.tier === "pro");
+          if (res.ok) {
+            const data = await res.json();
+            if (data.upgraded) {
+              setVerified(true);
+              setIsVerifying(false);
+              return;
+            }
+          }
+        } catch {
+          // Network error — keep retrying
+        }
+      }
+
+      // All attempts exhausted — payment may still be processing via webhook
       setIsVerifying(false);
     };
 
     verify();
-  }, []);
+  }, [checkoutId]);
 
   if (isVerifying) {
     return (
@@ -84,7 +105,7 @@ export default function UpgradeSuccessPage() {
             <p className="text-sm font-mono text-[#AFBCD5]/70 mb-6">
               {verified
                 ? "Your account has been upgraded. All Pro features are now unlocked."
-                : "Payment received. Your account will be upgraded momentarily."}
+                : "Payment received. Your account will be upgraded momentarily — refresh if needed."}
             </p>
 
             {/* Features grid */}
@@ -111,9 +132,9 @@ export default function UpgradeSuccessPage() {
               Start Learning &rarr;
             </button>
 
-            {sessionId && (
+            {checkoutId && (
               <p className="text-[9px] font-mono text-[#AFBCD5]/20 mt-4">
-                Session: {sessionId.slice(0, 20)}...
+                Session: {checkoutId.slice(0, 20)}...
               </p>
             )}
           </div>

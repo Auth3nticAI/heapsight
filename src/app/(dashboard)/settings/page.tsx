@@ -119,6 +119,10 @@ export default function SettingsPage() {
   const [totalXp, setTotalXp] = useState(0);
   const [completedCount, setCompletedCount] = useState(0);
 
+  const [polarSubscriptionId, setPolarSubscriptionId] = useState<string | null>(null);
+  const [portalLoading, setPortalLoading] = useState(false);
+  const [portalError, setPortalError] = useState<string | null>(null);
+
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -138,7 +142,7 @@ export default function SettingsPage() {
 
       const { data: profileData } = await supabase
         .from("profiles")
-        .select("total_xp, tier, selected_game_template")
+        .select("total_xp, tier, selected_game_template, polar_subscription_id")
         .eq("id", user.id)
         .single();
 
@@ -155,6 +159,7 @@ export default function SettingsPage() {
       setTemplate(profileData?.selected_game_template || null);
       setTotalXp(profileData?.total_xp || 0);
       setCompletedCount(completed);
+      setPolarSubscriptionId(profileData?.polar_subscription_id ?? null);
       setLoading(false);
     }
 
@@ -244,6 +249,24 @@ export default function SettingsPage() {
       return;
     }
     alert("Account deletion is not yet available. Please contact support.");
+  };
+
+  const handleManageSubscription = async () => {
+    setPortalLoading(true);
+    setPortalError(null);
+    try {
+      const res = await fetch("/api/polar/portal");
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setPortalError("Subscription managed externally. Contact support@heapsight.com");
+        setPortalLoading(false);
+      }
+    } catch {
+      setPortalError("Failed to open portal. Contact support@heapsight.com");
+      setPortalLoading(false);
+    }
   };
 
   const scrollToSection = (id: string) => {
@@ -511,8 +534,20 @@ export default function SettingsPage() {
                     <span className="text-[10px] font-mono text-[#AFBCD5]/70">Active</span>
                   </div>
                   <p className="text-[9px] font-mono text-[#AFBCD5]/50">
-                    Lifetime access &middot; All lessons unlocked
+                    Pro subscription &middot; All lessons unlocked
                   </p>
+                  <button
+                    onClick={handleManageSubscription}
+                    disabled={portalLoading}
+                    className="w-full mt-1 py-2 border border-white/[0.16] rounded-xl text-xs font-mono text-[#AFBCD5]/70 hover:bg-white/[0.05] hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[36px]"
+                  >
+                    {portalLoading ? "Redirecting..." : "Manage Subscription \u2192"}
+                  </button>
+                  {portalError && (
+                    <p className="text-[9px] font-mono text-red-400/80 text-center leading-relaxed">
+                      {portalError}
+                    </p>
+                  )}
                 </div>
               ) : (
                 <div className="space-y-3">
