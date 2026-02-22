@@ -260,11 +260,12 @@ export default function SettingsPage() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        setPortalError("Subscription managed externally. Contact support@heapsight.com");
+        const msg = data.detail ? `${data.error}: ${data.detail}` : (data.error || "Unknown error");
+        setPortalError(`Portal error: ${msg}`);
         setPortalLoading(false);
       }
-    } catch {
-      setPortalError("Failed to open portal. Contact support@heapsight.com");
+    } catch (err) {
+      setPortalError(`Network error: ${err instanceof Error ? err.message : String(err)}`);
       setPortalLoading(false);
     }
   };
