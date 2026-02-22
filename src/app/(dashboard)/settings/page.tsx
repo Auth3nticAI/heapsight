@@ -119,9 +119,14 @@ export default function SettingsPage() {
   const [totalXp, setTotalXp] = useState(0);
   const [completedCount, setCompletedCount] = useState(0);
 
-  const [polarSubscriptionId, setPolarSubscriptionId] = useState<string | null>(null);
-  const [portalLoading, setPortalLoading] = useState(false);
-  const [portalError, setPortalError] = useState<string | null>(null);
+  // Manage / Cancel modal
+  const [showManageModal, setShowManageModal] = useState(false);
+  const [cancelStep, setCancelStep] = useState<"manage" | "questionnaire" | "confirmed">("manage");
+  const [cancelReason, setCancelReason] = useState("");
+  const [cancelFeedback, setCancelFeedback] = useState("");
+  const [cancelLoading, setCancelLoading] = useState(false);
+  const [cancelError, setCancelError] = useState<string | null>(null);
+  const [cancelEndsAt, setCancelEndsAt] = useState<string | null>(null);
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -142,7 +147,7 @@ export default function SettingsPage() {
 
       const { data: profileData } = await supabase
         .from("profiles")
-        .select("total_xp, tier, selected_game_template, polar_subscription_id")
+        .select("total_xp, tier, selected_game_template")
         .eq("id", user.id)
         .single();
 
@@ -159,7 +164,6 @@ export default function SettingsPage() {
       setTemplate(profileData?.selected_game_template || null);
       setTotalXp(profileData?.total_xp || 0);
       setCompletedCount(completed);
-      setPolarSubscriptionId(profileData?.polar_subscription_id ?? null);
       setLoading(false);
     }
 
@@ -251,22 +255,35 @@ export default function SettingsPage() {
     alert("Account deletion is not yet available. Please contact support.");
   };
 
-  const handleManageSubscription = async () => {
-    setPortalLoading(true);
-    setPortalError(null);
+  const closeModal = () => {
+    setShowManageModal(false);
+    setCancelStep("manage");
+    setCancelReason("");
+    setCancelFeedback("");
+    setCancelError(null);
+    setCancelLoading(false);
+  };
+
+  const handleCancelSubscription = async () => {
+    setCancelLoading(true);
+    setCancelError(null);
     try {
-      const res = await fetch("/api/polar/portal");
+      const res = await fetch("/api/polar/cancel", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reason: cancelReason, feedback: cancelFeedback }),
+      });
       const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
+      if (data.success) {
+        setCancelEndsAt(data.endsAt ?? null);
+        setCancelStep("confirmed");
       } else {
-        const msg = data.detail ? `${data.error}: ${data.detail}` : (data.error || "Unknown error");
-        setPortalError(`Portal error: ${msg}`);
-        setPortalLoading(false);
+        setCancelError(data.detail ? `${data.error}: ${data.detail}` : (data.error || "Cancellation failed"));
       }
     } catch (err) {
-      setPortalError(`Network error: ${err instanceof Error ? err.message : String(err)}`);
-      setPortalLoading(false);
+      setCancelError(`Network error: ${err instanceof Error ? err.message : String(err)}`);
+    } finally {
+      setCancelLoading(false);
     }
   };
 
@@ -537,17 +554,18 @@ export default function SettingsPage() {
                   <p className="text-[9px] font-mono text-[#AFBCD5]/50">
                     Pro subscription &middot; All lessons unlocked
                   </p>
-                  <button
-                    onClick={handleManageSubscription}
-                    disabled={portalLoading}
-                    className="w-full mt-1 py-2 border border-white/[0.16] rounded-xl text-xs font-mono text-[#AFBCD5]/70 hover:bg-white/[0.05] hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[36px]"
-                  >
-                    {portalLoading ? "Redirecting..." : "Manage Subscription \u2192"}
-                  </button>
-                  {portalError && (
-                    <p className="text-[9px] font-mono text-red-400/80 text-center leading-relaxed">
-                      {portalError}
+                  {cancelEndsAt ? (
+                    <p className="text-[9px] font-mono text-orange-400/80 leading-relaxed">
+                      Canceling &middot; Pro access until{" "}
+                      {new Date(cancelEndsAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                     </p>
+                  ) : (
+                    <button
+                      onClick={() => { setCancelStep("manage"); setShowManageModal(true); }}
+                      className="w-full mt-1 py-2 border border-white/[0.16] rounded-xl text-xs font-mono text-[#AFBCD5]/70 hover:bg-white/[0.05] hover:text-white transition-colors min-h-[36px]"
+                    >
+                      Manage Subscription &rarr;
+                    </button>
                   )}
                 </div>
               ) : (
@@ -586,6 +604,176 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+      {/* ─── Manage / Cancel Subscription Modal ──────────────── */}
+      {showManageModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
+          onClick={(e) => { if (e.target === e.currentTarget) closeModal(); }}
+        >
+          <div className="bg-[#071528] border border-white/[0.16] rounded-xl w-full max-w-md">
+
+            {/* ── Step 1: Manage ── */}
+            {cancelStep === "manage" && (
+              <>
+                <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-white/[0.08]">
+                  <h2 className="text-sm font-semibold text-white">Manage Subscription</h2>
+                  <button
+                    onClick={closeModal}
+                    className="text-[#AFBCD5]/50 hover:text-white transition-colors text-xl leading-none w-8 h-8 flex items-center justify-center"
+                    aria-label="Close"
+                  >
+                    &times;
+                  </button>
+                </div>
+                <div className="p-6 space-y-4">
+                  <div className="flex items-center gap-3 p-4 bg-[#040B10] rounded-xl border border-white/[0.05]">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#246BFD]/10 text-[#a855f7] border border-[#a855f7]/20 font-bold shrink-0">
+                      PRO
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-sm text-white font-medium">Pro Subscription</p>
+                      <p className="text-[10px] font-mono text-[#AFBCD5]/50">All lessons unlocked &middot; Active</p>
+                    </div>
+                  </div>
+                  <p className="text-[11px] font-mono text-[#AFBCD5]/60 leading-relaxed">
+                    You can cancel your subscription at any time. You&rsquo;ll keep Pro access
+                    until the end of your current billing period.
+                  </p>
+                  <button
+                    onClick={() => setCancelStep("questionnaire")}
+                    className="w-full py-2.5 text-sm font-mono text-red-400 border border-red-600/30 hover:bg-red-600/10 rounded-xl transition-colors min-h-[40px]"
+                  >
+                    Cancel Subscription
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* ── Step 2: Questionnaire ── */}
+            {cancelStep === "questionnaire" && (
+              <>
+                <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-white/[0.08]">
+                  <h2 className="text-sm font-semibold text-white">Before you go&hellip;</h2>
+                  <button
+                    onClick={closeModal}
+                    className="text-[#AFBCD5]/50 hover:text-white transition-colors text-xl leading-none w-8 h-8 flex items-center justify-center"
+                    aria-label="Close"
+                  >
+                    &times;
+                  </button>
+                </div>
+                <div className="p-6 space-y-4">
+                  <p className="text-xs font-mono text-[#AFBCD5]/70">
+                    Mind telling us why you&rsquo;re canceling?
+                  </p>
+                  <div className="space-y-1">
+                    {[
+                      { value: "too_expensive", label: "Too expensive" },
+                      { value: "not_enough_content", label: "Not enough content" },
+                      { value: "better_alternative", label: "Found a better alternative" },
+                      { value: "completed", label: "Completed what I needed" },
+                      { value: "technical_issues", label: "Technical issues" },
+                      { value: "other", label: "Other" },
+                    ].map((opt) => (
+                      <label
+                        key={opt.value}
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/[0.03] cursor-pointer group"
+                      >
+                        <input
+                          type="radio"
+                          name="cancel-reason"
+                          value={opt.value}
+                          checked={cancelReason === opt.value}
+                          onChange={(e) => setCancelReason(e.target.value)}
+                          className="w-4 h-4 accent-[#246BFD] shrink-0"
+                        />
+                        <span className="text-xs font-mono text-[#AFBCD5]/80 group-hover:text-white transition-colors">
+                          {opt.label}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-mono font-bold text-[#AFBCD5]/50 uppercase tracking-wider mb-2">
+                      Anything else? (optional)
+                    </label>
+                    <textarea
+                      value={cancelFeedback}
+                      onChange={(e) => setCancelFeedback(e.target.value)}
+                      rows={3}
+                      placeholder="Your feedback helps us improve..."
+                      className="w-full bg-[#040B10] border border-white/[0.08] rounded-xl px-4 py-3 text-xs font-mono text-white placeholder-[#AFBCD5]/30 focus:border-[#246BFD]/40 focus:outline-none transition-colors resize-none"
+                    />
+                  </div>
+                  {cancelError && (
+                    <p className="text-[10px] font-mono text-red-400/90 leading-relaxed">{cancelError}</p>
+                  )}
+                  <div className="flex gap-3 pt-1">
+                    <button
+                      onClick={closeModal}
+                      disabled={cancelLoading}
+                      className="flex-1 py-2.5 border border-white/[0.16] rounded-xl text-xs font-mono text-[#AFBCD5]/70 hover:bg-white/[0.05] hover:text-white transition-colors min-h-[40px] disabled:opacity-50"
+                    >
+                      Keep My Subscription
+                    </button>
+                    <button
+                      onClick={handleCancelSubscription}
+                      disabled={cancelLoading}
+                      className="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-mono font-semibold transition-colors min-h-[40px] disabled:opacity-60"
+                    >
+                      {cancelLoading ? "Canceling..." : "Cancel Subscription"}
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* ── Step 3: Confirmed ── */}
+            {cancelStep === "confirmed" && (
+              <>
+                <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-white/[0.08]">
+                  <h2 className="text-sm font-semibold text-white">Subscription Canceled</h2>
+                  <button
+                    onClick={closeModal}
+                    className="text-[#AFBCD5]/50 hover:text-white transition-colors text-xl leading-none w-8 h-8 flex items-center justify-center"
+                    aria-label="Close"
+                  >
+                    &times;
+                  </button>
+                </div>
+                <div className="p-6 space-y-5 text-center">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+                    <CheckCircleIcon className="h-6 w-6 text-primary" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <p className="text-sm font-semibold text-white">You&rsquo;re all set</p>
+                    <p className="text-xs font-mono text-[#AFBCD5]/60 leading-relaxed">
+                      Your subscription has been canceled. You&rsquo;ll keep Pro access until{" "}
+                      <span className="text-white font-semibold">
+                        {cancelEndsAt
+                          ? new Date(cancelEndsAt).toLocaleDateString("en-US", {
+                              month: "long",
+                              day: "numeric",
+                              year: "numeric",
+                            })
+                          : "the end of your billing period"}
+                      </span>
+                      .
+                    </p>
+                  </div>
+                  <button
+                    onClick={closeModal}
+                    className="w-full py-2.5 border border-white/[0.16] rounded-xl text-xs font-mono text-[#AFBCD5]/70 hover:bg-white/[0.05] hover:text-white transition-colors min-h-[40px]"
+                  >
+                    Close
+                  </button>
+                </div>
+              </>
+            )}
+
+          </div>
+        </div>
+      )}
     </>
   );
 }
