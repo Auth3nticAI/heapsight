@@ -7,7 +7,7 @@ const lessonPlatformer38: Lesson = {
   order: 38,
   xpReward: 100,
   tier: "pro",
-  concepts: [],
+  concepts: ["moving-platforms", "relative-velocity", "platform-carry"],
   part1: {
     title: "Concept: Moving Platforms",
     type: "concept",
@@ -31,7 +31,13 @@ Super Mario World, Celeste, Hollow Knight all use this exact pattern. The challe
 
 ## Your Task
 Print the moving platform status:
-`,
+
+
+## Beginner Trap
+**Moving the platform without carrying the player.** If the player stands on a moving platform and only the platform moves, the player slides off. Apply the platform velocity to the player when they are standing on it: player.x += platform.velocity.x.
+
+## Systems Thinking Connection
+The Shooter has no platforms. The RPG has no moving terrain. Moving platforms with rider attachment are unique to platformers, but the concept of relative motion (child inherits parent velocity) appears in any game with hierarchical movement.`,
     starterCode: `
 #include <iostream>
 using namespace std;

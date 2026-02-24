@@ -29,7 +29,16 @@ Loot: rng-driven
 Drop: on-kill
 Loot ID: 2
 Pattern: deterministic-loot
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Rolling loot with rand() instead of the game RNG.** One non-deterministic loot roll breaks replay and makes save/load produce different items. All randomness — including loot — must flow through GameRNG.
+
+## Elite Insight
+Diablo III uses data-driven loot tables — designers edit drop rates in spreadsheets, and the game reads them at runtime. Loot generation is a pure function: (enemy_type, rng_state) -> item_id. Your deterministic drops follow the same model.
+
+## Systems Thinking Connection
+Shooter L37 uses deterministic RNG to place wave enemies — same seed produces the same wave layout. The Crawler generates dungeon layouts from seeds (L45). Deterministic content generation is the foundation of replayable games in every path.`,
     starterCode: `#include <iostream>
 #include <cstdint>
 using namespace std;

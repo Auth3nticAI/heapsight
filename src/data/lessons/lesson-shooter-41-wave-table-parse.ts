@@ -5,7 +5,7 @@ export const lessonShooter41: Lesson = {
   title: "Wave Table Parse",
   description: "Wave Table Parse — Phase 5: Wave & Scoring.",
   order: 41,
-  xpReward: 150,
+  xpReward: 100,
   tier: "pro",
   concepts: ["wave table", "WaveConfig", "data-driven design", "struct array"],
   part1: {
@@ -29,7 +29,16 @@ WaveConfig getWaveConfig(int wave) {
 WaveTable: 5
 Wave 1: 3 enemies speed 18
 Pattern: wave-table
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Hardcoding wave data in the spawner instead of reading from a table.** Each new wave requires a code change. A WaveConfig struct array lets designers add waves by adding data rows, not by editing game logic.
+
+## Elite Insight
+Data-driven design separates content (wave definitions) from code (wave spawner logic). Halo level designers created encounters in data files without touching engine code. Your wave table follows the same principle.
+
+## Systems Thinking Connection
+RPG uses room data tables. Crawler uses loot tables (L48). Platformer uses level data arrays. Every path separates content from code — the table format varies, but the principle of data-driven design is universal.`,
     starterCode: `#include <iostream>
 using namespace std;
 struct WaveConfig{int count;float spd;};
@@ -62,7 +71,9 @@ int main(){
       { id: "t3", description: "pattern", expectedOutput: "Pattern: wave-table" },
     ],
     hints: [
-      "Get wave 1 config: WaveConfig c=getWave(1); then print c.count and (int)c.spd.",
+      "You already have the wave config stored in variable c -- you just need to print its fields.",
+      "The output format is: Wave 1: N enemies speed S. Access c.count and c.spd.",
+      "cout<<\"Wave 1: \"<<c.count<<\" enemies speed \"<<(int)c.spd<<endl;",
     ],
     estimatedMinutes: 10,
   },

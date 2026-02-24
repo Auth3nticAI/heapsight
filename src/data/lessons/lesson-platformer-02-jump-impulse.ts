@@ -152,17 +152,17 @@ int main() {
 }`,
     tests: [
       {
-        id: "p1-t1",
+        id: "t1",
         description: "Frame 1: jump impulse applied, player moves up",
         expectedOutput: "Frame 1: y = 309.56 grounded = false",
       },
       {
-        id: "p1-t2",
+        id: "t2",
         description: "Frame 2: player continues rising",
         expectedOutput: "Frame 2: y = 303.33 grounded = false",
       },
       {
-        id: "p1-t3",
+        id: "t3",
         description: "Frame 5: player still airborne",
         expectedOutput: "Frame 5: y = 286.00 grounded = false",
       },
@@ -361,22 +361,22 @@ int main() {
 }`,
     tests: [
       {
-        id: "p2-t1",
+        id: "g1",
         description: "Player starts at correct position",
         expectedOutput: "Player: (388, 100)",
       },
       {
-        id: "p2-t2",
+        id: "g2",
         description: "Gravity is 800",
         expectedOutput: "Gravity: 800",
       },
       {
-        id: "p2-t3",
+        id: "g3",
         description: "Player starts grounded",
         expectedOutput: "Grounded: true",
       },
       {
-        id: "p2-t4",
+        id: "g4",
         description: "JUMP_SPEED is defined",
         expectedOutput: "true",
         isPattern: true,

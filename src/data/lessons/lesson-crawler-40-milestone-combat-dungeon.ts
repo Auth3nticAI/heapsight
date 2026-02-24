@@ -44,7 +44,16 @@ Milestone: Combat Dungeon is a core 3D engine concept. Doom, Quake, and modern e
 ## Mastery Check
 Question: Why does milestone: combat dungeon matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Testing combat with only one enemy.** One enemy does not reveal targeting priority bugs, friendly-fire issues, or performance problems with many combatants. Test with at least 5 enemies in a single room.
+
+## Elite Insight
+Doom tested combat encounters with carefully designed "monster closets" — rooms packed with enemies that triggered on entry. Combat milestones must test worst-case scenarios, not best-case ones.
+
+## Systems Thinking Connection
+The RPG combat milestone validates the full turn pipeline with multiple enemies. The Shooter combat validates bullet-enemy collision at scale. Every path must prove combat works under realistic load, not just with a single target.`,
     starterCode: `#include <iostream>
 using namespace std;
 

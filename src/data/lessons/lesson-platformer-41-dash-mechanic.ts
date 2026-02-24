@@ -7,7 +7,7 @@ const lessonPlatformer41: Lesson = {
   order: 41,
   xpReward: 100,
   tier: "pro",
-  concepts: [],
+  concepts: ["dash-mechanic", "cooldown-timer", "state-transition"],
   part1: {
     title: "Concept: Dash Mechanic",
     type: "concept",
@@ -30,7 +30,13 @@ Celeste's dash is one of the most studied mechanics in indie game design. It use
 
 ## Your Task
 Print the dash parameters:
-`,
+
+
+## Beginner Trap
+**Allowing the player to dash while already dashing.** If dash stacks, the player moves at infinite speed. Use a state flag: set dashing = true on activation, ignore new dash input until the dash completes and the cooldown expires.
+
+## Systems Thinking Connection
+The Shooter has no dash (ships move freely). The RPG has no real-time movement abilities. The Crawler uses WASD with no dash. Dash is uniquely platformer, but the state-machine pattern (idle > active > cooldown > idle) is universal for any timed ability.`,
     starterCode: `
 #include <iostream>
 using namespace std;

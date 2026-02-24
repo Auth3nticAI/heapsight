@@ -44,7 +44,16 @@ Billboard Sprites is a core 3D engine concept. Doom, Quake, and modern engines a
 ## Mastery Check
 Question: Why does billboard sprites matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Rotating the billboard to face the camera using the full 3D direction.** Billboards should only rotate around the Y axis (yaw) to face the camera. If you include pitch, the sprite tilts when the player looks up or down, breaking the illusion.
+
+## Elite Insight
+Doom rendered all sprites as camera-facing billboards — 2D images that always face the player. This technique is still used for particles, distant trees, and NPCs in modern games. Your DrawBillboard call implements the same classic technique.
+
+## Systems Thinking Connection
+The RPG and Shooter render entities as 2D sprites on a 2D canvas — no billboard math needed. Billboard sprites are the bridge between 2D art and 3D worlds, and they are unique to 3D game rendering.`,
     starterCode: `#include <iostream>
 #include <cmath>
 using namespace std;

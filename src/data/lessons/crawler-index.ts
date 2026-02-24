@@ -49,6 +49,26 @@ import { lessonCrawler47 } from "./lesson-crawler-47-difficulty-scaling";
 import { lessonCrawler48 } from "./lesson-crawler-48-loot-tables";
 import { lessonCrawler49 } from "./lesson-crawler-49-multi-level-dungeon";
 import { lessonCrawler50 } from "./lesson-crawler-50-milestone-roguelike-core";
+import { lessonCrawler51 } from "./lesson-crawler-51-frustum-culling-v0";
+import { lessonCrawler52 } from "./lesson-crawler-52-cell-visibility";
+import { lessonCrawler53 } from "./lesson-crawler-53-fog-of-war";
+import { lessonCrawler54 } from "./lesson-crawler-54-spatial-hashing";
+import { lessonCrawler55 } from "./lesson-crawler-55-milestone-optimized-renderer";
+import { lessonCrawler56 } from "./lesson-crawler-56-astar-pathfinding";
+import { lessonCrawler57 } from "./lesson-crawler-57-sound-propagation";
+import { lessonCrawler58 } from "./lesson-crawler-58-particle-system";
+import { lessonCrawler59 } from "./lesson-crawler-59-projectiles";
+import { lessonCrawler60 } from "./lesson-crawler-60-milestone-rich-3d-world";
+import { lessonCrawler61 } from "./lesson-crawler-61-save-file-v0";
+import { lessonCrawler62 } from "./lesson-crawler-62-load-and-resume";
+import { lessonCrawler63 } from "./lesson-crawler-63-deterministic-rng";
+import { lessonCrawler64 } from "./lesson-crawler-64-state-signature";
+import { lessonCrawler65 } from "./lesson-crawler-65-milestone-save-resume";
+import { lessonCrawler66 } from "./lesson-crawler-66-input-recording";
+import { lessonCrawler67 } from "./lesson-crawler-67-replay-playback";
+import { lessonCrawler68 } from "./lesson-crawler-68-replay-verification";
+import { lessonCrawler69 } from "./lesson-crawler-69-replay-speed-control";
+import { lessonCrawler70 } from "./lesson-crawler-70-gate-b-replay-determinism";
 
 export const ALL_CRAWLER_LESSONS: Lesson[] = [
   lessonCrawler1,
@@ -101,6 +121,26 @@ export const ALL_CRAWLER_LESSONS: Lesson[] = [
   lessonCrawler48,
   lessonCrawler49,
   lessonCrawler50,
+  lessonCrawler51,
+  lessonCrawler52,
+  lessonCrawler53,
+  lessonCrawler54,
+  lessonCrawler55,
+  lessonCrawler56,
+  lessonCrawler57,
+  lessonCrawler58,
+  lessonCrawler59,
+  lessonCrawler60,
+  lessonCrawler61,
+  lessonCrawler62,
+  lessonCrawler63,
+  lessonCrawler64,
+  lessonCrawler65,
+  lessonCrawler66,
+  lessonCrawler67,
+  lessonCrawler68,
+  lessonCrawler69,
+  lessonCrawler70,
 ].sort((a, b) => a.order - b.order);
 
 export function getCrawlerLessonById(id: string): Lesson | undefined {

@@ -44,7 +44,16 @@ Milestone: Roguelike Core is a core 3D engine concept. Doom, Quake, and modern e
 ## Mastery Check
 Question: Why does milestone: roguelike core matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Declaring "roguelike" without testing the full loop: generate, explore, fight, loot, descend, die, restart.** Every step in the loop must work seamlessly. A roguelike that crashes on death or loses loot on floor transition is not a roguelike.
+
+## Elite Insight
+The "Berlin Interpretation" defines roguelike core features: procedural generation, permadeath, turn-based or real-time combat, resource management. Your milestone validates the essential roguelike gameplay loop.
+
+## Systems Thinking Connection
+The RPG plays a 10-minute dungeon run. The Shooter plays a 10-minute arcade session. Your roguelike run is the most system-integrated milestone across all paths — generation, combat, loot, and progression must all work together.`,
     starterCode: `#include <iostream>
 using namespace std;
 

@@ -39,7 +39,16 @@ The camera needs four things:
 
 ## Your Task
 
-Using the provided variables, print the player position, grid cell, camera target, and confirm the camera is ready.`,
+Using the provided variables, print the player position, grid cell, camera target, and confirm the camera is ready.
+
+## Beginner Trap
+**Placing the camera at (0,0,0) inside a wall.** If the camera starts inside geometry, the first frame renders nothing or shows inside-out faces. Always initialize the camera at a known open tile position, facing a known direction.
+
+## Elite Insight
+Doom initialized the player at a map-defined spawn point with a fixed facing angle. Every 3D engine since follows this pattern: the level data tells the engine where the camera starts. Never hardcode spawn coordinates.
+
+## Systems Thinking Connection
+The RPG path boots a 2D grid and places the player at a known open tile. Same problem, different dimension — both paths need a valid spawn point before the first render. The Platformer spawns at a level-defined start position too.`,
     starterCode: `#include <iostream>
 #include <cmath>
 using namespace std;

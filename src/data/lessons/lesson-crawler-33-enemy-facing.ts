@@ -44,7 +44,16 @@ Enemy Facing is a core 3D engine concept. Doom, Quake, and modern engines all im
 ## Mastery Check
 Question: Why does enemy facing matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Computing atan2 with arguments in the wrong order.** atan2(dx, dz) and atan2(dz, dx) produce different angles. In a Y-up 3D coordinate system with Z forward, use atan2(dx, dz) for yaw. Swapping arguments rotates enemies 90 degrees.
+
+## Elite Insight
+The atan2 function maps a 2D direction vector to an angle. It handles all four quadrants correctly, unlike atan which only covers [-90, 90]. Every 3D game uses atan2 for direction calculations — it is the fundamental tool for "face toward target."
+
+## Systems Thinking Connection
+The RPG computes enemy facing with simpler grid-relative directions (north, south, east, west). The Shooter uses atan2 for aiming direction in 2D. Your 3D facing calculation is the full-precision version of the same direction-to-angle conversion.`,
     starterCode: `#include <iostream>
 #include <cmath>
 using namespace std;

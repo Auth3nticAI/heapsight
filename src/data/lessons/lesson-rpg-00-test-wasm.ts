@@ -5,7 +5,7 @@ export const lessonRPG00: Lesson = {
   title: "WASM Pipeline Test",
   description: "Test lesson to verify the WASM compilation pipeline works end-to-end.",
   order: 0,
-  xpReward: 10,
+  xpReward: 50,
   tier: "free",
   concepts: ["wasm test", "raylib basics", "cout"],
   part1: {
@@ -23,7 +23,16 @@ Expected output:
 \`\`\`
 Player: (5, 5)
 Tile size: 32
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Skipping the diagnostic test because "it will probably work."** Pipeline failures are invisible until you try to compile. Run the smoke test first — if the WASM pipeline is broken, nothing else matters.
+
+## Elite Insight
+Professional game studios run automated smoke tests before every coding session. CI/CD pipelines compile, link, and run a minimal executable to verify the toolchain. Your pipeline test follows the same principle.
+
+## Systems Thinking Connection
+Every path in this curriculum starts with a pipeline test. Shooter, Platformer, and Crawler all verify their WASM compilation before writing game code. Toolchain validation is universal — genre is irrelevant if the build is broken.`,
     starterCode: `#include <iostream>
 using namespace std;
 

@@ -6,7 +6,7 @@ export const lessonShooter6: Lesson = {
   description: "Fire multiple bullets using arrays and for-loops — your first fixed-size collection.",
   order: 6,
   xpReward: 50,
-  tier: "pro",
+  tier: "free",
   concepts: ["arrays", "for-loops", "MAX constant", "batch processing"],
   part1: {
     title: "Concept: Arrays Hold Multiple Values",
@@ -50,7 +50,16 @@ This loop starts at \`i = 0\`, checks \`i < MAX_BULLETS\`, runs the body, then d
 - Use a \`MAX\` constant so you never hardcode the array size
 
 ## Your Task
-Create an array of 5 bullets. Set them all to inactive except bullet 0 and bullet 2. Use a for-loop to count active bullets and print the results.`,
+Create an array of 5 bullets. Set them all to inactive except bullet 0 and bullet 2. Use a for-loop to count active bullets and print the results.
+
+## Beginner Trap
+**Using a separate array for each bullet property (x, y, active) without keeping them in sync.** If you add a bullet to the x array but forget the active array, the arrays drift out of alignment. Always update all parallel arrays in the same function.
+
+## Elite Insight
+Every bullet-hell game from Ikaruga to Touhou stores bullets in flat arrays. The array is the natural data structure for hundreds of identical entities — no pointers, no inheritance, just data and indices.
+
+## Systems Thinking Connection
+The RPG stores enemies in parallel arrays the same way — position[], hp[], active[]. The Platformer stores coins in arrays. Parallel arrays for homogeneous entities are the universal pattern across all game architectures.`,
     starterCode: `#include <iostream>
 using namespace std;
 

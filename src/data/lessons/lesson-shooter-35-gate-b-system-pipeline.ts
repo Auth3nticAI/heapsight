@@ -40,7 +40,16 @@ System[3]: render
 GATE B: System Pipeline
 GATE B: PASSED
 Pattern: system-pipeline
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Running systems in arbitrary order.** If collision runs before movement, you detect collisions with stale positions. Define and enforce the pipeline order: Input > Movement > Collision > Cleanup > Render.
+
+## Elite Insight
+Unity defines execution order numerically. Unreal uses tick groups. ECS frameworks use explicit system scheduling. Your gameFrame() function is the manual equivalent — a fixed pipeline that guarantees execution order.
+
+## Systems Thinking Connection
+RPG (L15) and Platformer (L35) enforce the same system pipeline. The Crawler runs 3D systems in a fixed order. Pipeline ordering is a universal architecture constraint — every path must guarantee systems run in the correct sequence.`,
     starterCode: `#include <iostream>
 #include <string>
 using namespace std;
@@ -88,7 +97,9 @@ int main() {
       { id: "t4", description: "prints pattern", expectedOutput: "Pattern: system-pipeline" },
     ],
     hints: [
-      "Add two cout lines inside auditGateB(): GATE B: System Pipeline then GATE B: PASSED.",
+      "Look at the TODO comments -- you need to print two lines that certify the gate.",
+      "The two lines are the gate name and its pass status, printed with cout.",
+      "Add cout<<\"GATE B: System Pipeline\"<<endl; and cout<<\"GATE B: PASSED\"<<endl; inside auditGateB().",
     ],
     estimatedMinutes: 10,
   },

@@ -29,7 +29,16 @@ for(int i=0;i<3;i++) flicker[i] = rand()%5/10.0f;
 ## Your Task
 
 Generate 3 flicker values using rand()%5/10.0f. Print Flicker0, Flicker1, Flicker2 and Blend.
-`,
+
+
+## Beginner Trap
+**Using rand() for flicker, producing different results every playthrough.** Flicker should use the game RNG so replays produce identical lighting. Cosmetic randomness still needs determinism if you record or replay game state.
+
+## Elite Insight
+Dark Souls torches flicker with a pre-computed noise table, not real-time random. The table loops seamlessly and produces consistent results. Your deterministic flicker follows the same principle: predictable "randomness" for visual effects.
+
+## Systems Thinking Connection
+The RPG enforces the no-rand rule for all gameplay randomness (L22). Your flicker faces the same question: is visual randomness "gameplay?" If replays include visual state, the answer is yes. The Shooter decides the same for particle effects.`,
     starterCode: `
 #include <iostream>
 #include <cstdlib>
@@ -67,6 +76,8 @@ int main() {
       { id: "t3", description: "Prints Blend type", expectedOutput: "Blend: accumulate" },
     ],
     hints: [
+      "Think about what happens when you seed a random number generator with a fixed value.",
+      "With srand(42u), the sequence of rand()%5 values is deterministic -- compute each flicker value by hand.",
       "srand(42u) gives deterministic values. rand()%5/10.0f gives 0.0, 0.1, or 0.2. Hardcode those.",
     ],
     estimatedMinutes: 5,

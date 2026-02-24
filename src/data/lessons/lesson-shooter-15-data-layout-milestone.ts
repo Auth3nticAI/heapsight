@@ -50,7 +50,16 @@ One array. One init. One read. That is ECS.
 - Every component is an array indexed by entity ID
 - Adding a component never touches other systems
 - The render system reads color the same way movement reads speed
-- SoA + entity IDs = the foundation of every modern ECS`,
+- SoA + entity IDs = the foundation of every modern ECS
+
+## Beginner Trap
+**Treating the data layout milestone as "just refactoring."** This milestone changes how your brain thinks about game data. Every future system reads SoA arrays by index. If the layout is wrong here, every future lesson builds on a broken foundation.
+
+## Elite Insight
+Data-driven rendering — where the render system iterates component arrays instead of entity objects — is how professional engines achieve draw-call batching. Your Color component array enables this: sort by color, batch draws.
+
+## Systems Thinking Connection
+RPG L15 and Platformer L15 hit the same data layout milestone. The foundation is identical: stable update order, SoA components, single state root. Genre-specific features build on this shared architecture.`,
     starterCode: `#include <iostream>
 using namespace std;
 

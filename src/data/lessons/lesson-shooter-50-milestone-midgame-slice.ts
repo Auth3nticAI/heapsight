@@ -24,7 +24,16 @@ Systems: 5
 ...
 GATE D: PASSED
 Pattern: midgame-gate
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Treating the midgame slice as "half done."** This milestone is a vertical slice — every system works, even if content is minimal. Waves, powerups, scoring, lives, difficulty, and HUD must all function together.
+
+## Elite Insight
+Vertical slice milestones in professional development prove that all systems integrate correctly. The slice may only have 5 minutes of content, but every system is represented. Your midgame milestone follows this approach.
+
+## Systems Thinking Connection
+RPG L50, Platformer L50, and Crawler L50 all hit the same midgame milestone. The vertical slice proves architecture completeness — genre-specific features are built, connected, and tested before the second half of development.`,
     starterCode: `#include <iostream>
 using namespace std;
 void gateDaudit(){
@@ -58,7 +67,9 @@ int main(){ gateDaudit(); return 0; }`,
       { id: "t4", description: "pattern", expectedOutput: "Pattern: midgame-gate" },
     ],
     hints: [
-      "Print all 10 inventory lines between GATE D: Midgame Slice and GATE D: PASSED.",
+      "GATE D audits every feature built across Phases 4 and 5 -- think about what systems and features exist.",
+      "The inventory covers: Systems, WaveTable, EnemyTypes, PowerupTypes, WeaponModes, ScoreMultiplier, DifficultyTiers, BgScroll, Lives, and GameOver.",
+      "Print all 10 lines: Systems: 5, WaveTable: 5, EnemyTypes: 3, PowerupTypes: 3, WeaponModes: 2, ScoreMultiplier: active, DifficultyTiers: 4, BgScroll: 20 stars, Lives: 3, GameOver: restartable, then GATE D: PASSED.",
     ],
     estimatedMinutes: 10,
   },

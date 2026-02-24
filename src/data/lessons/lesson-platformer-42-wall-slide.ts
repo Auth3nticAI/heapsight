@@ -7,7 +7,7 @@ const lessonPlatformer42: Lesson = {
   order: 42,
   xpReward: 100,
   tier: "pro",
-  concepts: [],
+  concepts: ["wall-slide", "wall-detection", "friction"],
   part1: {
     title: "Concept: Wall Slide",
     type: "concept",
@@ -26,7 +26,16 @@ if wall_dir != 0 AND airborne AND pressing toward wall:
 
 ## Your Task
 Print the wall slide parameters:
-`,
+
+
+## Beginner Trap
+**Applying wall slide friction without checking if the player is actually pressing toward the wall.** If the player jumps near a wall without pressing into it, they should not stick. Only activate wall slide when the player holds the direction key toward the wall AND is airborne AND falling.
+
+## Elite Insight
+Mega Man X introduced wall sliding as a core mechanic. Celeste refined it with variable slide speed based on how long you hold the direction. Hollow Knight uses wall cling with a stamina timer. The mechanic always requires intentional directional input.
+
+## Systems Thinking Connection
+The RPG and Shooter have no wall interaction. The Crawler uses wall collision for 3D navigation. Wall sliding is uniquely platformer, but the pattern of combining multiple conditions (airborne + falling + input direction) into a movement state is universal game logic.`,
     starterCode: `
 #include <iostream>
 using namespace std;

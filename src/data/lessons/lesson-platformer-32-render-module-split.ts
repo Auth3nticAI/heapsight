@@ -33,7 +33,16 @@ Systems: 2
 Pass[0]: input
 Pass[1]: render
 Pattern: render-module
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Calling DrawRectangle inside the physics update loop.** Rendering mixed with game logic means you cannot change draw order without changing update order. Separate update and render into distinct passes that run in sequence.
+
+## Elite Insight
+Every game engine separates update from render. Unity runs FixedUpdate, Update, then LateUpdate (render). The separation enables fixed timestep, headless testing, and double-buffering — none of which work if update and render are interleaved.
+
+## Systems Thinking Connection
+RPG L32 and Shooter L32 split render the same way. The Crawler renders in a separate BeginMode3D block. Update-then-render is the universal game loop pattern, discovered independently by every engine developer.`,
     starterCode: `#include <iostream>
 using namespace std;
 void inputSystem(){ cout<<"inputSystem: active"<<endl; }

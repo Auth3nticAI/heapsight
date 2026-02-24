@@ -46,7 +46,16 @@ ID 0: Player
 ID 1: Enemy
 ID -1: None
 IDs: OK
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Using array index as entity ID.** When you remove entity at index 3 and shift the array, entity 4 becomes index 3. Every reference to "entity 4" now points to the wrong entity. Use stable integer IDs instead.
+
+## Elite Insight
+Unity ECS uses generation counters alongside entity IDs to detect stale references. Each slot has a version number that increments on reuse. If your stored version does not match, the reference is dead.
+
+## Systems Thinking Connection
+Shooter L13 solves the same problem for bullets and enemies — stable IDs that survive array compaction. The Crawler assigns 3D entity IDs the same way. Stable identity is a prerequisite for any system that references entities.`,
     starterCode: `#include <iostream>
 using namespace std;
 

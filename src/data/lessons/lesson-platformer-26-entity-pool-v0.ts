@@ -38,7 +38,16 @@ Pool size: 8
 Spawned: 3
 After kill: 2 active
 Pattern: entity-pool
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Using a linked list for the free list.** A linked list of free slots requires pointer chasing, which defeats the cache benefits of a pool. Use an integer index stack: push freed indices, pop to allocate. Contiguous integers, zero pointers.
+
+## Elite Insight
+Entity pools in professional engines (Unreal, Unity DOTS) use index-based free lists for cache efficiency. The pool is a contiguous array; the free list is a stack of integer indices. Your implementation follows the same zero-pointer pattern.
+
+## Systems Thinking Connection
+The Shooter uses entity pools for bullets, enemies, and powerups. The RPG pools dungeon entities. Pool-based allocation is the most universal optimization in the curriculum — every path implements it because heap allocation in the game loop is never acceptable.`,
     starterCode: `#include <iostream>
 using namespace std;
 

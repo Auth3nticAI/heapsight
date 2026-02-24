@@ -41,7 +41,16 @@ Slot 2: 3
 Slot 3: -1
 Slot 4: -1
 Pattern: fixed-inventory
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Using item name strings as identifiers.** "Health Potion" vs "health_potion" vs "HealthPotion" all look different to strcmp(). Use integer IDs internally. Names are display-only strings looked up from a table.
+
+## Elite Insight
+Diablo II stores items as numeric IDs internally — names are display strings looked up from a localization table. This makes translation trivial: change the name table, not the game logic. Your ID-based inventory follows the same architecture.
+
+## Systems Thinking Connection
+Crawler L48 implements loot tables with the same ID-based approach — items are data entries, not hardcoded strings. The Shooter uses powerup type IDs (L43). Integer-keyed item systems scale across every game genre.`,
     starterCode: `#include <iostream>
 using namespace std;
 
@@ -745,7 +754,6 @@ int main() {
     hints: [
       "Add the INVENTORY MODULE section after the SAVE MODULE. Declare inv_items[5] initialized to -1 and addItem().",
       "Call addItem(1), addItem(2), addItem(3) in main after saveGame().",
-      "Add the three startup couts after Milestone: restart-resume.",
       "In the HUD render loop, add the inventory display lines after the Save status.",
     ],
     estimatedMinutes: 15

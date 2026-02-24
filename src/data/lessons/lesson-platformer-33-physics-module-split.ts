@@ -33,7 +33,16 @@ Pass[0]: input
 Pass[1]: render
 Pass[2]: physics
 Pattern: physics-module
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Scattering velocity and position updates across multiple functions.** If gravity is applied in one function and horizontal movement in another with rendering between them, the physics state is inconsistent during the render pass. Consolidate all physics into one system.
+
+## Elite Insight
+Separating physics into its own system enables headless simulation — you can run physicsSystem() without rendering to test collision, replay input, or fast-forward time. Celeste uses a similar isolated physics pass for its TAS (tool-assisted speedrun) mode.
+
+## Systems Thinking Connection
+RPG L17 isolates its resolve pass. Shooter L33 isolates movement. Each path extracts physics/movement into a standalone system — the name differs (resolve, physics, movement) but the isolation principle is identical.`,
     starterCode: `#include <iostream>
 using namespace std;
 void inputSystem(){ cout<<"inputSystem: active"<<endl; }

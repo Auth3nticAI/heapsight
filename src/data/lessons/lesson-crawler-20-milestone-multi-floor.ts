@@ -32,7 +32,16 @@ if(dungeon[pgz][pgx]==6 && player_level==1) {
 ## Your Task
 
 Simulate stepping on a staircase tile and print level, stair, and milestone messages.
-`,
+
+
+## Beginner Trap
+**Not resetting entity state when loading a new floor.** Enemies, items, and triggers from the previous floor persist as ghost data. Clear all entity arrays before populating the new floor from its data source.
+
+## Elite Insight
+Diablo clears and regenerates each dungeon floor on entry. Entity state is not preserved between floors — each floor is a fresh procedural generation from a floor seed. Your milestone follows the same clean-load pattern.
+
+## Systems Thinking Connection
+The RPG room transition milestone (L20) resets entity state the same way. The Platformer clears the level on transition. Every exploration game must answer: "what happens to old entities when the player moves to a new area?"`,
     starterCode: `
 #include <iostream>
 using namespace std;

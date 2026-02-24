@@ -44,7 +44,16 @@ Chase Behavior is a core 3D engine concept. Doom, Quake, and modern engines all 
 ## Mastery Check
 Question: Why does chase behavior matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Switching from patrol to chase without a way to return to patrol.** If the enemy loses sight of the player, it should return to its patrol route, not stand still forever. Implement both transitions: patrol-to-chase and chase-to-patrol.
+
+## Elite Insight
+FSM-based AI (Finite State Machine) is the standard approach for simple enemy behaviors. Halo enemies use FSMs with states like Idle, Patrol, Alert, Attack, Flee. Your patrol-chase FSM is the foundation that scales to more complex behaviors.
+
+## Systems Thinking Connection
+The RPG enemy AI (L06) uses a simple chase algorithm without states. The Shooter enemies follow fixed paths. Your FSM-based AI is the most sophisticated across all paths — explicit states with guarded transitions prevent behavior bugs.`,
     starterCode: `#include <iostream>
 using namespace std;
 

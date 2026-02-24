@@ -5,7 +5,7 @@ export const lessonShooter31: Lesson = {
   title: "Input Module Split",
   description: "Extract keyboard input into inputSystem(). One function, one job — the foundation of modular game architecture.",
   order: 31,
-  xpReward: 150,
+  xpReward: 100,
   tier: "pro",
   concepts: ["system extraction", "inputSystem", "modular architecture", "separation of concerns"],
   part1: {
@@ -49,7 +49,16 @@ Expected output:
 Systems: 1
 System[0]: input
 Pattern: input-module
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Reading input in multiple places.** If movement reads IsKeyDown(KEY_LEFT) and shooting reads it independently, you get inconsistent behavior when both systems run in the same frame. Read input once into a snapshot struct, pass it to all systems.
+
+## Elite Insight
+Unreal separates input into a dedicated input system that runs before all other systems. The input snapshot is the "single source of truth" for the frame. Your inputSystem follows the same architecture.
+
+## Systems Thinking Connection
+RPG (L31) and Platformer (L31) split input the same way. The Crawler records raw input for replays. Input isolation is the first module split in every path — it sets the pattern for all subsequent system extractions.`,
     starterCode: `#include <iostream>
 #include <string>
 using namespace std;

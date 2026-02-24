@@ -45,7 +45,16 @@ Dist: 0.2
 Push: 0.2
 Collision: sphere-AABB
 \`\`\`
-`,
+
+
+## Beginner Trap
+**Using the sphere center for distance checks instead of the nearest point on the AABB.** A sphere can overlap an AABB corner without the center being inside the box. Always find the closest point on the AABB to the sphere center, then check distance.
+
+## Elite Insight
+The nearest-point sphere-AABB test is the standard 3D collision primitive. Unreal, Unity, and Bullet Physics all implement this exact algorithm. The clamp-then-distance approach generalizes to sphere vs any convex shape.
+
+## Systems Thinking Connection
+The Platformer uses AABB-AABB collision (rectangle overlap). The RPG uses grid-cell checks. Your sphere-AABB test is the 3D equivalent — different geometry, same "find overlap, then resolve" pattern.`,
     starterCode: `
 #include <iostream>
 #include <cmath>

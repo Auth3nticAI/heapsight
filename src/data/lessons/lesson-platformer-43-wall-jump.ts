@@ -7,7 +7,7 @@ const lessonPlatformer43: Lesson = {
   order: 43,
   xpReward: 100,
   tier: "pro",
-  concepts: [],
+  concepts: ["wall-jump", "impulse", "state-dependent-physics"],
   part1: {
     title: "Concept: Wall Jump",
     type: "concept",
@@ -28,7 +28,13 @@ Wall jumping was popularized by Super Metroid (1994) and perfected in Mario 64. 
 
 ## Your Task
 Print the wall jump parameters:
-`,
+
+
+## Beginner Trap
+**Allowing wall jump without checking if the player is pressing away from the wall.** A wall jump should launch the player away from the wall. If you only check "touching wall + jump pressed," the player can wall-jump and immediately re-grab the same wall, climbing infinitely.
+
+## Systems Thinking Connection
+The Shooter has no walls. The RPG has grid walls but no jumping. The Crawler has 3D wall collision but no wall jumps. Wall jumping is uniquely platformer, but the concept of "contact + input direction = action" appears in melee combat and object interaction across all paths.`,
     starterCode: `
 #include <iostream>
 using namespace std;

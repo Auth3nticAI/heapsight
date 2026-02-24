@@ -7,7 +7,7 @@ const lessonPlatformer47: Lesson = {
   order: 47,
   xpReward: 100,
   tier: "pro",
-  concepts: [],
+  concepts: ["enemy-patrol", "ai-pattern", "back-and-forth"],
   part1: {
     title: "Concept: Enemy Patrol",
     type: "concept",
@@ -27,7 +27,16 @@ if(tilemap[er][next_c] == 0) enemy.vx = -enemy.vx;
 
 ## Your Task
 Print the patrol parameters:
-`,
+
+
+## Beginner Trap
+**Making enemies reverse direction by checking pixel position exactly.** Floating-point positions rarely hit exact values. Check if the enemy has passed the waypoint (position >= target) rather than checking for equality (position == target). Threshold checks are reliable; exact checks are not.
+
+## Elite Insight
+Castlevania and Mega Man enemies use simple left-right patrol between two fixed points. The patrol is defined as data (start_x, end_x, speed) not as code. Your waypoint-based patrol follows the same data-driven pattern used since the NES era.
+
+## Systems Thinking Connection
+The RPG patrols enemies between grid waypoints. The Shooter uses sine-wave movement patterns. The Crawler patrols enemies in 3D corridors. Patrol behavior is universal — the coordinate system changes, but "move between two points and reverse" is the same algorithm everywhere.`,
     starterCode: `
 #include <iostream>
 using namespace std;

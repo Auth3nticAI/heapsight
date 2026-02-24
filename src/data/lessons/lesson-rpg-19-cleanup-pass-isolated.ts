@@ -48,7 +48,16 @@ Cleanup: pending kill
 Kill confirmed
 Turn: 1
 Pattern: cleanup-isolated
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Removing dead entities during the main update loop.** Deleting element i while iterating from 0 to n skips element i+1 (it shifts down to index i). Defer all removals to a dedicated cleanup pass after updates complete.
+
+## Elite Insight
+Most ECS frameworks defer entity destruction to end-of-frame cleanup. Unity marks entities for destruction with Destroy(), but the actual removal happens after all systems finish. Your cleanup pass follows the same lifecycle.
+
+## Systems Thinking Connection
+The Shooter uses pool-based recycling with the same deferred pattern — mark entities dead during gameplay, reclaim slots during cleanup. Deferred removal is the safest entity lifecycle pattern across all game types.`,
     starterCode: `#include <iostream>
 using namespace std;
 

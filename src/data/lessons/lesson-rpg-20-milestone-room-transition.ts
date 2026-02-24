@@ -48,7 +48,16 @@ Room: 0
 Room: 1
 Transition: ok
 Milestone: room-transition
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Not resetting entity state when changing rooms.** If enemies from room A persist into room B, the player fights ghosts from a previous room. Clear the entity table on room load, then spawn fresh entities from the room data.
+
+## Elite Insight
+Zelda: A Link to the Past loads room data from ROM on each screen transition, fully resetting the entity table. Enemies respawn when you re-enter a room. Your room transition follows the same load-and-reset pattern.
+
+## Systems Thinking Connection
+Platformer L16-L20 handles level transitions the same way — clear old state, load new level data, spawn entities. The Crawler loads dungeon floors (L49). State reset on transition is universal across all exploration games.`,
     starterCode: `#include <iostream>
 using namespace std;
 

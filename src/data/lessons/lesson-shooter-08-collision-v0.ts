@@ -6,7 +6,7 @@ export const lessonShooter8: Lesson = {
   description: "Detect bullet-enemy collisions with nested loops and AABB overlap — your first batch detection system.",
   order: 8,
   xpReward: 50,
-  tier: "pro",
+  tier: "free",
   concepts: ["nested loops", "AABB collision", "batch detection", "deactivation"],
   part1: {
     title: "Concept: AABB Overlap Test",
@@ -59,7 +59,16 @@ When a hit is found: deactivate the bullet AND the enemy.
 - On hit: deactivate both — each entity handles its own lifecycle
 
 ## Your Task
-Test the AABB formula with a bullet at (100, 100) size 4x10 and an enemy at (98, 98) size 24x24. Print whether they overlap.`,
+Test the AABB formula with a bullet at (100, 100) size 4x10 and an enemy at (98, 98) size 24x24. Print whether they overlap.
+
+## Beginner Trap
+**Checking collision after moving both the bullet and enemy, then using the old positions for rendering.** Always resolve collision with the current positions, not the pre-move positions. Move, collide, render — in that order.
+
+## Elite Insight
+AABB overlap (Axis-Aligned Bounding Box) is the fastest 2D collision test: four comparisons, no square roots. Every 2D game engine uses AABB as the broadphase check before more expensive narrow-phase tests.
+
+## Systems Thinking Connection
+The RPG checks grid adjacency for combat. The Platformer checks tile overlap for collision. Your AABB overlap test is the continuous-space version — same "do these rectangles overlap?" question, but with floating-point coordinates.`,
     starterCode: `#include <iostream>
 using namespace std;
 

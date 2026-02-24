@@ -139,22 +139,22 @@ int main() {
 }`,
     tests: [
       {
-        id: "p1-t1",
+        id: "t1",
         description: "Frame 1 moves right",
         expectedOutput: "Frame 1: x = 103.33 direction = right",
       },
       {
-        id: "p1-t2",
+        id: "t2",
         description: "Frame 4 has no movement",
         expectedOutput: "Frame 4: x = 110.00 direction = none",
       },
       {
-        id: "p1-t3",
+        id: "t3",
         description: "Frame 7 moves left",
         expectedOutput: "Frame 7: x = 106.67 direction = left",
       },
       {
-        id: "p1-t4",
+        id: "t4",
         description: "Frame 9 position is correct",
         expectedOutput: "Frame 9: x = 100.00 direction = left",
       },
@@ -406,32 +406,32 @@ int main() {
 }`,
     tests: [
       {
-        id: "p2-t1",
+        id: "g1",
         description: "Player starts at correct position",
         expectedOutput: "Player: (388, 100)",
       },
       {
-        id: "p2-t2",
+        id: "g2",
         description: "Gravity value printed",
         expectedOutput: "Gravity: 800",
       },
       {
-        id: "p2-t3",
+        id: "g3",
         description: "Run speed printed",
         expectedOutput: "RunSpeed: 200",
       },
       {
-        id: "p2-t4",
+        id: "g4",
         description: "Jump speed printed",
         expectedOutput: "JumpSpeed: 400",
       },
       {
-        id: "p2-t5",
+        id: "g5",
         description: "Min jump velocity printed",
         expectedOutput: "MinJumpVY: 150",
       },
       {
-        id: "p2-t6",
+        id: "g6",
         description: "Grounded state printed",
         expectedOutput: "Grounded: true",
       },

@@ -32,7 +32,16 @@ Expected output:
 Heap: frozen
 Alloc/tick: 0
 GATE A: passed
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Thinking zero allocations means no dynamic data.** You can still use pre-allocated pools, ring buffers, and fixed arrays. The rule is not "no dynamic data" — it is "no dynamic memory requests during gameplay."
+
+## Elite Insight
+Embedded systems and real-time audio engines follow the same rule — all allocation happens at init time, and the runtime operates on pre-allocated buffers. Heap freeze is an engineering discipline, not a limitation.
+
+## Systems Thinking Connection
+Shooter L30 and Platformer L30 hit the same gate — heap freeze is a universal performance guarantee. The Crawler passes it too (L30). Zero allocations in the hot loop is the shared quality bar across all four paths.`,
     starterCode: `#include <iostream>
 using namespace std;
 

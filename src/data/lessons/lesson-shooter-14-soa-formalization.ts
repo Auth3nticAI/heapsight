@@ -48,7 +48,16 @@ No touching other arrays. No restructuring structs. No inheritance. The data lay
 - SoA: each property has its own array, indexed by entity ID
 - AoS: each entity has its own struct, properties packed together
 - SoA wins when systems read one property across many entities
-- Adding a component = one array + one init + one read`,
+- Adding a component = one array + one init + one read
+
+## Beginner Trap
+**Iterating through all components when you only need positions.** If Position, Velocity, HP, and Color are in one struct, loading one entity loads all four fields into cache. SoA keeps Position[] contiguous — iterating positions never touches HP data.
+
+## Elite Insight
+Mike Acton (Insomniac Games) demonstrated that SoA layouts can be 10-100x faster than AoS for batch processing. Cache efficiency is the single biggest performance factor in entity-heavy games. Your formalization makes this explicit.
+
+## Systems Thinking Connection
+The RPG (L14) formalizes SoA for dungeon entities. The Crawler stores entities as parallel arrays. All paths discover that memory layout determines iteration speed — the same data, reorganized, runs dramatically faster.`,
     starterCode: `#include <iostream>
 using namespace std;
 

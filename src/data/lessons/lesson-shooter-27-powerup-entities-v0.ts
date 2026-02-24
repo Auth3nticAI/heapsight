@@ -58,7 +58,16 @@ Spawned: 1 (score_bonus)
 Collected: 1
 Active: 0
 Pattern: powerup-entity
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Allocating new powerup entities on the heap instead of using the entity pool.** Powerups spawn and despawn frequently. If each spawn calls new, you reintroduce heap allocation in the game loop. Use the existing entity pool.
+
+## Elite Insight
+Arcade games from R-Type to Gradius spawned powerups from the same entity pool as enemies and bullets. One pool, multiple entity types, zero allocation. Your powerup pool follows the same classic design.
+
+## Systems Thinking Connection
+The RPG spawns loot from entity pools (L28). The Crawler spawns items from pools. Pool-based entity management is universal — the entity type (bullet, enemy, powerup) is just a tag on a pool slot.`,
     starterCode: `#include <iostream>
 using namespace std;
 
@@ -679,9 +688,7 @@ int main() {
     ],
     hints: [
       "TODO 1: EntityId id = findFreeSlot(w.powerup_active, MAX_POWERUPS); then check if id is INVALID_ID.",
-      "After the findFreeSlot check, set w.powerup_x[id] = x, w.powerup_y[id] = y, w.powerup_active[id] = true, then return id.",
       "TODO 2: after world.score += 100, add: if (rng_range(10) < 3) spawnPowerup(world, world.enemy_x[e]+12, world.enemy_y[e]+12);",
-      "TODO 3: loop i from 0 to MAX_POWERUPS. Check powerup_active[i]. Then build the overlap bool with four comparisons.",
       "Powerup size is 16x16. The overlap check uses powerup_x[i] and powerup_y[i] against ship_x, ship_y, ship_w, ship_h.",
     ],
     estimatedMinutes: 20,

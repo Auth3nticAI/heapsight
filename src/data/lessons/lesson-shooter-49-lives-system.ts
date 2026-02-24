@@ -5,7 +5,7 @@ export const lessonShooter49: Lesson = {
   title: "Lives System",
   description: "Lives System — Phase 5: Wave & Scoring.",
   order: 49,
-  xpReward: 150,
+  xpReward: 100,
   tier: "pro",
   concepts: ["lives system", "game over", "restart", "player death"],
   part1: {
@@ -22,7 +22,16 @@ export const lessonShooter49: Lesson = {
 \`\`\`
 Lives: 3
 Pattern: lives-system
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Respawning the player instantly after death.** Without a brief invulnerability period, the player can die repeatedly in the same frame from overlapping enemies. Add 1-2 seconds of invulnerability after respawn.
+
+## Elite Insight
+Every classic arcade game grants brief invulnerability after death — flashing sprites in Pac-Man, a shield in Galaga. The "mercy invincibility" pattern prevents frustrating chain deaths.
+
+## Systems Thinking Connection
+RPG has HP and death. Platformer has lives and checkpoints. Crawler has permadeath. Your lives system with mercy invincibility is the arcade-standard approach — the most forgiving death model across all four paths.`,
     starterCode: `#include <iostream>
 using namespace std;
 int lives=3, hp=3;
@@ -58,7 +67,9 @@ int main(){
       { id: "t2", description: "pattern", expectedOutput: "Pattern: lives-system" },
     ],
     hints: [
-      "After 3 takeDamage calls (one life worth at 3HP): game_over is true. Print it with a ternary.",
+      "After taking enough damage, the game_over flag tells you whether the player has run out of lives.",
+      "Use a ternary operator to print \"yes\" or \"no\" based on the game_over boolean.",
+      "cout<<\"Game over: \"<<(game_over?\"yes\":\"no\")<<endl;",
     ],
     estimatedMinutes: 8,
   },

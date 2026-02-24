@@ -26,6 +26,7 @@ export interface Lesson {
   concepts: string[];
   part1: LessonPart;
   part2: LessonPart;
+  customizationPrompt?: string;
 }
 
 export type LessonStatus = "locked" | "available" | "in_progress" | "completed";

@@ -5,7 +5,7 @@ export const lessonShooter44: Lesson = {
   title: "Spread Shot",
   description: "Spread Shot — Phase 5: Wave & Scoring.",
   order: 44,
-  xpReward: 150,
+  xpReward: 100,
   tier: "pro",
   concepts: ["spread shot", "weapon modes", "shoot_mode", "fan bullet pattern"],
   part1: {
@@ -28,7 +28,16 @@ WeaponModes: 2
 Mode 0: SINGLE
 Mode 1: SPREAD
 Pattern: spread-shot
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Spawning spread bullets at the same position with the same velocity.** If all three bullets start at the same point and move at the same speed, they overlap into one visible bullet. Offset the angles: -15, 0, +15 degrees creates a visible fan.
+
+## Elite Insight
+Spread shot patterns date back to Contra and Gradius. The fan is defined by (count, angle_spread) — a data-driven weapon mode. Adding new weapon types means adding data entries, not new code paths.
+
+## Systems Thinking Connection
+The RPG has no projectile patterns. The Crawler fires single projectiles (L59). Your spread shot system is the most weapon-diverse across all paths — weapon modes as data enable unlimited projectile patterns.`,
     starterCode: `#include <iostream>
 using namespace std;
 int shoot_mode=0;
@@ -57,7 +66,9 @@ int main(){
       { id: "t3", description: "pattern", expectedOutput: "Pattern: spread-shot" },
     ],
     hints: [
-      "Just add: cout<<\"Mode 1: SPREAD\"<<endl; after Mode 0.",
+      "The game has two weapon modes that need to be listed -- you already have Mode 0 printed.",
+      "Mode 1 is the spread shot, which fires 3 bullets in a fan pattern.",
+      "Add cout<<\"Mode 1: SPREAD\"<<endl; right after the Mode 0 line.",
     ],
     estimatedMinutes: 8,
   },

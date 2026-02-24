@@ -31,7 +31,16 @@ Color getZoneTint(float wx, float wz) {
 ## Your Task
 
 Print Zone: 3, Tints: south/east/default.
-`,
+
+
+## Beginner Trap
+**Using a single global tint instead of per-zone tints.** A dungeon with one color is monotonous. Different zones (cave, crypt, sewer) should have distinct tints applied per-tile based on which zone the tile belongs to.
+
+## Elite Insight
+Diablo II uses palette-shifted tilesets for different dungeon areas — the same geometry with different color palettes creates visual variety. Your per-zone tint achieves the same result without requiring separate art assets.
+
+## Systems Thinking Connection
+The RPG could apply zone-based tinting to differentiate dungeon areas visually. The Shooter uses background color to distinguish wave phases. Color-based environmental storytelling works in any game with distinct areas.`,
     starterCode: `
 #include <iostream>
 using namespace std;
@@ -59,6 +68,8 @@ int main() {
       { id: "t2", description: "Prints tint types", expectedOutput: "Tints: south/east/default" },
     ],
     hints: [
+      "Think about how you can divide a map into regions and assign a different color to each.",
+      "Use world-space position (wx, wz) to determine which zone a wall belongs to, then return a tint color.",
       "Print Zone: 3 then Tints: south/east/default as literal strings.",
     ],
     estimatedMinutes: 5,

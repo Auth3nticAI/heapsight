@@ -29,7 +29,16 @@ float calcPointLight(float wx, float wz, float lx, float lz, float strength) {
 ## Your Task
 
 Given a torch at (8,12) and surface at (8,14) (dist=2), strength=16. Print Lights, Dist, and Point.
-`,
+
+
+## Beginner Trap
+**Using linear falloff instead of inverse-square.** Linear falloff (1 - d/range) looks unnaturally uniform. Inverse-square falloff (1 / (1 + d*d)) concentrates light near the source and fades quickly, matching real-world physics and looking natural.
+
+## Elite Insight
+Real light follows the inverse-square law: intensity = 1/d squared. Doom approximated this with lookup tables. Modern engines compute it per-pixel in shaders. Your CPU-side approximation achieves the same visual result for a grid-based world.
+
+## Systems Thinking Connection
+The RPG has no lighting system — all tiles are uniformly lit. The Platformer uses background layers for atmosphere. Your point light system is 3D-specific: lighting in tile-based 3D creates atmosphere that 2D games achieve through art alone.`,
     starterCode: `
 #include <iostream>
 #include <cmath>

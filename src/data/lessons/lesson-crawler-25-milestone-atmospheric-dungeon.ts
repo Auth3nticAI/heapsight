@@ -23,7 +23,16 @@ export const lessonCrawler25: Lesson = {
 ## Your Task
 
 Print Atmosphere: active and Milestone: atmospheric-dungeon.
-`,
+
+
+## Beginner Trap
+**Adding atmosphere without testing performance.** Multiple lights, fog, and color zones each add computation per tile per frame. Profile the render pass before and after atmospheric effects to ensure frame times stay under budget.
+
+## Elite Insight
+Professional studios budget frame time per system: 2ms for physics, 4ms for rendering, 1ms for AI. If atmospheric effects push rendering over budget, you optimize or simplify. Your milestone should include a performance check alongside the visual check.
+
+## Systems Thinking Connection
+The Shooter hits a similar milestone with its visual effects (L85). The Platformer adds parallax and particles. Every path must balance visual richness against frame budget — atmosphere that drops FPS below 60 is worse than no atmosphere.`,
     starterCode: `
 #include <iostream>
 using namespace std;
@@ -53,6 +62,8 @@ int main() {
       { id: "t2", description: "Prints milestone", expectedOutput: "Milestone: atmospheric-dungeon" },
     ],
     hints: [
+      "This milestone confirms that all lighting subsystems are working together.",
+      "You already have the Atmosphere cout -- just add one more line for the milestone name.",
       "Add a second cout for Milestone: atmospheric-dungeon",
     ],
     estimatedMinutes: 5,

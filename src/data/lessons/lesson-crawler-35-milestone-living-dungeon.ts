@@ -44,7 +44,16 @@ Milestone: Living Dungeon is a core 3D engine concept. Doom, Quake, and modern e
 ## Mastery Check
 Question: Why does milestone: living dungeon matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Declaring the milestone complete without testing all enemy states.** If enemies patrol, they must also handle blocked paths, reached-final-waypoint, and respawn. Test every state transition, not just the happy path.
+
+## Elite Insight
+Valve uses "playtesting pyramids" — test the core behavior first, then edge cases, then stress cases. A "living dungeon" milestone means entities behave correctly under all conditions, not just the demo scenario.
+
+## Systems Thinking Connection
+The RPG milestone (L10) validates the full turn pipeline. The Shooter milestone (L10) validates the core shoot-and-dodge loop. Every path has "proof-of-life" milestones that verify systems work together before building on them.`,
     starterCode: `#include <iostream>
 using namespace std;
 

@@ -44,7 +44,16 @@ First-Person Combat is a core 3D engine concept. Doom, Quake, and modern engines
 ## Mastery Check
 Question: Why does first-person combat matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Raycasting against the visual billboard position instead of the collision volume.** Billboards are visual approximations. Collision should check against the entity AABB (axis-aligned bounding box), not the sprite quad. Billboard orientation changes with camera angle; the AABB does not.
+
+## Elite Insight
+Doom hit-tested enemies using 2D bounding circles projected into the player view. Modern FPS games use capsule colliders for humanoid enemies. Your AABB approach is the 3D grid equivalent — simple, fast, and sufficient for tile-based combat.
+
+## Systems Thinking Connection
+The RPG resolves combat by adjacency — bump into an enemy to attack. The Shooter uses circle-circle collision. Your raycast targeting is the 3D equivalent: aim at a target, check if the ray intersects the target volume.`,
     starterCode: `#include <iostream>
 using namespace std;
 

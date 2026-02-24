@@ -41,7 +41,16 @@ RNG[1]: 3345494956
 RNG[2]: 2495407159
 Seed: 12345
 Pattern: deterministic-rng
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Using rand() without seeding first.** Without a seed, behavior differs every run, making bugs unreproducible. Worse, some platforms seed rand() to the same value by default, hiding the problem until deployment.
+
+## Elite Insight
+Spelunky and Minecraft both use seeded RNG so players can share and replay specific worlds. A "seed" field in the UI lets players type a world code. Deterministic generation from a single seed is an industry standard.
+
+## Systems Thinking Connection
+Every path implements deterministic RNG — Shooter, Platformer, and Crawler all use seeded generators. If your game cannot reproduce the same sequence from the same seed, replay and networking are impossible.`,
     starterCode: `#include <iostream>
 #include <cstdint>
 using namespace std;

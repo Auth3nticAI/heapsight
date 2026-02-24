@@ -5,7 +5,7 @@ export const lessonShooter48: Lesson = {
   title: "Background Scrolling",
   description: "Background Scrolling — Phase 5: Wave & Scoring.",
   order: 48,
-  xpReward: 150,
+  xpReward: 100,
   tier: "pro",
   concepts: ["background scrolling", "parallax", "scroll stars", "animation"],
   part1: {
@@ -31,7 +31,16 @@ void updateScrollStars() {
 \`\`\`
 Stars: 20 scrolling
 Pattern: bg-scroll
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Scrolling one layer without wrapping.** A background that scrolls off-screen leaves black. Wrap the scroll position: when pos > height, reset to 0. Two copies of the background drawn at offset positions create seamless looping.
+
+## Elite Insight
+Parallax scrolling — multiple layers scrolling at different speeds — creates the illusion of depth in 2D. Every side-scroller from Sonic to Hollow Knight uses this technique. Your star field is the vertical-scrolling version.
+
+## Systems Thinking Connection
+The Platformer uses parallax backgrounds (L78). The RPG has no scrolling (top-down grid). The Crawler uses 3D perspective for depth. Your scrolling star field is the shooter-specific depth illusion — movement creates the feeling of flying through space.`,
     starterCode: `#include <iostream>
 using namespace std;
 const int N=20;
@@ -73,7 +82,9 @@ int main(){
       { id: "t2", description: "pattern", expectedOutput: "Pattern: bg-scroll" },
     ],
     hints: [
-      "if(sy[i]>450) sy[i]=0; resets the star to the top when it goes off screen.",
+      "Stars scroll downward -- what should happen when one goes past the bottom of the screen?",
+      "When a star's y position exceeds the screen height (450), it should wrap back to the top.",
+      "Add if(sy[i]>450) sy[i]=0; inside the for loop after updating the position.",
     ],
     estimatedMinutes: 8,
   },

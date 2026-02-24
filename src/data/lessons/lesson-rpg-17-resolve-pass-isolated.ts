@@ -49,7 +49,16 @@ Resolve: MOVE_RIGHT
 Resolve: ATTACK
 Commands resolved: 2
 Pattern: resolve-isolated
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Mixing movement resolution with rendering.** If you draw an entity, then move it, the drawn position is one frame behind. Resolve ALL movement first, then render the final positions. Separate concerns, separate passes.
+
+## Elite Insight
+ECS architectures run movement systems before render systems, guaranteeing visual consistency. The system ordering is: Input > Movement > Collision > Render. Your isolated resolve pass follows the same pipeline.
+
+## Systems Thinking Connection
+Platformer L33 isolates its physics module from rendering the same way. The Shooter splits movement into its own system (L33). Every path converges on the same architecture: resolve first, render second.`,
     starterCode: `#include <iostream>
 using namespace std;
 

@@ -55,7 +55,16 @@ Phases: INPUT -> RESOLVE -> WORLD -> CLEANUP -> RENDER
 Kill confirmed
 Kills: 1
 Turn: 1
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Rushing to add features before verifying the core loop works.** A milestone is a checkpoint, not a speedbump. If move-attack-kill-win does not work perfectly with one enemy, adding more enemies will not fix it.
+
+## Elite Insight
+Minecraft started as a tiny room you could walk around in. Spelunky started as a single screen. Every successful game begins with a micro prototype that proves the core loop is fun before scaling up.
+
+## Systems Thinking Connection
+Every path has this milestone — Shooter L10, Platformer L10, Crawler L10 all validate their core loop before building on it. The micro prototype pattern is universal: prove the foundation before adding floors.`,
     starterCode: `#include <iostream>
 using namespace std;
 
@@ -607,7 +616,6 @@ int main() {
       "Add int kills = 0; at file scope alongside turn_count.",
       "In phaseCleanup(), after setting enemy_alive = false, add: kills++; cout \"Kill confirmed\" << endl;",
       "Add the two milestone cout lines to the startup block. Note WORLD is now in the phases list.",
-      "Add DrawText(TextFormat(\"Kills: %d\", kills), 400, 180, 16, YELLOW); to the HUD.",
     ],
     estimatedMinutes: 12
   }

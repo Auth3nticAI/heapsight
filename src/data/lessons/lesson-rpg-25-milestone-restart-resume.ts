@@ -35,7 +35,16 @@ Hash after: 5
 Match: yes
 Restart: ok
 Milestone: restart-resume
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Not testing the load path until late in development.** A save file that cannot be loaded is useless, but you will not know until you try. Test save-then-load immediately — round-trip verification catches serialization bugs early.
+
+## Elite Insight
+Dark Souls uses bonfires as specialized save/load checkpoints — save full state on rest, restore on death. The core guarantee is: quit at any bonfire, resume exactly where you left off. Your milestone tests the same guarantee.
+
+## Systems Thinking Connection
+Platformer L25 tests the same round-trip — quit and resume without data loss. Every path hits this milestone because save/load integrity is a non-negotiable shipping requirement for any game with progression.`,
     starterCode: `#include <iostream>
 #include <cstdint>
 using namespace std;

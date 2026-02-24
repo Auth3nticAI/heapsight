@@ -44,7 +44,16 @@ Corridor Generation is a core 3D engine concept. Doom, Quake, and modern engines
 ## Mastery Check
 Question: Why does corridor generation matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Carving corridors before rooms.** If corridors are carved first, rooms may overwrite them. Carve rooms first (stamp templates), then connect room centers with L-shaped corridors. Order matters in grid modification.
+
+## Elite Insight
+Rogue (1980) connected rooms with L-shaped corridors — pick two room centers, carve horizontally then vertically. This simple algorithm produces natural-looking dungeon layouts. Your corridor generation follows the same classic approach.
+
+## Systems Thinking Connection
+The RPG connects rooms with exit tiles. The Platformer connects level sections with doors. Your corridor carving is the procedural version — automatically connecting rooms that other paths connect by hand.`,
     starterCode: `#include <iostream>
 using namespace std;
 

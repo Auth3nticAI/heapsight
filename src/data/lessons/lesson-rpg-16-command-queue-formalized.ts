@@ -59,7 +59,16 @@ Command 1: MOVE_UP p1=0 p2=0
 Command 2: ATTACK p1=0 p2=0
 Queue: 3 commands
 Pattern: command-queue
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Processing commands immediately instead of queuing them.** If "move north" triggers a trap that kills the player, and you process "use potion" next, the potion heals a dead player. Queue all commands, then resolve in order.
+
+## Elite Insight
+StarCraft and Age of Empires batch all player commands into lockstep frames for networking. Each frame processes a fixed command buffer. Your command queue is the single-player version of the same architecture.
+
+## Systems Thinking Connection
+The Shooter uses an event queue for collision events — batch all hits detected this frame, then resolve after all checks complete. Command batching prevents order-dependent bugs in every game genre.`,
     starterCode: `#include <iostream>
 using namespace std;
 

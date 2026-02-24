@@ -7,7 +7,7 @@ const lessonPlatformer39: Lesson = {
   order: 39,
   xpReward: 100,
   tier: "pro",
-  concepts: [],
+  concepts: ["error-handling", "graceful-degradation", "defensive-code"],
   part1: {
     title: "Concept: Error Handling",
     type: "concept",
@@ -31,7 +31,13 @@ if(level_index < 0 || level_index >= NUM_LEVELS){
 
 ## Your Task
 Print the error handling status:
-`,
+
+
+## Beginner Trap
+**Silently ignoring invalid tile indices.** If a physics calculation produces an out-of-bounds grid index, returning 0 (empty) silently hides the bug. Log a warning with the invalid coordinates so you can trace and fix the root cause.
+
+## Systems Thinking Connection
+RPG L88 and Shooter L39 handle errors at the same boundaries. Every path validates the same entry points: array indices, pool access, file I/O. Defensive error handling at system boundaries is a universal robustness pattern.`,
     starterCode: `
 #include <iostream>
 using namespace std;

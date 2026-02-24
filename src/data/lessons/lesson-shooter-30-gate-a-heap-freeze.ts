@@ -56,7 +56,13 @@ Pattern: heap-freeze
 \`\`\`
 
 ## Elite Insight
-id Software's Quake 3 Arena ran with a fixed 16MB memory pool. Doom Eternal allocates its entire game state in one shot at startup. Your shooter now follows the same discipline.`,
+id Software's Quake 3 Arena ran with a fixed 16MB memory pool. Doom Eternal allocates its entire game state in one shot at startup. Your shooter now follows the same discipline.
+
+## Beginner Trap
+**Thinking "zero allocations" means "no dynamic behavior."** Pre-allocated pools give you all the dynamic behavior you need — spawn, despawn, recycle — without touching the heap. The constraint is on allocation, not on dynamism.
+
+## Systems Thinking Connection
+RPG L30, Platformer L30, and Crawler L30 all hit the same gate. Heap freeze is the most universal engineering gate in the curriculum — four paths, one standard: zero allocations in the game loop.`,
     starterCode: `#include <iostream>
 using namespace std;
 

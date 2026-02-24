@@ -41,7 +41,16 @@ At yaw = 0: \`cosf(0) = 1\`, \`sinf(0) = 0\`. Forward is (+1, 0) -- the +X direc
 
 ## Your Task
 
-Compute the forward direction and target position from yaw = 0. Print the results.`,
+Compute the forward direction and target position from yaw = 0. Print the results.
+
+## Beginner Trap
+**Not clamping pitch.** Without a clamp, the camera can flip upside down when pitch exceeds 89 degrees. The view matrix degenerates at exactly 90 degrees (gimbal lock). Clamp pitch to [-89, 89] to prevent the flip.
+
+## Elite Insight
+Quake was the first major game to implement true 6DOF mouse look. Carmack used Euler angles with a pitch clamp — the same approach you are implementing. Modern engines use quaternions for full rotation, but Euler angles with clamping work perfectly for FPS cameras.
+
+## Systems Thinking Connection
+The Platformer does not need mouse look, but the RPG could add it for a real-time mode. Camera control is a fundamental 3D skill that transfers directly to any game with a movable viewpoint, including third-person cameras.`,
     starterCode: `#include <iostream>
 #include <cmath>
 using namespace std;

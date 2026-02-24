@@ -47,7 +47,16 @@ Print tile conversions for two sample positions.
 
 ## Mastery Check
 **Q:** Player is at x=96, y=160. What tile is their center in?
-**A:** col = 96/32 = 3, row = 160/32 = 5. Tile (5, 3).`,
+**A:** col = 96/32 = 3, row = 160/32 = 5. Tile (5, 3).
+
+## Beginner Trap
+**Checking collision against every tile in the grid.** If your grid is 40x30, that is 1200 checks per entity per frame. Only check the tiles the entity overlaps — convert the entity bounding box to grid coordinates and check those 2-4 tiles.
+
+## Elite Insight
+AABB-to-grid collision is the foundation of every tile-based platformer from Super Mario to Celeste. Convert pixel position to grid index, check the tile type, resolve the overlap. The entire algorithm is four integer divisions and four array lookups.
+
+## Systems Thinking Connection
+The RPG uses direct grid lookup (grid[y][x]) for wall collision. The Shooter uses spatial grids for entity-entity collision. Your tile-grid AABB check is the platformer-specific version — same O(1) grid lookup, applied to continuous-space movement.`,
     starterCode: `#include <iostream>
 using namespace std;
 
@@ -406,11 +415,11 @@ int main() {
     return 0;
 }`,
     tests: [
-      { id: "p2-t1", description: "Player position printed", expectedOutput: "Player: (388, 100)" },
-      { id: "p2-t2", description: "FSM active printed", expectedOutput: "FSM: active" },
-      { id: "p2-t3", description: "Tile size printed", expectedOutput: "TileSize: 32" },
-      { id: "p2-t4", description: "Tiles active printed", expectedOutput: "Tiles: active" },
-      { id: "p2-t5", description: "Grid collision active", expectedOutput: "Collision: grid" },
+      { id: "g1", description: "Player position printed", expectedOutput: "Player: (388, 100)" },
+      { id: "g2", description: "FSM active printed", expectedOutput: "FSM: active" },
+      { id: "g3", description: "Tile size printed", expectedOutput: "TileSize: 32" },
+      { id: "g4", description: "Tiles active printed", expectedOutput: "Tiles: active" },
+      { id: "g5", description: "Grid collision active", expectedOutput: "Collision: grid" },
     ],
     hints: [
       "Add checkTileCollisionV() before main(). It converts player pixel position to tile row/col and checks if that tile is solid.",

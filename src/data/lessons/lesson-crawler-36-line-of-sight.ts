@@ -44,7 +44,16 @@ Line-of-Sight is a core 3D engine concept. Doom, Quake, and modern engines all i
 ## Mastery Check
 Question: Why does line-of-sight matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Casting a ray through tile centers instead of along the actual line.** A Bresenham-style ray that only visits tile centers can miss thin walls between tiles. Step through the grid at sub-tile intervals to catch all wall crossings.
+
+## Elite Insight
+Wolfenstein 3D cast rays through a DDA (Digital Differential Analyzer) grid traversal — stepping through grid cells along the ray direction. This algorithm is exact for axis-aligned walls and runs in O(grid_distance) time.
+
+## Systems Thinking Connection
+The RPG has no line-of-sight — enemies see through walls. The Platformer has no visibility system. Ray-grid traversal is a 3D-specific technique that adds tactical depth: enemies that cannot see you cannot chase you.`,
     starterCode: `#include <iostream>
 using namespace std;
 

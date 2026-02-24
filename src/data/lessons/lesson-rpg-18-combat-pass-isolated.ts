@@ -45,7 +45,16 @@ Combat: damage=3
 HP after: 7
 Module: combat-isolated
 Pattern: combat-isolated
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Applying damage during the entity loop that checks for combat.** Modifying HP while iterating means later entities see different state than earlier ones. Collect all combat events first, then apply damage in a separate pass.
+
+## Elite Insight
+Turn-based games from Civilization to Final Fantasy batch damage calculation before application. Simultaneous resolution means attack order does not affect outcome — both fighters deal damage at the same time.
+
+## Systems Thinking Connection
+Shooter L34 collects all collision hits first, then applies damage in a separate pass. The pattern is identical: separate detection from resolution so that iteration order cannot affect gameplay outcomes.`,
     starterCode: `#include <iostream>
 using namespace std;
 

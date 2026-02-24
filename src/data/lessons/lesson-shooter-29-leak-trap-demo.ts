@@ -43,7 +43,16 @@ Allocated: 5
 Freed: 5
 Leaked: 0
 Pattern: leak-trap
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Deleting the "leaked" object to fix the demo.** The point of the leak trap is to demonstrate what happens when you use new without delete. Fixing it defeats the lesson. Leave the leak, show the counter increasing, then show the pool-based alternative.
+
+## Elite Insight
+Memory leak detection tools like Valgrind and AddressSanitizer catch leaks by tracking every allocation. Your allocation counter is a manual version of the same idea — instrument the allocator, verify everything is freed.
+
+## Systems Thinking Connection
+RPG (L29) and Platformer (L29) demonstrate the same leak trap. The lesson is universal: heap allocation in the game loop is a bug, and pools are the cure. Every path proves immunity by showing the counter stays at zero.`,
     starterCode: `#include <iostream>
 using namespace std;
 

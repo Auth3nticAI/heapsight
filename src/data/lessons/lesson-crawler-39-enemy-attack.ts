@@ -44,7 +44,16 @@ Enemy Attack is a core 3D engine concept. Doom, Quake, and modern engines all im
 ## Mastery Check
 Question: Why does enemy attack matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Applying damage every frame while the enemy is in range.** Without a cooldown timer, the enemy deals 60x intended damage per second. Use an attack cooldown: deal damage, start a timer, do not deal damage again until the timer expires.
+
+## Elite Insight
+Every melee combat system uses attack cooldowns — from Dark Souls to Minecraft. The cooldown ensures one attack per swing animation. Your timer-based approach is the standard implementation: damage once, wait, repeat.
+
+## Systems Thinking Connection
+The RPG resolves combat once per turn — the turn system is a natural cooldown. The Shooter fires bullets with a cooldown timer. Your real-time melee cooldown is the 3D-specific version of the same "rate limit damage" pattern.`,
     starterCode: `#include <iostream>
 using namespace std;
 

@@ -38,7 +38,16 @@ Expected output:
 Hash: 560
 Signature: v0
 Pattern: state-signature
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Hashing only some fields.** If you skip enemy HP or item counts, state divergence in those fields goes undetected. Hash EVERY gameplay-relevant field. If it affects outcomes, it must be in the signature.
+
+## Elite Insight
+Lockstep networking games like Age of Empires hash the full game state every frame to detect desynchronization. If two clients produce different hashes, one has diverged and the game pauses to resync.
+
+## Systems Thinking Connection
+Platformer L23 implements the same state signature — hash all gameplay state each frame. The Shooter and Crawler do it too. State hashing is the universal tool for detecting determinism bugs across all paths.`,
     starterCode: `#include <iostream>
 #include <cstdint>
 using namespace std;

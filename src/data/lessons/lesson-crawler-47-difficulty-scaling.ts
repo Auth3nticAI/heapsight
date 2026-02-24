@@ -44,7 +44,16 @@ Difficulty Scaling is a core 3D engine concept. Doom, Quake, and modern engines 
 ## Mastery Check
 Question: Why does difficulty scaling matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Scaling difficulty linearly when players expect exponential challenge.** Doubling enemy HP every floor quickly becomes impossible. Use diminishing multipliers: floor 1 = 1.0x, floor 2 = 1.2x, floor 3 = 1.35x. The curve should feel like increasing challenge, not a wall.
+
+## Elite Insight
+Diablo uses multiplicative difficulty scaling per difficulty tier (Normal, Nightmare, Hell) with carefully tuned curves. The scaling factors are stored in data tables, not formulas, so designers can tune individual breakpoints.
+
+## Systems Thinking Connection
+The RPG implements difficulty tables (L87) with the same data-driven approach. The Shooter scales wave difficulty (L47). Every path faces the same design challenge: scaling difficulty to match player skill growth without creating frustration spikes.`,
     starterCode: `#include <iostream>
 using namespace std;
 

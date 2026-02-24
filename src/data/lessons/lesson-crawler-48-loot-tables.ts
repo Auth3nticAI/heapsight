@@ -44,7 +44,16 @@ Loot Tables is a core 3D engine concept. Doom, Quake, and modern engines all imp
 ## Mastery Check
 Question: Why does loot tables matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Using equal probability for all items.** If a healing potion and a legendary sword have the same drop chance, the game economy breaks. Weight items by rarity: common items high weight, rare items low weight. Normalize weights to probabilities.
+
+## Elite Insight
+Diablo III loot tables use weighted random selection with guaranteed minimums for rare drops ("pity timer"). The weights are data-driven — designers tune drop rates in spreadsheets without changing code. Your weighted-random approach follows this pattern.
+
+## Systems Thinking Connection
+The RPG implements loot drops (L28) with the same weighted-random approach. The Shooter drops powerups with fixed probabilities (L43). Weighted random selection from data tables is the industry standard for item generation across all genres.`,
     starterCode: `#include <iostream>
 using namespace std;
 

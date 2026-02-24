@@ -5,7 +5,7 @@ export const lessonRPG15: Lesson = {
   title: "Milestone: Stable Update Order",
   description: "Milestone checkpoint. Add frame_count tracking and cement the five-phase pipeline as an invariant. Every frame runs INPUT -> RESOLVE -> WORLD -> CLEANUP -> RENDER in this order, always.",
   order: 15,
-  xpReward: 150,
+  xpReward: 300,
   tier: "pro",
   concepts: ["update order", "frame counter", "phase invariant", "milestone"],
   part1: {
@@ -41,7 +41,16 @@ Phase: WORLD
 Phase: CLEANUP
 Order: INPUT -> RESOLVE -> WORLD -> CLEANUP
 Milestone: stable-update-order
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Not testing update order explicitly.** The game "works" today, but adding a new system changes the order and breaks behavior. Print the pass sequence and verify it matches the spec every build.
+
+## Elite Insight
+Fixed update ordering is a core guarantee in Unreal (tick groups) and Unity (script execution order). Professional engines let you declare "system A runs before system B" explicitly. Your ordered pass list is the same concept.
+
+## Systems Thinking Connection
+Platformer L15 hits the same milestone — stable update order is a prerequisite for deterministic replay. If pass order can change between runs, replay diverges. Every path enforces this before moving forward.`,
     starterCode: `#include <iostream>
 using namespace std;
 

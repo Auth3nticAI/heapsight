@@ -36,7 +36,16 @@ Slot 2: Potion
 Slot 3: --
 Slot 4: --
 Pattern: item-ids
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Storing full item objects in the inventory instead of IDs.** Duplicating item data (name, stats, description) for every stack wastes memory and makes comparison expensive. Store the ID, look up the data when needed.
+
+## Elite Insight
+MMOs like World of Warcraft store inventory as (item_id, quantity, modifier_flags) tuples, never full item objects. The item database is shared and read-only. Your items-as-IDs approach follows the same pattern.
+
+## Systems Thinking Connection
+Shooter powerups (L43) use the same pattern — a powerup type ID triggers a lookup into a stats table. The Platformer stores pickup types as integers too. ID-based references prevent data duplication across all game systems.`,
     starterCode: `#include <iostream>
 using namespace std;
 

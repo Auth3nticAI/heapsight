@@ -36,7 +36,16 @@ if(E_pressed && tile==5 && key_held) {
 ## Your Task
 
 Simulate key pickup and door unlock logic.
-`,
+
+
+## Beginner Trap
+**Checking key ownership in the rendering code instead of the game logic.** Doors should become passable when the key is consumed, not when the renderer changes the sprite. Separate the state change (key consumed, door unlocked) from the visual change (door sprite removed).
+
+## Elite Insight
+Doom color-coded keys and doors — red key opens red doors. The key-lock system is a state gate: possession of item X transitions door Y from locked to unlocked. Your implementation follows the same classic FPS design pattern.
+
+## Systems Thinking Connection
+The RPG implements inventory-gated progression the same way — specific items unlock specific encounters or areas. The key-lock pattern is a universal game design primitive: gate progress behind item acquisition.`,
     starterCode: `
 #include <iostream>
 using namespace std;

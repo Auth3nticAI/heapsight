@@ -6,7 +6,7 @@ const lessonPlatformer9: Lesson = {
   description: "Queue a jump input so it fires the moment the player lands. Eliminates the frustration of pressing jump a frame too early.",
   order: 9,
   xpReward: 50,
-  tier: "pro",
+  tier: "free",
   concepts: ["jump buffer", "input buffering", "forgiveness mechanics", "paired timers"],
   part1: {
     title: "Concept: Input Buffering",
@@ -47,7 +47,16 @@ Simulate a jump buffer: print the buffer value, simulate it being set on press, 
 
 ## Mastery Check
 **Q:** With both coyote time (0.1s) and jump buffer (0.1s), what is the maximum timing error a player can make and still get a jump?
-**A:** 0.2 seconds total — 0.1s late (coyote) plus 0.1s early (buffer). That is 12 frames at 60fps, which makes the game feel responsive even to imprecise input.`,
+**A:** 0.2 seconds total — 0.1s late (coyote) plus 0.1s early (buffer). That is 12 frames at 60fps, which makes the game feel responsive even to imprecise input.
+
+## Beginner Trap
+**Making the jump buffer last forever.** If the player presses jump 2 seconds before landing, they probably changed their mind. A 6-10 frame buffer (100-170ms) captures intentional early presses without creating ghost jumps long after the input.
+
+## Elite Insight
+Hollow Knight stacks coyote time and jump buffering together — you can run off a ledge and press jump slightly late (coyote) or press jump slightly early before landing (buffer). The combination makes every jump feel perfectly responsive.
+
+## Systems Thinking Connection
+The RPG queues the next move command while the current move animates — that is a command buffer. The Shooter buffers fire input between cooldowns. Input buffering is a universal UX pattern: absorb early input and apply it at the correct moment.`,
     starterCode: `#include <iostream>
 using namespace std;
 
@@ -333,11 +342,11 @@ int main() {
     return 0;
 }`,
     tests: [
-      { id: "p2-t1", description: "Player position printed", expectedOutput: "Player: (388, 100)" },
-      { id: "p2-t2", description: "FSM active printed", expectedOutput: "FSM: active" },
-      { id: "p2-t3", description: "Coyote time printed", expectedOutput: "Coyote: 0.1" },
-      { id: "p2-t4", description: "Jump buffer printed", expectedOutput: "Buffer: 0.1" },
-      { id: "p2-t5", description: "Accel printed", expectedOutput: "Accel: 600" },
+      { id: "g1", description: "Player position printed", expectedOutput: "Player: (388, 100)" },
+      { id: "g2", description: "FSM active printed", expectedOutput: "FSM: active" },
+      { id: "g3", description: "Coyote time printed", expectedOutput: "Coyote: 0.1" },
+      { id: "g4", description: "Jump buffer printed", expectedOutput: "Buffer: 0.1" },
+      { id: "g5", description: "Accel printed", expectedOutput: "Accel: 600" },
     ],
     hints: [
       "Add const float JUMP_BUFFER = 0.1f; and float jump_buffer_timer = 0.0f; Add cout << \"Buffer: \" << JUMP_BUFFER << endl; in startup prints.",

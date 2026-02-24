@@ -5,7 +5,7 @@ export const lessonShooter47: Lesson = {
   title: "Difficulty Curve v0",
   description: "Difficulty Curve v0 — Phase 5: Wave & Scoring.",
   order: 47,
-  xpReward: 150,
+  xpReward: 100,
   tier: "pro",
   concepts: ["difficulty curve", "lookup table", "speed scaling", "game balance"],
   part1: {
@@ -26,7 +26,16 @@ Wave 1: easy
 Wave 5: normal
 Wave 10: hard
 Pattern: difficulty-curve
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Scaling enemy speed linearly per wave.** Linear scaling means wave 20 enemies are 20x faster than wave 1 — impossible to dodge. Use diminishing returns: wave_speed = base + log(wave) * factor. The curve should challenge, not punish.
+
+## Elite Insight
+Resident Evil 4 adjusts difficulty based on player performance using internal difficulty tables. Your lookup table approach is the data-driven foundation — designers can tune the curve without recompiling.
+
+## Systems Thinking Connection
+RPG (L87) and Crawler (L47) implement difficulty scaling too. Every path faces the same design challenge: escalating difficulty must match player skill growth. Data tables make tuning possible without code changes.`,
     starterCode: `#include <iostream>
 using namespace std;
 struct Diff{float mult;int cnt;const char* lbl;};
@@ -63,7 +72,9 @@ int main(){
       { id: "t3", description: "pattern", expectedOutput: "Pattern: difficulty-curve" },
     ],
     hints: [
-      "if(w<=3) return easy; if(w<=7) return normal; if(w<=12) return hard; return brutal;",
+      "The difficulty system maps wave numbers to tiers -- think about which ranges go to which tier.",
+      "Use chained if statements checking wave thresholds: 1-3 is easy, 4-7 is normal, 8-12 is hard, 13+ is brutal.",
+      "if(w<=3) return {1.0f,3,\"easy\"}; if(w<=7) return {1.4f,4,\"normal\"}; if(w<=12) return {1.9f,5,\"hard\"}; return {2.5f,5,\"brutal\"};",
     ],
     estimatedMinutes: 10,
   },
@@ -639,6 +650,8 @@ int main(){
       { id: "g3", description: "gate A", expectedOutput: "GATE A: PASSED" },
     ],
     hints: [
+      "The getDifficulty function should return different settings depending on which wave range the player is in.",
+      "Use chained if statements checking wave thresholds. Each tier returns a Difficulty struct with speed_mult, enemy_count, and label.",
       "Four if/return blocks: wave<=3 easy, wave<=7 normal, wave<=12 hard, else brutal.",
     ],
     estimatedMinutes: 20,

@@ -59,7 +59,10 @@ Vec2i: (5, 5)
 Enemy: (9, 7)
 Distance: 6
 Types: OK
-\`\`\``,
+\`\`\`
+
+## Systems Thinking Connection
+The Crawler uses explicit 3D coordinate types (Vector3) to prevent mixing world-space and screen-space positions. Type safety catches coordinate bugs at compile time instead of letting them become visual glitches at runtime.`,
     starterCode: `#include <iostream>
 using namespace std;
 
@@ -531,7 +534,6 @@ int main() {
       "Add struct Vec2i { int x = 0; int y = 0; }; and enum TileType { TILE_FLOOR=0, TILE_WALL=1 }; before struct World.",
       "In struct World, replace player_x/player_y with Vec2i player = {5, 5}; and enemy_x/enemy_y with Vec2i enemy_pos = {9, 7};",
       "Update every world.player_x to world.player.x and world.enemy_x to world.enemy_pos.x.",
-      "Replace tiles[y][x] == 1 with tiles[y][x] == TILE_WALL everywhere, including initTiles().",
     ],
     estimatedMinutes: 18
   }

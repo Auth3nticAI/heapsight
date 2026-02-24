@@ -5,7 +5,7 @@ export const lessonCrawler15: Lesson = {
   title: "Milestone: Puzzle Room",
   description: "Capstone combining push blocks, pressure plates, and event-triggered door unlock. Push the purple block onto the green plate to automatically open the puzzle door. One-shot activation pattern: a boolean flag prevents the trigger from firing more than once.",
   order: 15,
-  xpReward: 150,
+  xpReward: 300,
   tier: "pro",
   concepts: ["event triggers", "one-shot activation", "state machines", "puzzle door", "spatial puzzle capstone"],
   part1: {
@@ -41,8 +41,35 @@ if (!puzzle_solved && plate_is_active) {
 - **Door unlock = tile write**: \`dungeon[pdoor_z][pdoor_x] = 0\` removes the door tile
 - **State machine**: game_state 0=playing, 1=items win, 2=puzzle solved
 - **Spatial puzzle**: player must navigate 3D space to push block onto plate
+
+
+## Beginner Trap
+**Triggering events every frame instead of once.** Without a one-shot guard, stepping on a pressure plate fires the event 60 times per second. Use a boolean flag: check if not triggered, fire the event, set triggered to true.
+
+## Elite Insight
+Zelda dungeons use one-shot triggers for puzzle mechanics — push a block onto a switch, the door opens once and stays open. The "one-shot guard" is a fundamental game design pattern found in every puzzle game.
+
+## Systems Thinking Connection
+The RPG uses one-shot triggers for room transitions and loot pickups. The Shooter uses them for powerup collection. One-shot activation is a universal pattern — fire once, set a flag, never fire again.`,
+    starterCode: `
+#include <iostream>
+using namespace std;
+
+int main() {
+    bool puzzle_solved = false;
+    bool plate_active = true;  // simulate: block is on the plate
+
+    // TODO 1: If puzzle is NOT solved AND plate is active,
+    //         set puzzle_solved to true (one-shot guard pattern)
+
+    cout << "Blocks: 1" << endl;
+    cout << "Plates: 1" << endl;
+    // TODO 2: Print "Puzzle: push-plate-door"
+    // TODO 3: Print "Solved: yes" or "Solved: no" using the ternary operator
+    //         Hint: (puzzle_solved ? "yes" : "no")
+    return 0;
+}
 `,
-    starterCode: "",
     solutionCode: `
 #include <iostream>
 using namespace std;

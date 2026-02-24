@@ -1,7 +1,7 @@
 import type { Lesson } from "@/types/lesson";
 
 const lessonPlatformer35: Lesson = {
-  id: "platformer-35-milestone-system-pipeline",
+  id: "platformer-35-system-pipeline-gate",
   title: "Milestone: System Pipeline",
   description: "Milestone: gameFrame() calls all 4 systems. The physics pipeline is complete and explicit.",
   order: 35,
@@ -30,7 +30,16 @@ Implement \`gameFrame(World& w)\` calling all 4 systems. Implement \`printPipeli
 Pipeline: input -> physics -> collision -> render
 Passes: 4
 Pattern: system-pipeline
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Running systems in arbitrary order.** If collision runs before physics, you detect collisions with stale positions from last frame. Define and enforce the pipeline order: Input > Physics > Collision > Cleanup > Render.
+
+## Elite Insight
+Unity defines execution order numerically. Unreal uses tick groups. ECS frameworks use explicit system scheduling. Your gameFrame() function is the manual equivalent — a fixed pipeline that guarantees systems run in the correct sequence.
+
+## Systems Thinking Connection
+RPG L15 and Shooter L35 enforce the same system pipeline. The Crawler runs 3D systems in a fixed order. Pipeline ordering is a universal architecture constraint — every path must guarantee systems run in the correct sequence.`,
     starterCode: `#include <iostream>
 using namespace std;
 void inputSystem(){}

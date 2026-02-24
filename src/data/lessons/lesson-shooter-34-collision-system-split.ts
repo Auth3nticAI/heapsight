@@ -5,7 +5,7 @@ export const lessonShooter34: Lesson = {
   title: "Collision System Split",
   description: "Collision System Split — building the modular game architecture.",
   order: 34,
-  xpReward: 150,
+  xpReward: 100,
   tier: "pro",
   concepts: ["system extraction", "collisionSystem", "AABB", "physics separation"],
   part1: {
@@ -33,7 +33,16 @@ System[1]: movement
 System[2]: collision
 System[3]: render
 Pattern: collision-module
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Applying collision responses (deactivate, deal damage) inside the detection loop.** Detect all collisions first into a result list, then apply responses in a separate pass. Mixing detection with response creates order-dependent bugs.
+
+## Elite Insight
+Professional physics engines split collision into broadphase (find potential pairs), narrowphase (exact test), and resolution (apply response). Your split follows the same pipeline: detect first, respond second.
+
+## Systems Thinking Connection
+RPG (L18) isolates combat resolution. Platformer (L34) isolates collision response. The Crawler separates hit detection from damage. Detection-then-resolution prevents order-dependent bugs in every game genre.`,
     starterCode: `#include <iostream>
 #include <string>
 using namespace std;
@@ -77,7 +86,9 @@ int main() {
       { id: "t3", description: "prints pattern", expectedOutput: "Pattern: collision-module" },
     ],
     hints: [
-      "Register all 4: input(0), movement(1), collision(2), render(3).",
+      "Think about what systems a game loop needs and in what order they run.",
+      "There are 4 systems to register at indices 0-3: input, movement, collision, and render.",
+      "Call registerSystem(0, \"input\"); registerSystem(1, \"movement\"); registerSystem(2, \"collision\"); registerSystem(3, \"render\");",
     ],
     estimatedMinutes: 10,
   },

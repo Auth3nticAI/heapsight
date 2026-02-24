@@ -6,7 +6,7 @@ const lessonPlatformer10: Lesson = {
   description: "All Phase 1 techniques combined: FSM, air control, coyote time, jump buffer. Add three static platforms and a visual HUD.",
   order: 10,
   xpReward: 100,
-  tier: "pro",
+  tier: "free",
   concepts: ["milestone", "platform collision", "HUD overlay", "phase 1 integration"],
   part1: {
     title: "Concept: Phase 1 Complete",
@@ -56,7 +56,16 @@ for (int i = 0; i < PLAT_COUNT; i++) {
 
 ## Milestone Check
 **Q:** Why check \`player_y + PLAYER_H <= plat_y[i] + 10\`?
-**A:** The +10 tolerance prevents the player from snapping to the platform top when coming from below. Without it, the player would get stuck on the underside of platforms.`,
+**A:** The +10 tolerance prevents the player from snapping to the platform top when coming from below. Without it, the player would get stuck on the underside of platforms.
+
+## Beginner Trap
+**Adding new mechanics before the core loop (move, jump, land, collide) works perfectly.** Wall jumps do not fix a broken ground collision. Verify the minimal platformer end-to-end before layering complexity.
+
+## Elite Insight
+Super Mario Bros shipped with only run and jump. Mega Man added shooting. Celeste added dash. Every great platformer starts with a tight core loop and layers mechanics on top. Your milestone proves the core is solid.
+
+## Systems Thinking Connection
+Every path hits this milestone — RPG L10, Shooter L10, Crawler L10. The core loop test is universal: prove the minimal viable game works before building on it. The genre changes, the milestone principle does not.`,
     starterCode: `#include <iostream>
 using namespace std;
 
@@ -379,11 +388,11 @@ int main() {
     return 0;
 }`,
     tests: [
-      { id: "p2-t1", description: "Player position printed", expectedOutput: "Player: (388, 100)" },
-      { id: "p2-t2", description: "FSM active printed", expectedOutput: "FSM: active" },
-      { id: "p2-t3", description: "Coyote time printed", expectedOutput: "Coyote: 0.1" },
-      { id: "p2-t4", description: "Jump buffer printed", expectedOutput: "Buffer: 0.1" },
-      { id: "p2-t5", description: "Platform count printed", expectedOutput: "Platforms: 3" },
+      { id: "g1", description: "Player position printed", expectedOutput: "Player: (388, 100)" },
+      { id: "g2", description: "FSM active printed", expectedOutput: "FSM: active" },
+      { id: "g3", description: "Coyote time printed", expectedOutput: "Coyote: 0.1" },
+      { id: "g4", description: "Jump buffer printed", expectedOutput: "Buffer: 0.1" },
+      { id: "g5", description: "Platform count printed", expectedOutput: "Platforms: 3" },
     ],
     hints: [
       "Add PLAT_COUNT=3, plat_x[], plat_y[], plat_w[], PLAT_H=16 at file scope. Add cout << \"Platforms: \" << PLAT_COUNT << endl;",

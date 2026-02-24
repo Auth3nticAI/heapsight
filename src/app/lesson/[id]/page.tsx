@@ -28,6 +28,8 @@ import LessonMemoryViz from "@/components/lesson/LessonMemoryViz";
 import GameCanvasWrapper from "@/components/GameCanvasWrapper";
 import PartProgressIndicator from "@/components/lesson/PartProgressIndicator";
 import PaywallModal from "@/components/PaywallModal";
+import MakeItYoursModal from "@/components/MakeItYoursModal";
+import { getCustomizationForMilestone } from "@/data/customization-surfaces";
 import Link from "next/link";
 import confetti from "canvas-confetti";
 import { updateStreakOnCompletion } from "@/lib/streak-manager";
@@ -96,6 +98,14 @@ export default function LessonPage() {
   // Milestone sharing modal
   const [showMilestoneModal, setShowMilestoneModal] = useState(false);
   const [milestoneCount, setMilestoneCount] = useState(0);
+
+  // Make It Yours (creative freedom) modal
+  const [showMakeItYours, setShowMakeItYours] = useState(false);
+  const [makeItYoursData, setMakeItYoursData] = useState<{
+    prompt: string;
+    suggestions: string[];
+    title: string;
+  } | null>(null);
 
   // Ref to track if we're waiting for console output to run submit validation
   const pendingSubmitRef = useRef(false);
@@ -476,6 +486,19 @@ export default function LessonPage() {
         .is("completed_at", null)
         .then(() => {});
 
+      // GitHub auto-commit (fire-and-forget — non-blocking)
+      fetch("/api/github/commit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          lessonId: lesson.id,
+          code: activeCode,
+          lessonNumber: lesson.order,
+          title: lesson.title,
+          path: progressPath,
+        }),
+      }).catch(() => {});
+
       // Update streak & daily goal
       const [streakResult, dailyResult] = await Promise.all([
         updateStreakOnCompletion(user.id),
@@ -548,6 +571,19 @@ export default function LessonPage() {
             // localStorage may be unavailable in some browser configurations
           }
         }
+      }
+
+      // "Make It Yours" creative freedom modal at milestone lessons
+      const customization = getCustomizationForMilestone(lesson.order, lessonPath);
+      if (customization) {
+        setMakeItYoursData({
+          prompt: customization.prompt,
+          suggestions: customization.suggestions,
+          title: `Lesson ${lesson.order} Complete!`,
+        });
+        // Show after other celebration overlays (milestone sharing takes 12s, so use 16s if both)
+        const delay = showMilestoneModal ? 16000 : 13000;
+        setTimeout(() => setShowMakeItYours(true), delay);
       }
 
       // Show paywall after completing last free lesson (when next is pro)
@@ -986,6 +1022,17 @@ export default function LessonPage() {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Make It Yours Modal (creative freedom at milestones) */}
+      {makeItYoursData && (
+        <MakeItYoursModal
+          isOpen={showMakeItYours}
+          onClose={() => setShowMakeItYours(false)}
+          prompt={makeItYoursData.prompt}
+          milestoneTitle={makeItYoursData.title}
+          suggestions={makeItYoursData.suggestions}
+        />
       )}
 
       {/* Paywall Modal */}

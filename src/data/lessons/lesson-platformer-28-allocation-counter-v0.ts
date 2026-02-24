@@ -30,7 +30,16 @@ Then simulate a leaky frame: reset the counter, call countAlloc() once.
 Frame allocs: 0
 Heap: clean
 Pattern: alloc-counter
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Ignoring allocations that happen "only once per level load."** Even one allocation per level transition is a stall that causes a visible hitch. The goal is zero heap allocations during gameplay — no exceptions, no excuses.
+
+## Elite Insight
+Carmack set the standard: zero heap allocations during gameplay in Doom and Quake. Every allocation is a potential stall, a potential fragmentation event, and a potential leak. Your counter makes this discipline measurable.
+
+## Systems Thinking Connection
+RPG L28 and Shooter L28 track the same metric. The Crawler counts allocations too. Allocation counting is the universal health check — every path must prove zero heap activity during the game loop.`,
     starterCode: `#include <iostream>
 using namespace std;
 

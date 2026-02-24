@@ -5,7 +5,7 @@ export const lessonShooter37: Lesson = {
   title: "Wave Spawner v0",
   description: "Wave Spawner v0 — expanding the modular game architecture.",
   order: 37,
-  xpReward: 150,
+  xpReward: 100,
   tier: "pro",
   concepts: ["system extraction", "waveSystem", "wave progression", "separation of concerns"],
   part1: {
@@ -28,7 +28,16 @@ void waveSystem(World& w) {
 \`\`\`
 WaveSystem: active
 Pattern: wave-spawner
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Spawning the next wave before the current wave is cleared.** If waves overlap, the screen fills with enemies and the player is overwhelmed. Check that all enemies from the current wave are dead before spawning the next wave.
+
+## Elite Insight
+Wave-based spawning is a game design pattern from Space Invaders: clear the screen, advance difficulty, spawn the next formation. The spawner is a state machine: Spawning > Active > Cleared > NextWave.
+
+## Systems Thinking Connection
+The RPG spawns enemies from room data on transition. The Crawler generates enemies per floor. Your wave spawner is the shooter-specific version — timed enemy waves that escalate difficulty, driven by data tables.`,
     starterCode: `#include <iostream>
 using namespace std;
 int wave=1;
@@ -70,7 +79,9 @@ int main() {
       { id: "t3", description: "pattern tag", expectedOutput: "Pattern: wave-spawner" },
     ],
     hints: [
-      "If !enemies_alive, increment wave and print \"Wave \" << wave << \" started\".",
+      "The wave system checks whether any enemies remain before advancing.",
+      "When no enemies are alive, you need to increment the wave counter and announce the new wave.",
+      "Inside the if(!enemies_alive) block, add: cout<<\"Wave \"<<wave<<\" started\"<<endl;",
     ],
     estimatedMinutes: 10,
   },

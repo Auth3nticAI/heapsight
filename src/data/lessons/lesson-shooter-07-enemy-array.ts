@@ -6,7 +6,7 @@ export const lessonShooter7: Lesson = {
   description: "Spawn 5 enemies in formation using parallel arrays — your first taste of Structure of Arrays.",
   order: 7,
   xpReward: 50,
-  tier: "pro",
+  tier: "free",
   concepts: ["parallel arrays", "SoA (implicit)", "initialization loops", "formation spawning"],
   part1: {
     title: "Concept: Parallel Arrays Track Multiple Properties",
@@ -55,7 +55,16 @@ for (int i = 0; i < MAX_ENEMIES; i++) {
 - The CPU loves contiguous memory — SoA is cache-friendly
 
 ## Your Task
-Spawn 5 enemies in formation and count them. Print the results.`,
+Spawn 5 enemies in formation and count them. Print the results.
+
+## Beginner Trap
+**Spawning enemies at random positions without checking for overlap.** Two enemies at the same position look like one enemy with double HP. Check that each spawn position is far enough from existing enemies before placing.
+
+## Elite Insight
+Formation spawning — placing enemies in grids, V-shapes, or circles — dates back to Space Invaders. The spawn pattern is data (positions), not code (random). Your formation loop follows the same data-driven spawn approach.
+
+## Systems Thinking Connection
+The RPG places enemies at grid positions from room data. The Crawler places enemies from spawn budgets. All paths spawn entities from data — the coordinate system changes, but the "iterate positions, create entities" pattern is identical.`,
     starterCode: `#include <iostream>
 using namespace std;
 

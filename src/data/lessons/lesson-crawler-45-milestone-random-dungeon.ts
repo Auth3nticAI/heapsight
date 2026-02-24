@@ -44,7 +44,16 @@ Milestone: Random Dungeon is a core 3D engine concept. Doom, Quake, and modern e
 ## Mastery Check
 Question: Why does milestone: random dungeon matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Testing generation with only one seed.** A single seed cannot reveal generation bugs — some seeds may produce overlapping rooms, disconnected areas, or impossible layouts. Test with at least 20 different seeds to verify robustness.
+
+## Elite Insight
+Spelunky tests level generation with thousands of seeds to find degenerate cases. Professional procedural generation includes a "seed sweep" test that generates hundreds of levels and checks invariants (connectivity, minimum room count, no overlaps).
+
+## Systems Thinking Connection
+The RPG uses hand-crafted rooms with no procedural generation. The Shooter generates wave patterns from data tables. Your seeded dungeon generation is the most complex content creation system across all four paths.`,
     starterCode: `#include <iostream>
 using namespace std;
 

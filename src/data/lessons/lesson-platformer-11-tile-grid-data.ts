@@ -47,7 +47,16 @@ Print tile grid dimensions: size, column count, row count.
 
 ## Mastery Check
 **Q:** What pixel position is tile (row=5, col=3)?
-**A:** x = 3 * 32 = 96, y = 5 * 32 = 160.`,
+**A:** x = 3 * 32 = 96, y = 5 * 32 = 160.
+
+## Beginner Trap
+**Storing tile data as a 2D array of strings instead of integers.** String comparison is slow and error-prone ("wall" vs "Wall" vs "WALL"). Use integer constants or an enum: 0 = empty, 1 = solid, 2 = coin. Integer lookup is O(1) with no string overhead.
+
+## Elite Insight
+Tiled, the most popular 2D level editor, stores maps as integer grids with a separate tileset definition. Every tile ID is a number that indexes into the tileset. Your grid[y][x] integer approach matches the industry-standard format.
+
+## Systems Thinking Connection
+The RPG stores dungeon rooms as integer grids the same way — 0 for floor, 1 for wall, 2 for door. The Crawler stores 3D voxel data as integers. Grid-based level data with integer tile IDs is the universal level representation across all paths.`,
     starterCode: `#include <iostream>
 using namespace std;
 
@@ -407,11 +416,11 @@ int main() {
     return 0;
 }`,
     tests: [
-      { id: "p2-t1", description: "Player position printed", expectedOutput: "Player: (388, 100)" },
-      { id: "p2-t2", description: "FSM active printed", expectedOutput: "FSM: active" },
-      { id: "p2-t3", description: "Coyote time printed", expectedOutput: "Coyote: 0.1" },
-      { id: "p2-t4", description: "Tile size printed", expectedOutput: "TileSize: 32" },
-      { id: "p2-t5", description: "Tiles active printed", expectedOutput: "Tiles: active" },
+      { id: "g1", description: "Player position printed", expectedOutput: "Player: (388, 100)" },
+      { id: "g2", description: "FSM active printed", expectedOutput: "FSM: active" },
+      { id: "g3", description: "Coyote time printed", expectedOutput: "Coyote: 0.1" },
+      { id: "g4", description: "Tile size printed", expectedOutput: "TileSize: 32" },
+      { id: "g5", description: "Tiles active printed", expectedOutput: "Tiles: active" },
     ],
     hints: [
       "Add const int TILE_SIZE = 32; const int COLS = 25; const int ROWS = 14; at file scope. Then declare int tilemap[ROWS][COLS] = { ... };",

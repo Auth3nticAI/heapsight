@@ -7,7 +7,7 @@ const lessonPlatformer49: Lesson = {
   order: 49,
   xpReward: 100,
   tier: "pro",
-  concepts: [],
+  concepts: ["knockback", "force-application", "hit-response"],
   part1: {
     title: "Concept: Knockback",
     type: "concept",
@@ -29,7 +29,13 @@ Knockback + invulnerability frames (iframes) are a design pair. Without iframes,
 
 ## Your Task
 Print the knockback parameters:
-`,
+
+
+## Beginner Trap
+**Applying knockback as a position offset instead of a velocity impulse.** Position teleporting ignores walls and other collision. Apply knockback as a velocity impulse and let the physics system resolve it naturally — the player slides along walls instead of teleporting through them.
+
+## Systems Thinking Connection
+The Shooter applies explosion pushback as velocity impulses. The RPG has no real-time knockback (turn-based). The Crawler applies 3D knockback vectors. Velocity-based impulses that respect collision are the correct knockback implementation across all real-time paths.`,
     starterCode: `
 #include <iostream>
 using namespace std;

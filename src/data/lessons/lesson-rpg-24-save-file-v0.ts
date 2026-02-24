@@ -48,7 +48,16 @@ Saved room: 0
 Saved hp: 20
 Save: v0
 Pattern: save-file
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Writing raw structs to disk with fwrite().** Struct padding and field alignment differ between compilers and platforms. A save file from one build may be garbage on another. Serialize field by field in a defined order.
+
+## Elite Insight
+Bethesda save files (Skyrim, Fallout) use tagged key-value pairs so new fields do not break old saves. Each field has a string tag and a type marker. Your explicit field-by-field write is the simplified version of this approach.
+
+## Systems Thinking Connection
+Every path implements save/load — Platformer uses checkpoint-based saves (L24), Shooter saves high scores and progress. The serialization pattern is identical: write fields in order, read them back in the same order.`,
     starterCode: `#include <iostream>
 #include <cstdint>
 using namespace std;

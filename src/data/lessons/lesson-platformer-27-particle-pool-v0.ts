@@ -29,7 +29,16 @@ Pool: 32 slots
 Spawned: 4
 After decay: 0 active
 Pattern: particle-pool
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Allocating particles with new/malloc when the player collects a coin.** Coin collection can happen every frame in a dense level. If each collection spawns 10 particles with new, that is 10 heap allocations per frame. Use the pool — zero allocation, same visual result.
+
+## Elite Insight
+Every particle system in professional engines uses pool allocation. Unity ParticleSystem pre-allocates its maximum capacity. Unreal Niagara uses pool-backed emitters. Pool-based particles maintain the heap-freeze guarantee under heavy visual effects.
+
+## Systems Thinking Connection
+The Shooter pools bullet particles and explosion effects. The RPG pools combat text popups. Particle pools are universal because particles are the highest-frequency spawn/despawn entities in any game.`,
     starterCode: `#include <iostream>
 using namespace std;
 

@@ -31,7 +31,16 @@ if(on_plat) player_x += (plat_x - plat_prev_x);
 ## Your Task
 
 Simulate 3 frames of platform motion and print the results.
-`,
+
+
+## Beginner Trap
+**Not applying the platform velocity to the player.** If the player stands on a moving platform but only uses their own velocity, they slide off. Add the platform delta-position to the player position each frame while standing on it.
+
+## Elite Insight
+Half-Life 2 tracks which entity the player is "parented" to and applies the parent entity velocity to the player. This relative-motion approach works for elevators, trains, and any moving surface the player can ride.
+
+## Systems Thinking Connection
+The Platformer implements moving platforms (L38) with the same relative-motion pattern in 2D. The problem is identical: detect "standing on," apply platform delta, release when the player jumps. Dimension count does not change the logic.`,
     starterCode: `
 #include <iostream>
 #include <cmath>

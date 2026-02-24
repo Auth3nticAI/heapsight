@@ -44,7 +44,16 @@ Entity Placement is a core 3D engine concept. Doom, Quake, and modern engines al
 ## Mastery Check
 Question: Why does entity placement matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Spawning entities on wall tiles or inside other entities.** Always check that the spawn position is a floor tile and that no other entity already occupies it. A valid-position check prevents entities from spawning inside geometry.
+
+## Elite Insight
+Diablo II uses spawn budgets per room type — a library spawns 2-4 mages, a crypt spawns 3-6 skeletons. The entity count and type are data-driven, not hardcoded. Your room-based spawn budget follows the same design.
+
+## Systems Thinking Connection
+The RPG spawns enemies at fixed grid positions from room data. The Shooter places enemies via wave definitions. Your spawn-budget system is the procedural version — automatically placing entities based on room type and difficulty level.`,
     starterCode: `#include <iostream>
 using namespace std;
 

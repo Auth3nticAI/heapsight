@@ -59,7 +59,10 @@ Resolve: MOVE_RIGHT -> (6, 5)
 Player: (6, 5)
 Resolve: MOVE_DOWN -> (6, 6)
 Player: (6, 6)
-\`\`\``,
+\`\`\`
+
+## Systems Thinking Connection
+The Shooter path processes player input the same way: raw key state becomes an intent struct, and a separate resolve function decides what happens. Decoupling input from action lets you swap control schemes without touching game logic.`,
     starterCode: `#include <iostream>
 using namespace std;
 

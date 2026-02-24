@@ -36,7 +36,13 @@ Unity's ECS uses explicit system ordering via \`[UpdateAfter]\` and \`[UpdateBef
 
 ## Mastery Check
 Q: Why print system names before the game loop, not inside it?
-A: System registration is a startup assertion, not per-frame work. Printing it once verifies the pipeline without adding per-frame overhead.`,
+A: System registration is a startup assertion, not per-frame work. Printing it once verifies the pipeline without adding per-frame overhead.
+
+## Beginner Trap
+**Reading IsKeyDown in multiple systems.** If physics reads LEFT and collision reads LEFT independently, you get inconsistent behavior when both run in the same frame. Read input once into a snapshot struct, pass it to all systems.
+
+## Systems Thinking Connection
+RPG L31 and Shooter L31 split input the same way. The Crawler records raw input for replays. Input isolation is the first module split in every path — it sets the pattern for all subsequent system extractions.`,
     starterCode: `#include <iostream>
 using namespace std;
 

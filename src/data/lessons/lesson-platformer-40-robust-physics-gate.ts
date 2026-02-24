@@ -7,7 +7,7 @@ const lessonPlatformer40: Lesson = {
   order: 40,
   xpReward: 300,
   tier: "pro",
-  concepts: [],
+  concepts: ["system-integration", "physics-pipeline", "milestone"],
   part1: {
     title: "Concept: Robust Physics Milestone",
     type: "concept",
@@ -29,7 +29,13 @@ This is what "production-quality physics" means. Unity's CharacterController, Go
 
 ## Your Task
 Print all five status lines:
-`,
+
+
+## Beginner Trap
+**Declaring physics "robust" without edge-case testing.** Test: maximum velocity, zero-size entities, negative positions, simultaneous collisions from two directions. If any edge case crashes or produces wrong results, the physics is not robust.
+
+## Systems Thinking Connection
+RPG L40 and Shooter L40 validate similar modularity milestones. The gate criteria differ by genre, but the principle is identical: prove that your core systems handle edge cases gracefully before building more complexity on top.`,
     starterCode: `
 #include <iostream>
 using namespace std;

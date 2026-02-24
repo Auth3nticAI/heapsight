@@ -44,7 +44,16 @@ Multi-Level Dungeon is a core 3D engine concept. Doom, Quake, and modern engines
 ## Mastery Check
 Question: Why does multi-level dungeon matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Generating all floors at startup.** If the dungeon has 10 floors, generating all 10 on launch wastes memory and time. Generate each floor on demand using a seed derived from the floor number: seed_for_floor_N = base_seed + N.
+
+## Elite Insight
+Minecraft generates chunks on demand as the player explores — never pre-generating the entire world. Seed chaining (floor_seed = hash(base_seed, floor_number)) guarantees the same floor layout for the same base seed.
+
+## Systems Thinking Connection
+The RPG loads rooms from pre-defined data. The Platformer loads levels from arrays. Your on-demand generation is the most memory-efficient content system across all paths — generating content only when the player needs it.`,
     starterCode: `#include <iostream>
 using namespace std;
 

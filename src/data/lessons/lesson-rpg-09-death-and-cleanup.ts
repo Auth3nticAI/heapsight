@@ -51,7 +51,10 @@ Enemy HP: 0/10
 Enemy dead
 Enemies: 0
 Kill: hp-to-zero
-\`\`\``,
+\`\`\`
+
+## Systems Thinking Connection
+The Shooter marks dead entities with an active flag and skips them during updates, deferring actual removal to a cleanup pass. This deferred-removal pattern prevents iterator invalidation across every game genre.`,
     starterCode: `#include <iostream>
 using namespace std;
 

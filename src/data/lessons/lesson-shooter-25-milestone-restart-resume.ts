@@ -78,7 +78,10 @@ Feeds into: L26-L30 — add particles, power-ups, and allocation counting before
 
 ## Mastery Check
 *Question:* After load, the sig_after differs from sig_before. What is the most likely cause?
-*Answer:* The spawnWave function uses rng_state incorrectly — either rng_state was not set from the saved seed, or it was modified between set and spawnWave call.`,
+*Answer:* The spawnWave function uses rng_state incorrectly — either rng_state was not set from the saved seed, or it was modified between set and spawnWave call.
+
+## Beginner Trap
+**Testing restart but not resume.** A restart that works does not prove load works. Save, quit, load, verify the state signature matches. The round-trip test is the real proof.`,
     starterCode: `#include <iostream>
 #include <cassert>
 using namespace std;

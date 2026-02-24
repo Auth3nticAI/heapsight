@@ -58,7 +58,13 @@ Using == to compare float positions directly. The XOR uses (unsigned)(x * 10.0f)
 
 ## Mastery Check
 **Q:** Why multiply sig by 31 instead of just XOR-ing each tile value?
-**A:** XOR is commutative: XOR of tiles in order {1,2,3} equals {3,2,1}. Multiply-then-add is NOT commutative: different orderings produce different values. Position matters. Tile at row 5 col 3 affects the hash differently than tile at row 3 col 5.`,
+**A:** XOR is commutative: XOR of tiles in order {1,2,3} equals {3,2,1}. Multiply-then-add is NOT commutative: different orderings produce different values. Position matters. Tile at row 5 col 3 affects the hash differently than tile at row 3 col 5.
+
+## Elite Insight
+Age of Empires computes a per-frame hash of all game state to detect multiplayer desync. Your state signature serves the same purpose for single-player replay verification — hash the observable state, compare between recording and playback.
+
+## Systems Thinking Connection
+RPG L23 and Shooter L68 compute state signatures. The Crawler computes floor-level hashes. The hash function and included fields differ by genre, but the purpose is identical: detect state divergence between two runs with the same input.`,
     starterCode: `#include <iostream>
 using namespace std;
 

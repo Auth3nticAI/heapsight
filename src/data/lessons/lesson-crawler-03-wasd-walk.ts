@@ -52,7 +52,16 @@ if (IsKeyDown(KEY_D)) { player_x += right_x * speed;   player_z += right_z * spe
 
 ## Your Task
 
-Compute forward and right vectors from yaw = 0, then simulate one W key press. Print the results.`,
+Compute forward and right vectors from yaw = 0, then simulate one W key press. Print the results.
+
+## Beginner Trap
+**Moving along world axes instead of camera-relative axes.** If the camera faces east and you press W, the player should move east, not north. Build the forward vector from yaw angle using sin/cos, not from fixed world directions.
+
+## Elite Insight
+Every FPS since Quake computes movement vectors from the camera yaw. The forward vector is (sin(yaw), 0, cos(yaw)), and the right vector is the perpendicular. This decouples movement direction from world orientation.
+
+## Systems Thinking Connection
+The RPG path moves on a grid — one tile per keypress, no continuous movement. The Shooter moves in 2D screen space. Your 3D movement is the most complex: camera-relative vectors projected onto the ground plane.`,
     starterCode: `#include <iostream>
 #include <cmath>
 using namespace std;

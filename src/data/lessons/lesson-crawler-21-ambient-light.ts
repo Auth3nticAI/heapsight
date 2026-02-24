@@ -31,7 +31,16 @@ float calcAmbient(float wx, float wz) {
 ## Your Task
 
 For dist=12.0, ambient=0.15, compute intensity and print Ambient, Dist, Intensity, and Shading.
-`,
+
+
+## Beginner Trap
+**Using a single brightness value for all tiles regardless of distance.** Without distance-based shading, the dungeon looks flat. Multiply tile color by a factor that decreases with distance from the camera to create depth perception.
+
+## Elite Insight
+Wolfenstein 3D shaded walls by distance — farther walls were drawn darker. This distance-based dimming is the simplest form of atmospheric lighting and predates real lighting calculations. It remains effective for creating depth in grid-based 3D.
+
+## Systems Thinking Connection
+The RPG uses color tinting for different tile types but has no distance shading. The Shooter does not need depth cues in 2D. Your 3D dungeon is the first path to implement spatial lighting — a technique unique to 3D rendering.`,
     starterCode: `
 #include <iostream>
 #include <cmath>

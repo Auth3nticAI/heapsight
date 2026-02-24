@@ -29,7 +29,16 @@ float queryFloorHeight(float wx, float wz) {
 ## Your Task
 
 Given px=9.0, pz=5.0, CELL=4.0: compute gx=(int)(9.0/4.0), gz=(int)(5.0/4.0), look up height_map[gz][gx], and print Cell, Floor, PlayerY, Slope.
-`,
+
+
+## Beginner Trap
+**Snapping the player to floor height every frame without smoothing.** Abrupt Y changes when crossing slope boundaries feel jarring. Interpolate the player Y toward the target floor height over a few frames for smooth transitions.
+
+## Elite Insight
+Quake used a ground-trace approach: cast a ray downward from the player, find the floor height, then adjust the player Y. Modern engines do the same with swept-capsule traces. Your height-map lookup is the simplified grid version.
+
+## Systems Thinking Connection
+The Platformer handles elevation through gravity and jump arcs — continuous vertical movement. Your height map is the discrete equivalent: the floor tells the player where to stand. Both paths solve "where is the ground?" with different methods.`,
     starterCode: `
 #include <iostream>
 using namespace std;

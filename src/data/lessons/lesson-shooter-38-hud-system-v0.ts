@@ -5,7 +5,7 @@ export const lessonShooter38: Lesson = {
   title: "HUD System v0",
   description: "HUD System v0 — expanding the modular game architecture.",
   order: 38,
-  xpReward: 150,
+  xpReward: 100,
   tier: "pro",
   concepts: ["system extraction", "hudSystem", "render pipeline", "separation of concerns"],
   part1: {
@@ -26,7 +26,16 @@ System[3]: wave
 System[4]: render
 HudSystem: active
 Pattern: hud-system
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Drawing HUD text using game-world coordinates instead of screen coordinates.** The HUD should be drawn after EndMode2D (or in screen space), not inside the game-world rendering pass. HUD elements are screen-anchored, not world-anchored.
+
+## Elite Insight
+Every game engine draws the HUD as a separate pass after world rendering. The HUD reads observable state (score, HP, wave) and draws text/icons at screen positions. Your hudSystem follows the same decoupled architecture.
+
+## Systems Thinking Connection
+RPG (L81) and Platformer (L81) implement HUD systems too. The Crawler draws 3D HUD overlays. HUD rendering is always the last draw pass — it reads game state without modifying it, making it trivially parallelizable.`,
     starterCode: `#include <iostream>
 #include <string>
 using namespace std;
@@ -58,7 +67,9 @@ int main() { auditSystems(); return 0; }`,
       { id: "t4", description: "pattern tag", expectedOutput: "Pattern: hud-system" },
     ],
     hints: [
-      "After the for loop, add: cout<<\"HudSystem: active\"<<endl;",
+      "The HUD is a system too -- it needs to announce itself just like the others.",
+      "You need to print the HUD status line between the system list and the pattern tag.",
+      "Add cout<<\"HudSystem: active\"<<endl; after the for loop and before the Pattern line.",
     ],
     estimatedMinutes: 8,
   },

@@ -44,7 +44,16 @@ Enemy on Grid is a core 3D engine concept. Doom, Quake, and modern engines all i
 ## Mastery Check
 Question: Why does enemy on grid matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Placing enemies at grid centers without converting to world coordinates.** Grid position (5, 3) is not the same as world position (5.0, 0.5, 3.0). Convert grid coordinates to world coordinates by adding 0.5 to center the entity in the tile.
+
+## Elite Insight
+Wolfenstein 3D stored enemy positions as grid coordinates and converted to world space for rendering. The grid-to-world conversion (multiply by tile size, offset by half) is a fundamental operation in every tile-based 3D game.
+
+## Systems Thinking Connection
+The RPG places enemies at grid positions and renders at pixel positions using the same grid-to-screen conversion. The coordinate systems differ (2D tiles vs 3D cubes) but the conversion pattern is identical.`,
     starterCode: `#include <iostream>
 using namespace std;
 

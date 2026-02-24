@@ -73,7 +73,16 @@ void spawnWave(World& w) {
 - Single observable root: print/save/restore with one function call
 
 ## Your Task
-Define a World struct with ship, bullet count, and score. Initialize and print it.`,
+Define a World struct with ship, bullet count, and score. Initialize and print it.
+
+## Beginner Trap
+**Storing game state in global variables.** Globals hide dependencies — any function can read or write any state at any time. A single World struct makes every dependency explicit: functions that take World& declare what they touch.
+
+## Elite Insight
+Carmack advocated for "functional-style" game code where each system takes the world state as input and produces a new state. A single state root makes this practical — the entire game state lives in one place.
+
+## Systems Thinking Connection
+The RPG wraps all game state in a WorldState struct. The Platformer uses a GameState struct. The Crawler uses a DungeonState struct. Every path converges on the same pattern: one struct owns all gameplay data.`,
     starterCode: `#include <iostream>
 using namespace std;
 

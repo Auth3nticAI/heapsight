@@ -29,7 +29,16 @@ Color badge = tick_alloc==0 ? GREEN : RED;
 ## Your Task
 
 Set tick_alloc=0, print Alloc: 0 and Badge: green.
-`,
+
+
+## Beginner Trap
+**Ignoring small allocations because "they are just a few bytes."** One allocation per frame at 60fps is 3600 allocations per minute. The allocator overhead (lock, search, bookkeeping) matters more than the allocation size. Count everything.
+
+## Elite Insight
+Doom and Quake pre-allocate all memory at startup using a zone allocator. Zero heap allocations during gameplay is not a suggestion — it is a hard engineering constraint for consistent frame times. Your allocation counter measures this discipline.
+
+## Systems Thinking Connection
+The RPG (L29) and Shooter (L28) track the same metric. Allocation counting is universal: every path must prove zero heap activity during gameplay. The gate is identical across all four paths because the performance impact is the same.`,
     starterCode: `
 #include <iostream>
 using namespace std;
@@ -57,6 +66,8 @@ int main() {
       { id: "t2", description: "Prints badge color", expectedOutput: "Badge: green" },
     ],
     hints: [
+      "Think about why heap allocations in a game loop are problematic at 60fps.",
+      "Track allocations with a counter that resets each frame -- if it stays zero, the badge is green.",
       "tick_alloc=0 so badge is green. Print Alloc: 0 then Badge: green.",
     ],
     estimatedMinutes: 5,

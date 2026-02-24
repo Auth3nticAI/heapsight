@@ -7,7 +7,7 @@ const lessonPlatformer44: Lesson = {
   order: 44,
   xpReward: 100,
   tier: "pro",
-  concepts: [],
+  concepts: ["double-jump", "jump-count", "air-control"],
   part1: {
     title: "Concept: Double Jump",
     type: "concept",
@@ -30,7 +30,13 @@ Double jump is in Celeste, Hollow Knight, Ori. The 85% power on the second jump 
 
 ## Your Task
 Print the double jump parameters:
-`,
+
+
+## Beginner Trap
+**Resetting the jump counter on wall jump.** If wall jump resets jumps_remaining to 2, the player has infinite jumps by alternating between wall jump and double jump. Only reset jumps_remaining when the player lands on a solid surface, not on wall contact.
+
+## Systems Thinking Connection
+The Shooter has no jump counter (free movement). The RPG is grid-based (no jumping). The Crawler uses 3D movement with no double jump. Jump counting is platformer-specific, but resource counters (ammo, charges, uses) that reset on specific events are universal.`,
     starterCode: `
 #include <iostream>
 using namespace std;

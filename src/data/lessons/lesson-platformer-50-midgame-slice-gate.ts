@@ -5,9 +5,9 @@ const lessonPlatformer50: Lesson = {
   title: "Milestone: Midgame Slice",
   description: "Prove the complete movement toolkit plus hazards and combat in a playable slice.",
   order: 50,
-  xpReward: 400,
+  xpReward: 300,
   tier: "pro",
-  concepts: [],
+  concepts: ["midgame-slice", "game-feel", "milestone"],
   part1: {
     title: "Concept: Midgame Slice Milestone",
     type: "concept",
@@ -28,7 +28,13 @@ A "vertical slice" or "midgame slice" is a game industry term for a short playab
 
 ## Your Task
 Implement \`printMidgameSlice()\`:
-`,
+
+
+## Beginner Trap
+**Treating the midgame slice as "half done."** This gate is a vertical slice — every system works, even if content is minimal. Movement, combat, collectibles, HUD, and level transitions must all function together as an integrated whole.
+
+## Systems Thinking Connection
+RPG L50, Shooter L50, and Crawler L50 all hit the same midgame gate. The vertical slice proves architecture completeness — genre-specific features are built, connected, and tested before the second half of development.`,
     starterCode: `
 #include <iostream>
 using namespace std;

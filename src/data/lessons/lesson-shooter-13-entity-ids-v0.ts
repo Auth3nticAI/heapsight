@@ -58,7 +58,16 @@ The ID \`is\` the array index. Simple, fast, zero overhead.
 - The ID is the index — no separate lookup table needed
 
 ## Your Task
-Implement findFreeSlot and use it to spawn two entities. Print their IDs and verify they're distinct.`,
+Implement findFreeSlot and use it to spawn two entities. Print their IDs and verify they're distinct.
+
+## Beginner Trap
+**Using array index as an entity reference.** When entity at index 5 is removed and index 6 shifts down to index 5, every reference to "entity 6" now points to entity 5. Use stable integer IDs that never change for a given entity.
+
+## Elite Insight
+Unity ECS uses generation counters with entity IDs — each reused slot increments a version number. If your stored version does not match the current slot version, the reference is stale. Your integer ID system is the simplified foundation.
+
+## Systems Thinking Connection
+The RPG (L13) and Crawler (L32) solve the same identity problem. Stable entity IDs are the prerequisite for any system that stores references — save/load, combat targeting, AI behavior all require entities to have persistent identities.`,
     starterCode: `#include <iostream>
 using namespace std;
 

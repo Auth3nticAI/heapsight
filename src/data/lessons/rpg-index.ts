@@ -50,6 +50,56 @@ import { lessonRPG47 } from "./lesson-rpg-47-shop-buy-command";
 import { lessonRPG48 } from "./lesson-rpg-48-loot-tables";
 import { lessonRPG49 } from "./lesson-rpg-49-status-effects";
 import { lessonRPG50 } from "./lesson-rpg-50-milestone-midgame-slice";
+import { lessonRPG51 } from "./lesson-rpg-51-npc-entities";
+import { lessonRPG52 } from "./lesson-rpg-52-interaction-command";
+import { lessonRPG53 } from "./lesson-rpg-53-dialogue-data";
+import { lessonRPG54 } from "./lesson-rpg-54-quest-struct";
+import { lessonRPG55 } from "./lesson-rpg-55-milestone-quest-cycle";
+import { lessonRPG56 } from "./lesson-rpg-56-quest-state-machine";
+import { lessonRPG57 } from "./lesson-rpg-57-rewards-pipeline";
+import { lessonRPG58 } from "./lesson-rpg-58-xp-and-level";
+import { lessonRPG59 } from "./lesson-rpg-59-skill-points";
+import { lessonRPG60 } from "./lesson-rpg-60-milestone-town-to-dungeon";
+import { lessonRPG61 } from "./lesson-rpg-61-save-v1-versioned";
+import { lessonRPG62 } from "./lesson-rpg-62-save-checksum";
+import { lessonRPG63 } from "./lesson-rpg-63-load-migration";
+import { lessonRPG64 } from "./lesson-rpg-64-input-log-v0";
+import { lessonRPG65 } from "./lesson-rpg-65-milestone-replay-a-run";
+import { lessonRPG66 } from "./lesson-rpg-66-replay-playback";
+import { lessonRPG67 } from "./lesson-rpg-67-determinism-pitfalls";
+import { lessonRPG68 } from "./lesson-rpg-68-end-state-signature";
+import { lessonRPG69 } from "./lesson-rpg-69-replay-verification-test";
+import { lessonRPG70 } from "./lesson-rpg-70-gate-b-replay-determinism";
+import { lessonRPG71 } from "./lesson-rpg-71-profiling-timers";
+import { lessonRPG72 } from "./lesson-rpg-72-hot-path-cleanup";
+import { lessonRPG73 } from "./lesson-rpg-73-spatial-queries";
+import { lessonRPG74 } from "./lesson-rpg-74-pool-audit";
+import { lessonRPG75 } from "./lesson-rpg-75-milestone-stress-dungeon";
+import { lessonRPG76 } from "./lesson-rpg-76-command-pattern-formal";
+import { lessonRPG77 } from "./lesson-rpg-77-observer-for-ui";
+import { lessonRPG78 } from "./lesson-rpg-78-strategy-as-tables";
+import { lessonRPG79 } from "./lesson-rpg-79-factory-for-spawns";
+import { lessonRPG80 } from "./lesson-rpg-80-milestone-content-pack";
+import { lessonRPG81 } from "./lesson-rpg-81-hud-v2";
+import { lessonRPG82 } from "./lesson-rpg-82-combat-feedback";
+import { lessonRPG83 } from "./lesson-rpg-83-animation-v0";
+import { lessonRPG84 } from "./lesson-rpg-84-menu-flow";
+import { lessonRPG85 } from "./lesson-rpg-85-milestone-beta-quality";
+import { lessonRPG86 } from "./lesson-rpg-86-assist-mode";
+import { lessonRPG87 } from "./lesson-rpg-87-difficulty-tables";
+import { lessonRPG88 } from "./lesson-rpg-88-crash-proofing";
+import { lessonRPG89 } from "./lesson-rpg-89-refactor-hygiene";
+import { lessonRPG90 } from "./lesson-rpg-90-milestone-public-beta";
+import { lessonRPG91 } from "./lesson-rpg-91-build-id";
+import { lessonRPG92 } from "./lesson-rpg-92-tests-rng";
+import { lessonRPG93 } from "./lesson-rpg-93-tests-save";
+import { lessonRPG94 } from "./lesson-rpg-94-tests-combat";
+import { lessonRPG95 } from "./lesson-rpg-95-gate-c-zero-warnings";
+import { lessonRPG96 } from "./lesson-rpg-96-readme";
+import { lessonRPG97 } from "./lesson-rpg-97-screenshots";
+import { lessonRPG98 } from "./lesson-rpg-98-content-pass";
+import { lessonRPG99 } from "./lesson-rpg-99-release-checklist";
+import { lessonRPG100 } from "./lesson-rpg-100-ship-export-ready";
 
 export const ALL_RPG_LESSONS: Lesson[] = [
   lessonRPG00,
@@ -103,6 +153,56 @@ export const ALL_RPG_LESSONS: Lesson[] = [
   lessonRPG48,
   lessonRPG49,
   lessonRPG50,
+  lessonRPG51,
+  lessonRPG52,
+  lessonRPG53,
+  lessonRPG54,
+  lessonRPG55,
+  lessonRPG56,
+  lessonRPG57,
+  lessonRPG58,
+  lessonRPG59,
+  lessonRPG60,
+  lessonRPG61,
+  lessonRPG62,
+  lessonRPG63,
+  lessonRPG64,
+  lessonRPG65,
+  lessonRPG66,
+  lessonRPG67,
+  lessonRPG68,
+  lessonRPG69,
+  lessonRPG70,
+  lessonRPG71,
+  lessonRPG72,
+  lessonRPG73,
+  lessonRPG74,
+  lessonRPG75,
+  lessonRPG76,
+  lessonRPG77,
+  lessonRPG78,
+  lessonRPG79,
+  lessonRPG80,
+  lessonRPG81,
+  lessonRPG82,
+  lessonRPG83,
+  lessonRPG84,
+  lessonRPG85,
+  lessonRPG86,
+  lessonRPG87,
+  lessonRPG88,
+  lessonRPG89,
+  lessonRPG90,
+  lessonRPG91,
+  lessonRPG92,
+  lessonRPG93,
+  lessonRPG94,
+  lessonRPG95,
+  lessonRPG96,
+  lessonRPG97,
+  lessonRPG98,
+  lessonRPG99,
+  lessonRPG100,
 ].sort((a, b) => a.order - b.order);
 
 export function getRPGLessonById(id: string): Lesson | undefined {

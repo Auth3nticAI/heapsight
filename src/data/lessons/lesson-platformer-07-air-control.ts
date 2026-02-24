@@ -6,7 +6,7 @@ const lessonPlatformer7: Lesson = {
   description: "Reduce horizontal acceleration while airborne. Real platformers feel different in the air than on the ground — this is why.",
   order: 7,
   xpReward: 50,
-  tier: "pro",
+  tier: "free",
   concepts: ["air control", "state-dependent physics", "AIR_ACCEL vs ACCEL", "feel tuning"],
   part1: {
     title: "Concept: State-Dependent Acceleration",
@@ -43,7 +43,16 @@ Simulate air control: print ground acceleration and air acceleration, then print
 
 ## Mastery Check
 **Q:** If AIR_ACCEL is 0, what happens?
-**A:** The player cannot steer at all in the air. Jump direction is fully locked in at jump time. This is used in some puzzle platformers for precise placement mechanics.`,
+**A:** The player cannot steer at all in the air. Jump direction is fully locked in at jump time. This is used in some puzzle platformers for precise placement mechanics.
+
+## Beginner Trap
+**Applying the same acceleration in the air as on the ground.** Air control should feel lighter — use a reduced acceleration multiplier (0.3-0.5x ground speed). Full ground acceleration in midair makes the character feel like it is ice-skating through the sky.
+
+## Elite Insight
+Celeste uses different air-control curves depending on whether the player is rising or falling. The ascending arc has less horizontal control than the descending arc, which makes jumps feel committed but landings feel responsive.
+
+## Systems Thinking Connection
+The Shooter does not have air control — ships move freely in all directions. The RPG moves on a grid with no jump. Your air dampening factor is unique to platformers, but the concept of context-dependent movement speed appears in every genre.`,
     starterCode: `#include <iostream>
 using namespace std;
 
@@ -292,11 +301,11 @@ int main() {
     return 0;
 }`,
     tests: [
-      { id: "p2-t1", description: "Player position printed", expectedOutput: "Player: (388, 100)" },
-      { id: "p2-t2", description: "State printed", expectedOutput: "State: GROUNDED" },
-      { id: "p2-t3", description: "FSM active printed", expectedOutput: "FSM: active" },
-      { id: "p2-t4", description: "Accel printed", expectedOutput: "Accel: 600" },
-      { id: "p2-t5", description: "Air accel printed", expectedOutput: "AirAccel: 300" },
+      { id: "g1", description: "Player position printed", expectedOutput: "Player: (388, 100)" },
+      { id: "g2", description: "State printed", expectedOutput: "State: GROUNDED" },
+      { id: "g3", description: "FSM active printed", expectedOutput: "FSM: active" },
+      { id: "g4", description: "Accel printed", expectedOutput: "Accel: 600" },
+      { id: "g5", description: "Air accel printed", expectedOutput: "AirAccel: 300" },
     ],
     hints: [
       "Add const float AIR_ACCEL = 300.0f; after ACCEL. Add cout << \"AirAccel: \" << AIR_ACCEL << endl; in the startup prints.",

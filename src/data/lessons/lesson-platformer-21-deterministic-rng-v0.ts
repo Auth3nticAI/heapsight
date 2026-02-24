@@ -59,7 +59,10 @@ Minecraft uses a similar seeded RNG for world generation. Same seed = same world
 
 ## Mastery Check
 **Q:** What happens when you change seed from 42 to 99?
-**A:** You get a completely different sequence of numbers. The sequence is still deterministic (same 99 seed always gives same output), but different from seed 42. Two players with different seeds play different coin layouts.`,
+**A:** You get a completely different sequence of numbers. The sequence is still deterministic (same 99 seed always gives same output), but different from seed 42. Two players with different seeds play different coin layouts.
+
+## Systems Thinking Connection
+The RPG seeds its RNG identically (L21) to guarantee combat outcomes match between recording and playback. The Shooter seeds per-wave for enemy spawn patterns. Deterministic RNG is a cross-path requirement — replay and save/load both depend on reproducible random sequences.`,
     starterCode: `#include <iostream>
 using namespace std;
 

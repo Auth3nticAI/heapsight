@@ -44,7 +44,16 @@ Room Templates is a core 3D engine concept. Doom, Quake, and modern engines all 
 ## Mastery Check
 Question: Why does room templates matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Hardcoding room layouts in the generation code instead of reading from data.** Each new room type requires a code change. Store room layouts as 2D arrays in a data table, and the generator stamps them into the grid without knowing the room details.
+
+## Elite Insight
+Spelunky stores room templates as small tile grids and assembles levels by selecting and connecting templates. The level generator has no knowledge of specific room content — it just picks and places templates. Your approach follows the same pattern.
+
+## Systems Thinking Connection
+The RPG loads room data from arrays — same data-driven approach in 2D. The Platformer loads level data from tile arrays. Template-based level assembly is the standard approach for any game that wants varied content without hand-crafting every room.`,
     starterCode: `#include <iostream>
 using namespace std;
 

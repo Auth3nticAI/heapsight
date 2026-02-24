@@ -38,7 +38,16 @@ B: 6
 Rand: banned
 RNG: single-source
 Pattern: no-rand
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Calling rand() directly in gameplay code instead of the game RNG function.** One stray rand() call breaks determinism silently. The bug is invisible until a replay diverges hundreds of frames later.
+
+## Elite Insight
+Factorio bans all non-deterministic calls in gameplay code — their multiplayer depends on perfect lockstep. A single desync crashes the session. Your no-rand rule enforces the same discipline at a smaller scale.
+
+## Systems Thinking Connection
+The Shooter enforces the same rule — all randomness routes through GameRNG, never through rand(). The Platformer and Crawler follow suit. This discipline is a prerequisite for replay in every path.`,
     starterCode: `#include <iostream>
 #include <cstdint>
 using namespace std;

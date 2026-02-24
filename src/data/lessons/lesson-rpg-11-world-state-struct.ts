@@ -58,7 +58,10 @@ World: hp=20/20
 World: turn=0
 World: kills=0
 Struct: OK
-\`\`\``,
+\`\`\`
+
+## Systems Thinking Connection
+The Platformer groups its game state into a single struct too — Level, Player, Enemies all live under one GameState. When you pass one struct instead of six globals, every function signature tells you exactly what data it touches.`,
     starterCode: `#include <iostream>
 using namespace std;
 
@@ -528,7 +531,6 @@ int main() {
       "Define struct World { int player_x = 5; ... }; World world; before the phase functions.",
       "Replace every bare player_x with world.player_x, enemy_hp with world.enemy_hp, etc.",
       "Keep pending_intent, tiles[][], GRID_W, TILE, and INTENT_* as bare globals.",
-      "Add cout << \"Struct: world\" << endl; to the startup block.",
     ],
     estimatedMinutes: 15
   }

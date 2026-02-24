@@ -1,7 +1,7 @@
 import type { Lesson } from "@/types/lesson";
 
 export const lessonShooter45: Lesson = {
-  id: "shooter-45-gate-c-wave-loop",
+  id: "shooter-45-milestone-wave-loop",
   title: "Milestone: Wave Loop",
   description: "Milestone: Wave Loop — Phase 5: Wave & Scoring.",
   order: 45,
@@ -26,7 +26,16 @@ PowerupTypes: 3
 WeaponModes: 2
 GATE C: PASSED
 Pattern: wave-loop
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Declaring the wave loop complete without testing wave 10+.** Early waves are easy. Late waves stress the spawner, the pool, the collision system, and the scoring. Test at least 15 waves to find the scaling cliff.
+
+## Elite Insight
+Arcade game design is fundamentally about the wave loop: escalating challenge that eventually overwhelms the player. The loop must feel fair at every difficulty level. Your milestone tests this curve.
+
+## Systems Thinking Connection
+RPG validates the combat loop milestone. Crawler validates the roguelike run. Every path has a "gameplay loop" milestone that proves the core experience works end-to-end under escalating pressure.`,
     starterCode: `#include <iostream>
 using namespace std;
 void gateCaudit(){
@@ -55,7 +64,9 @@ int main(){ gateCaudit(); return 0; }`,
       { id: "t4", description: "pattern", expectedOutput: "Pattern: wave-loop" },
     ],
     hints: [
-      "Print 5 inventory lines between GATE C: Wave Loop and GATE C: PASSED.",
+      "GATE C certifies all the wave and scoring features built in Phase 5 so far.",
+      "The inventory includes Systems, WaveTable, EnemyTypes, PowerupTypes, and WeaponModes counts.",
+      "Print: Systems: 5, WaveTable: 5, EnemyTypes: 3, PowerupTypes: 3, WeaponModes: 2, then GATE C: PASSED and Pattern: wave-loop.",
     ],
     estimatedMinutes: 8,
   },
@@ -628,6 +639,8 @@ int main(){
       { id: "g4", description: "pattern", expectedOutput: "Pattern: wave-loop" },
     ],
     hints: [
+      "The GATE C audit function needs to print an inventory of all systems built so far, then confirm the gate passed.",
+      "gateCaudit() should print lines for Systems, WaveTable, EnemyTypes, PowerupTypes, and WeaponModes counts, bookended by the GATE C header and PASSED/Pattern lines.",
       "Copy the Part 1 solution into gateCaudit(), then call gateCaudit() after auditHeap(world);",
     ],
     estimatedMinutes: 15,

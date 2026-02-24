@@ -129,17 +129,17 @@ int main() {
 }`,
     tests: [
       {
-        id: "p1-t1",
+        id: "t1",
         description: "Frame 1 position is correct",
         expectedOutput: "Frame 1: y = 50.22",
       },
       {
-        id: "p1-t2",
+        id: "t2",
         description: "Frame 2 position is correct",
         expectedOutput: "Frame 2: y = 50.67",
       },
       {
-        id: "p1-t3",
+        id: "t3",
         description: "Frame 5 position is correct",
         expectedOutput: "Frame 5: y = 53.33",
       },
@@ -322,23 +322,23 @@ int main() {
 }`,
     tests: [
       {
-        id: "p2-t1",
+        id: "g1",
         description: "Player starts at correct position",
         expectedOutput: "Player: (388, 100)",
       },
       {
-        id: "p2-t2",
+        id: "g2",
         description: "Gravity is set to 800",
         expectedOutput: "Gravity: 800",
       },
       {
-        id: "p2-t3",
+        id: "g3",
         description: "Player x-coordinate is 388",
         expectedOutput: "388",
         isPattern: true,
       },
       {
-        id: "p2-t4",
+        id: "g4",
         description: "Player y-coordinate starts at 100",
         expectedOutput: "100",
         isPattern: true,

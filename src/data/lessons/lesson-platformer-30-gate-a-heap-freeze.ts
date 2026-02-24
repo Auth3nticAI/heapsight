@@ -32,7 +32,16 @@ GATE A: Heap Freeze
 Frame allocs: 0
 Loop: zero heap
 Pattern: gate-a
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Thinking "zero allocations" means "no dynamic behavior."** Pre-allocated pools give you all the dynamic behavior you need — spawn, despawn, recycle — without touching the heap. The constraint is on allocation, not on dynamism.
+
+## Elite Insight
+Console games on PlayStation and Xbox must pass memory certification — no unbounded allocation growth during gameplay. The heap-freeze pattern you are implementing is how every shipped console game passes this requirement.
+
+## Systems Thinking Connection
+RPG L30, Shooter L30, and Crawler L30 all hit the same gate. Heap freeze is the most universal engineering gate in the curriculum — four paths, one standard: zero allocations in the game loop.`,
     starterCode: `#include <iostream>
 using namespace std;
 

@@ -29,7 +29,16 @@ tot += calcPointLight(wx,wz,player_x,player_z,player_light_str);
 ## Your Task
 
 Print Light: player and Strength: 12.
-`,
+
+
+## Beginner Trap
+**Updating dynamic light position after rendering.** If the player moves and you update the light after drawing, the light lags one frame behind. Update dynamic light positions during the update pass, before the render pass.
+
+## Elite Insight
+Doom 3 revolutionized dynamic lighting by computing per-pixel shadows in real time. Your player light is simpler — a moving point light with no shadows — but follows the same principle: light position tracks entity position every frame.
+
+## Systems Thinking Connection
+The RPG has no dynamic lighting. The Shooter has no 3D lighting at all. Dynamic light is uniquely impactful in 3D — it reveals geometry, creates tension, and guides the player through space in ways that 2D games achieve through sprite art.`,
     starterCode: `
 #include <iostream>
 using namespace std;
@@ -57,6 +66,8 @@ int main() {
       { id: "t2", description: "Prints light strength", expectedOutput: "Strength: 12" },
     ],
     hints: [
+      "Think about what changes when the light source moves with the player instead of staying fixed.",
+      "The player position becomes an additional light source -- use the same calcPointLight function with player coordinates.",
       "Just add cout Strength: 12 (hardcoded from player_light_str=12.0f).",
     ],
     estimatedMinutes: 5,

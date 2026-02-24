@@ -58,7 +58,10 @@ Combat: bump
 Player at (5, 5), Enemy at (6, 5)
 Attack!
 Attack: YES
-\`\`\``,
+\`\`\`
+
+## Systems Thinking Connection
+The Platformer uses a similar intent/action split — pressing jump sets a flag, but the physics system processes it next frame. Separating "what the player wants" from "what the game does" prevents order-dependent bugs across all genres.`,
     starterCode: `#include <iostream>
 using namespace std;
 
@@ -591,7 +594,6 @@ int main() {
     ],
     hints: [
       "Add const int INTENT_ATTACK = 5; after INTENT_RIGHT. Add case INTENT_ATTACK: return \"ATTACK\"; to intentName().",
-      "In resolveCommand(), guard at the top: if (pending_intent == INTENT_NONE || pending_intent == INTENT_ATTACK) return;",
       "After wall checks in resolveCommand(), add: if (enemy_alive && new_x == enemy_x && new_y == enemy_y) { pending_intent = INTENT_ATTACK; return; }",
       "resolveCombat() is called from phaseResolve() after resolveCommand(). It only fires when pending_intent == INTENT_ATTACK.",
     ],

@@ -5,7 +5,7 @@ export const lessonShooter42: Lesson = {
   title: "Enemy Types v0",
   description: "Enemy Types v0 — Phase 5: Wave & Scoring.",
   order: 42,
-  xpReward: 150,
+  xpReward: 100,
   tier: "pro",
   concepts: ["enemy types", "type dispatch", "data-driven enemies", "enum pattern"],
   part1: {
@@ -25,7 +25,16 @@ Type 0: BASIC speed 1.0x
 Type 1: FAST speed 1.8x
 Type 2: TANK speed 0.5x
 Pattern: enemy-types
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Creating a new class for each enemy type.** Classes with virtual methods add indirection and break SoA layout. Use an enum type field and a stat table: each enemy type is a row of numbers, not a class hierarchy.
+
+## Elite Insight
+Composition over inheritance is the core insight of ECS. Unity abandoned MonoBehaviour inheritance for DOTS components. Your enum + stat table approach achieves the same result: new enemy types are data, not code.
+
+## Systems Thinking Connection
+RPG uses strategy tables (L78) for enemy behavior. Crawler uses spawn budgets with type IDs (L46). Data-driven entity types scale to any number of types without code changes — the professional standard across all game genres.`,
     starterCode: `#include <iostream>
 using namespace std;
 float getSpeedMult(int type){
@@ -59,7 +68,9 @@ int main(){
       { id: "t3", description: "pattern", expectedOutput: "Pattern: enemy-types" },
     ],
     hints: [
-      "Return 1.8f for type==1 (FAST), 0.5f for type==2 (TANK), 1.0f default.",
+      "Each enemy type has a different speed multiplier -- think about how to branch on the type parameter.",
+      "FAST (type 1) moves at 1.8x speed, TANK (type 2) at 0.5x. BASIC is the default at 1.0x.",
+      "Use if statements: if(type==1) return 1.8f; if(type==2) return 0.5f; return 1.0f;",
     ],
     estimatedMinutes: 10,
   },
@@ -616,6 +627,8 @@ int main(){
       { id: "g3", description: "gate A", expectedOutput: "GATE A: PASSED" },
     ],
     hints: [
+      "Think about how each enemy type should move differently — some faster, some slower than the base speed.",
+      "Focus on the getEnemySpeed function. Check the type parameter: FAST is 1, TANK is 2, BASIC is 0. Multiply base by a different factor for each.",
       "if(type==1) return base*1.8f; if(type==2) return base*0.5f; return base;",
     ],
     estimatedMinutes: 20,

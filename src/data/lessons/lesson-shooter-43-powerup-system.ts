@@ -5,7 +5,7 @@ export const lessonShooter43: Lesson = {
   title: "Power-Up System",
   description: "Power-Up System — Phase 5: Wave & Scoring.",
   order: 43,
-  xpReward: 150,
+  xpReward: 100,
   tier: "pro",
   concepts: ["powerup types", "collectPowerup", "type dispatch", "player buffs"],
   part1: {
@@ -25,7 +25,16 @@ Type 0: HEALTH +1 HP
 Type 1: SPEED +1 speed
 Type 2: SHIELD 1 hit
 Pattern: powerup-types
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Applying powerup effects permanently instead of with a timer.** A speed boost that never expires trivializes the game. Powerups should have a duration: apply effect, start timer, remove effect when timer expires.
+
+## Elite Insight
+Gradius, R-Type, and Galaga all use timed powerups. The design pattern: collect -> apply buff -> start timer -> remove buff. Your type-dispatched collectPowerup follows the same approach with explicit timer management.
+
+## Systems Thinking Connection
+RPG uses timed status effects. Crawler uses timed item effects. The Platformer applies timed dash and invulnerability buffs. Timed powerups are a universal game design pattern — collect, buff, expire.`,
     starterCode: `#include <iostream>
 using namespace std;
 void describePowerup(int type){
@@ -56,7 +65,9 @@ int main(){
       { id: "t3", description: "pattern", expectedOutput: "Pattern: powerup-types" },
     ],
     hints: [
-      "Use a string array: const char* names[]={\"HEALTH +1 HP\",\"SPEED +1 speed\",\"SHIELD 1 hit\"};",
+      "Each powerup type needs a description string -- think about how to map type index to a label.",
+      "You can use an array of strings indexed by the type parameter to look up each description.",
+      "const char* names[]={\"HEALTH +1 HP\",\"SPEED +1 speed\",\"SHIELD 1 hit\"}; then cout<<\"Type \"<<type<<\": \"<<names[type]<<endl;",
     ],
     estimatedMinutes: 10,
   },

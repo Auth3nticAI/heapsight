@@ -7,7 +7,7 @@ const lessonPlatformer45: Lesson = {
   order: 45,
   xpReward: 300,
   tier: "pro",
-  concepts: [],
+  concepts: ["movement-toolkit", "character-controller", "milestone"],
   part1: {
     title: "Concept: Movement Toolkit Milestone",
     type: "concept",
@@ -29,7 +29,13 @@ This is the "character controller" in commercial engines. Unity's CharacterContr
 
 ## Your Task
 Implement \`printToolkit()\` to print all 5 status lines:
-`,
+
+
+## Beginner Trap
+**Testing each movement ability in isolation only.** Dash + wall jump, double jump + dash, wall slide + wall jump into dash — ability combinations create emergent movement. Test every two-ability and three-ability combination to find interaction bugs.
+
+## Systems Thinking Connection
+The Shooter gates weapon systems. The RPG gates combat systems. Every path has an "ability toolkit" gate that proves all player abilities work individually and in combination. The abilities differ, the verification principle is identical.`,
     starterCode: `
 #include <iostream>
 using namespace std;

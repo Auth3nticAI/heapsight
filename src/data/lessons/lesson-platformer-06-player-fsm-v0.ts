@@ -6,7 +6,7 @@ const lessonPlatformer6: Lesson = {
   description: "Replace the boolean flag with a PlayerState enum — your first finite state machine. Explicit states prevent invisible bugs.",
   order: 6,
   xpReward: 50,
-  tier: "pro",
+  tier: "free",
   concepts: ["enum state machine", "explicit transitions", "GROUNDED vs AIRBORNE", "state-dependent logic"],
   part1: {
     title: "Concept: States as Enums",
@@ -325,11 +325,11 @@ int main() {
     return 0;
 }`,
     tests: [
-      { id: "p2-t1", description: "Player position printed", expectedOutput: "Player: (388, 100)" },
-      { id: "p2-t2", description: "Gravity printed", expectedOutput: "Gravity: 800" },
-      { id: "p2-t3", description: "State is GROUNDED at start", expectedOutput: "State: GROUNDED" },
-      { id: "p2-t4", description: "FSM label printed", expectedOutput: "FSM: active" },
-      { id: "p2-t5", description: "Accel printed", expectedOutput: "Accel: 600" },
+      { id: "g1", description: "Player position printed", expectedOutput: "Player: (388, 100)" },
+      { id: "g2", description: "Gravity printed", expectedOutput: "Gravity: 800" },
+      { id: "g3", description: "State is GROUNDED at start", expectedOutput: "State: GROUNDED" },
+      { id: "g4", description: "FSM label printed", expectedOutput: "FSM: active" },
+      { id: "g5", description: "Accel printed", expectedOutput: "Accel: 600" },
     ],
     hints: [
       "Add at file scope: enum PlayerState { GROUNDED, AIRBORNE }; then PlayerState player_state = GROUNDED; and remove bool is_grounded.",

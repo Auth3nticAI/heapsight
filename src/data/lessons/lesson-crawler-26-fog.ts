@@ -28,7 +28,16 @@ if(fog<0) fog=0; if(fog>1) fog=1;
 ## Your Task
 
 Given dist=10, FOG_START=8, FOG_END=24. Print Fog: 0.125 and Range: 8-24.
-`,
+
+
+## Beginner Trap
+**Applying fog before lighting.** If fog darkens a tile and then lighting brightens it, the fog effect is cancelled. Apply lighting first (base color * light), then blend the lit color toward the fog color based on distance.
+
+## Elite Insight
+OpenGL and DirectX apply fog as a post-lighting blend: final_color = lerp(lit_color, fog_color, fog_factor). The order matters because fog represents atmospheric scattering of already-lit surfaces. Your fog lerp follows the same pipeline order.
+
+## Systems Thinking Connection
+The Platformer uses parallax backgrounds for depth. The Shooter has no depth fog in 2D. Fog is a 3D-specific technique that your Crawler shares with every first-person game from Quake to modern titles — distance-based color blending.`,
     starterCode: `
 #include <iostream>
 using namespace std;
@@ -60,6 +69,8 @@ int main() {
       { id: "t2", description: "Prints fog range", expectedOutput: "Range: 8-24" },
     ],
     hints: [
+      "Fog is a linear interpolation based on distance between a start and end threshold.",
+      "Use the formula: fog = (dist - FOG_START) / (FOG_END - FOG_START) and clamp between 0 and 1.",
       "fog=(10-8)/(24-8)=2/16=0.125. Hardcode Fog: 0.125. Add Range: 8-24.",
     ],
     estimatedMinutes: 5,

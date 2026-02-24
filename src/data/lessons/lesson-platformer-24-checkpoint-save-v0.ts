@@ -69,7 +69,16 @@ Pattern: checkpoint-save
 
 ## Mastery Check
 **Q:** Why include score in the checkpoint but not the tilemap?
-**A:** The tilemap is regenerated from LEVEL_DATA + seed. Since the seed is fixed per level, scrambleCoins(w, seed) reproduces the same coin layout. Only player-influenced state (position, score) must be explicitly saved. The seed is the implicit tilemap checkpoint.`,
+**A:** The tilemap is regenerated from LEVEL_DATA + seed. Since the seed is fixed per level, scrambleCoins(w, seed) reproduces the same coin layout. Only player-influenced state (position, score) must be explicitly saved. The seed is the implicit tilemap checkpoint.
+
+## Beginner Trap
+**Saving the entire game state instead of just the checkpoint data.** You do not need to save particle positions or animation frames. Identify the minimal set of data needed to resume: player position, collected coins, current level, score.
+
+## Elite Insight
+Dark Souls saves a minimal state snapshot at bonfires: player position, stats, inventory, and world flags. Transient state (enemy positions, projectiles) regenerates on load. Minimal snapshots make save files small and load times fast.
+
+## Systems Thinking Connection
+The RPG saves player stats, inventory, and room ID — not enemy animation frames. The Shooter saves score, wave, and lives. Every path learns the same lesson: save the minimum state needed to reconstruct the game, not the entire memory image.`,
     starterCode: `#include <iostream>
 using namespace std;
 

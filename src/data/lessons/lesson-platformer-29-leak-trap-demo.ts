@@ -28,7 +28,16 @@ Show the counter after one simulated second.
 LEAK: per-frame alloc detected
 Counter: 60
 Pattern: leak-trap
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Fixing the intentional leak to make the counter stop.** The point of the demo is to show what happens when you use new without delete. Leave the leak active, watch the counter climb, then replace it with pool allocation and watch the counter stay at zero.
+
+## Elite Insight
+Valgrind and AddressSanitizer detect leaks by tracking every allocation and matching it with a free. Your allocation counter is a manual version of the same technique — instrument the allocator to catch leaks in real time.
+
+## Systems Thinking Connection
+RPG L29 and Shooter L29 demonstrate the same leak trap. The lesson is universal: heap allocation in the game loop is a bug, and pools are the cure. Every path proves immunity by showing the allocation counter stays at zero.`,
     starterCode: `#include <iostream>
 using namespace std;
 

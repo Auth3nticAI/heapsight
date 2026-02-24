@@ -38,7 +38,16 @@ Match: true
 Pattern: restart-resume
 \`\`\`
 
-(Your sig values may differ. What matters is Match: true.)`,
+(Your sig values may differ. What matters is Match: true.)
+
+## Beginner Trap
+**Testing restart but not resume.** A restart that works does not prove load works. Save, close, reload, and verify the state matches. The full round-trip test (save + load + verify) is the real proof of correctness.
+
+## Elite Insight
+Professional QA teams run "save-quit-load" cycles hundreds of times with different game states. The round-trip test catches serialization bugs that manual restart testing misses — field order, type size, and endianness issues.
+
+## Systems Thinking Connection
+The RPG and Shooter test the same save-quit-load cycle. The Crawler tests permadeath save integrity. Round-trip verification is the universal test for any save system regardless of genre.`,
     starterCode: `#include <iostream>
 using namespace std;
 

@@ -158,22 +158,22 @@ int main() {
 }`,
     tests: [
       {
-        id: "p1-t1",
+        id: "t1",
         description: "Frame 1 shows initial acceleration",
         expectedOutput: "Frame 1: x = 100.17 vx = 10.00",
       },
       {
-        id: "p1-t2",
+        id: "t2",
         description: "Frame 4 shows higher velocity",
         expectedOutput: "Frame 4: x = 101.67 vx = 40.00",
       },
       {
-        id: "p1-t3",
+        id: "t3",
         description: "Frame 5 shows friction starting",
         expectedOutput: "Frame 5: x = 102.19 vx = 31.67",
       },
       {
-        id: "p1-t4",
+        id: "t4",
         description: "Frame 8 shows further deceleration",
         expectedOutput: "Frame 8: x = 102.94 vx = 6.67",
       },
@@ -458,32 +458,32 @@ int main() {
 }`,
     tests: [
       {
-        id: "p2-t1",
+        id: "g1",
         description: "Player starts at correct position",
         expectedOutput: "Player: (388, 100)",
       },
       {
-        id: "p2-t2",
+        id: "g2",
         description: "Gravity value printed",
         expectedOutput: "Gravity: 800",
       },
       {
-        id: "p2-t3",
+        id: "g3",
         description: "Acceleration value printed",
         expectedOutput: "Accel: 600",
       },
       {
-        id: "p2-t4",
+        id: "g4",
         description: "Friction value printed",
         expectedOutput: "Friction: 500",
       },
       {
-        id: "p2-t5",
+        id: "g5",
         description: "Max run speed printed",
         expectedOutput: "MaxRun: 200",
       },
       {
-        id: "p2-t6",
+        id: "g6",
         description: "Jump speed printed",
         expectedOutput: "JumpSpeed: 400",
       },

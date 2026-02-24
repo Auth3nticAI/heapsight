@@ -5,7 +5,7 @@ export const lessonShooter39: Lesson = {
   title: "Error Handling",
   description: "Error Handling — expanding the modular game architecture.",
   order: 39,
-  xpReward: 150,
+  xpReward: 100,
   tier: "pro",
   concepts: ["error handling", "spawn_fails", "safe spawn", "pool overflow detection"],
   part1: {
@@ -29,7 +29,16 @@ EntityId spawnBullet(World& w, int x, int y) {
 ErrHandler: active
 Spawn: OK
 Pattern: error-handling
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Silently failing when the pool is full.** If spawnBullet returns quietly when the pool is exhausted, the player stops shooting without feedback. Log the failure, track spawn_fails, and consider increasing pool size or cleaning up stale entities.
+
+## Elite Insight
+Defensive programming in games means "never crash, always degrade gracefully." If the pool is full, skip the spawn and log a warning. The game continues, and the developer sees the warning in the console.
+
+## Systems Thinking Connection
+RPG (L88) and Crawler crash-proof at system boundaries. Platformer (L88) validates input ranges. Error handling at pool boundaries is a universal robustness pattern — every path must handle "resource exhausted" gracefully.`,
     starterCode: `#include <iostream>
 using namespace std;
 int spawn_fails=0;
@@ -62,7 +71,9 @@ int main() {
       { id: "t3", description: "pattern", expectedOutput: "Pattern: error-handling" },
     ],
     hints: [
-      "If spawn_fails==0, print 'Spawn: OK'. Otherwise print 'Spawn: ERRORS ' << spawn_fails.",
+      "The error audit needs to report whether any spawns failed during gameplay.",
+      "Use an if/else to check spawn_fails -- zero means OK, anything else means errors occurred.",
+      "if(spawn_fails==0) cout<<\"Spawn: OK\"<<endl; else cout<<\"Spawn: ERRORS \"<<spawn_fails<<endl;",
     ],
     estimatedMinutes: 8,
   },

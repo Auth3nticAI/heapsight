@@ -6,7 +6,7 @@ export const lessonShooter10: Lesson = {
   description: "Ship, enemies, bullets, collisions, score, and wave respawning — your first complete game loop.",
   order: 10,
   xpReward: 50,
-  tier: "pro",
+  tier: "free",
   concepts: ["functions", "spawnWave", "complete game loop", "milestone"],
   part1: {
     title: "Concept: Functions Wrap Reusable Logic",
@@ -56,7 +56,16 @@ The function accesses file-scope arrays directly — no parameters needed.
 - Declare functions ABOVE \`main\` so the compiler sees them first
 
 ## Your Task
-Write a \`countActive\` function that counts active enemies. Call it and print the result.`,
+Write a \`countActive\` function that counts active enemies. Call it and print the result.
+
+## Beginner Trap
+**Adding features before the core loop (shoot, hit, score, respawn) works perfectly.** A wave spawner does not fix a broken collision system. Verify the minimal game loop end-to-end before adding complexity.
+
+## Elite Insight
+Asteroids shipped as a complete game with one ship, rocks, and bullets. Galaga added waves. Gradius added powerups. Every successful shooter starts with a working core loop and layers features on top.
+
+## Systems Thinking Connection
+Every path hits this milestone — RPG L10, Platformer L10, Crawler L10. The core loop test is universal: prove the minimal viable game works before building on it. The genre changes, the milestone principle does not.`,
     starterCode: `#include <iostream>
 using namespace std;
 

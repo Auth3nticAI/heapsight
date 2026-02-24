@@ -161,22 +161,22 @@ int main() {
 }`,
     tests: [
       {
-        id: "p1-t1",
+        id: "t1",
         description: "Full jump header printed",
         expectedOutput: "=== Full Jump ===",
       },
       {
-        id: "p1-t2",
+        id: "t2",
         description: "Short hop header printed",
         expectedOutput: "=== Short Hop ===",
       },
       {
-        id: "p1-t3",
+        id: "t3",
         description: "Full jump frame 1 is correct",
         expectedOutput: "Frame 1: y = 309.56 vy = -386.67",
       },
       {
-        id: "p1-t4",
+        id: "t4",
         description: "Short hop frame 2 shows clamped velocity",
         expectedOutput: "Frame 2: y = 307.28 vy = -136.67",
       },
@@ -394,27 +394,27 @@ int main() {
 }`,
     tests: [
       {
-        id: "p2-t1",
+        id: "g1",
         description: "Player starts at correct position",
         expectedOutput: "Player: (388, 100)",
       },
       {
-        id: "p2-t2",
+        id: "g2",
         description: "Gravity value printed",
         expectedOutput: "Gravity: 800",
       },
       {
-        id: "p2-t3",
+        id: "g3",
         description: "Jump speed printed",
         expectedOutput: "JumpSpeed: 400",
       },
       {
-        id: "p2-t4",
+        id: "g4",
         description: "Min jump velocity printed",
         expectedOutput: "MinJumpVY: 150",
       },
       {
-        id: "p2-t5",
+        id: "g5",
         description: "Grounded state printed",
         expectedOutput: "Grounded: true",
       },

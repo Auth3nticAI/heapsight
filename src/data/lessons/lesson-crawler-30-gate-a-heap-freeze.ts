@@ -25,7 +25,16 @@ To pass GATE A your dungeon renderer must:
 ## Earn the Badge
 
 Print Heap: frozen, Alloc/tick: 0, and GATE A: passed.
-`,
+
+
+## Beginner Trap
+**Confusing "no allocations" with "no dynamic data."** Pre-allocated pools, ring buffers, and fixed arrays all provide dynamic behavior without heap allocation. The rule is not "static only" — it is "allocate at init, reuse at runtime."
+
+## Elite Insight
+Real-time audio and embedded systems follow the same heap-freeze discipline. All memory is allocated during initialization, and the runtime operates on pre-allocated buffers. Game engines adopted this from aerospace and audio engineering.
+
+## Systems Thinking Connection
+RPG L30, Shooter L30, and Platformer L30 hit the same gate. Heap freeze is the most universal quality bar in this curriculum — all four paths must prove zero allocations in the game loop before advancing.`,
     starterCode: `
 #include <iostream>
 using namespace std;
@@ -56,6 +65,8 @@ int main() {
       { id: "t3", description: "Prints gate result", expectedOutput: "GATE A: passed" },
     ],
     hints: [
+      "The gate checks that your renderer meets all criteria: zero heap allocs, full lighting, and dynamic player light.",
+      "You need three cout lines total: one for heap status, one for alloc count, and one for the gate result.",
       "Just add cout GATE A: passed as the third line.",
     ],
     estimatedMinutes: 5,

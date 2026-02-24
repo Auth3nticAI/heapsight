@@ -5,7 +5,7 @@ export const lessonShooter46: Lesson = {
   title: "Score Multiplier",
   description: "Score Multiplier — Phase 5: Wave & Scoring.",
   order: 46,
-  xpReward: 150,
+  xpReward: 100,
   tier: "pro",
   concepts: ["score multiplier", "combo system", "integer math", "kill streak"],
   part1: {
@@ -28,7 +28,16 @@ Combo 0: 1x
 Combo 10: 2x
 Combo 20: 3x
 Pattern: score-multiplier
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Resetting the multiplier immediately when a kill streak breaks.** A 0.5-second grace period prevents frustrating resets from tiny timing errors. The combo system should forgive small gaps, not demand perfection.
+
+## Elite Insight
+Combo systems from fighting games to rhythm games use a "grace window" — a short timer that keeps the combo alive between hits. Your kill-streak multiplier follows the same UX principle: reward consistency, forgive small gaps.
+
+## Systems Thinking Connection
+RPG uses combat combos. Platformer uses speed-run timers. The Crawler tracks kill streaks in rooms. Score multipliers are a game-feel feature that rewards skilled play — the implementation varies, but the psychological effect is universal.`,
     starterCode: `#include <iostream>
 using namespace std;
 int getMultiplier(int combo){
@@ -60,7 +69,9 @@ int main(){
       { id: "t3", description: "pattern", expectedOutput: "Pattern: score-multiplier" },
     ],
     hints: [
-      "return 1 + combo/10; — integer division makes this a step function: 10 kills = 2x, 20 = 3x.",
+      "Think about how to turn a running combo count into a multiplier that increases in steps.",
+      "Integer division by 10 creates a step function: 0-9 gives 0, 10-19 gives 1, etc. Add 1 so it starts at 1x.",
+      "return 1 + combo/10; -- this gives 1x at 0 combo, 2x at 10, 3x at 20.",
     ],
     estimatedMinutes: 8,
   },
@@ -623,6 +634,8 @@ int main(){
       { id: "g3", description: "gate A", expectedOutput: "GATE A: PASSED" },
     ],
     hints: [
+      "Look at how the score and combo system already work in collisionSystem and hudSystem — the multiplier logic is already wired in.",
+      "The HUD already displays the multiplier via 1+w.combo_hits/10. Check that collisionSystem uses int mult=1+w.combo_hits/10 when awarding score.",
       "The multiplier is already in collisionSystem. HUD shows it. Console just needs startup prints.",
     ],
     estimatedMinutes: 15,

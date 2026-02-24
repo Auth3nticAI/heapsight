@@ -43,7 +43,16 @@ else room = '?';  // corridor or doorway
 
 ## Your Task
 
-Given the player position, determine the grid cell and which room they're in. Print the results.`,
+Given the player position, determine the grid cell and which room they're in. Print the results.
+
+## Beginner Trap
+**Hardcoding room positions instead of reading them from the grid.** If you later change the grid layout, hardcoded room coordinates break. Detect rooms programmatically by scanning for connected open tiles.
+
+## Elite Insight
+Wolfenstein 3D stored its entire level as a 64x64 grid with rooms defined by wall placement. The engine did not know about "rooms" — it just rendered whatever tiles the player could see. Your grid approach follows the same data-driven philosophy.
+
+## Systems Thinking Connection
+The RPG uses room arrays with exit tiles for transitions. The Platformer uses level arrays loaded from data. All three approaches treat the world as grid data, not hardcoded geometry — the dimension count changes, but the pattern stays the same.`,
     starterCode: `#include <iostream>
 #include <cmath>
 using namespace std;

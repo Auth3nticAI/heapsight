@@ -34,7 +34,16 @@ Pass[1]: render
 Pass[2]: physics
 Pass[3]: collision
 Pattern: collision-module
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Applying collision responses (push out of wall, kill enemy) inside the detection loop.** Detect all collisions first into a result list, then apply responses in a separate pass. Mixing detection with response creates order-dependent bugs when multiple collisions occur in one frame.
+
+## Elite Insight
+Professional physics engines split collision into broadphase (find candidate pairs), narrowphase (exact test), and resolution (apply response). Your split follows the same pipeline: detect first, respond second. This separation makes debugging trivial — you can log all detections before any state changes.
+
+## Systems Thinking Connection
+RPG L18 isolates combat resolution. Shooter L34 isolates collision response. The Crawler separates hit detection from damage. Detection-then-resolution prevents order-dependent bugs in every game genre.`,
     starterCode: `#include <iostream>
 using namespace std;
 void inputSystem(){ cout<<"inputSystem: active"<<endl; }

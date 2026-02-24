@@ -54,7 +54,10 @@ Damage: 3
 Enemy HP: 7/10
 Player HP: 20/20
 Combat done
-\`\`\``,
+\`\`\`
+
+## Systems Thinking Connection
+The Shooter resolves bullet-enemy collision damage using the same "check then apply" pattern. Collect all hits first, then apply damage in a batch. This prevents the order of the entity array from affecting combat outcomes.`,
     starterCode: `#include <iostream>
 using namespace std;
 
@@ -552,7 +555,6 @@ int main() {
     hints: [
       "Add int player_hp = 20, player_max_hp = 20; int enemy_hp = 10, enemy_max_hp = 10; after enemy_alive.",
       "In resolveCombat(), add: int dmg = 3; enemy_hp -= dmg; cout Damage and Enemy HP lines.",
-      "Add the two HP cout lines to the startup block after the Combat: bump line.",
       "Add DrawText for Player HP (GREEN) and Enemy HP (RED) in the HUD section.",
     ],
     estimatedMinutes: 12

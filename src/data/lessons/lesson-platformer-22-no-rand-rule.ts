@@ -58,7 +58,13 @@ Thinking that rand() is fine because it produces different numbers each run. Tha
 
 ## Mastery Check
 **Q:** Why does each level get its own seed (42, 136) instead of one global seed for everything?
-**A:** Level-specific seeds make each level independently reproducible. Changing level 2 layout does not affect level 1. The global lcg_state is reset per-level by scrambleCoins, so each level starts from a known state.`,
+**A:** Level-specific seeds make each level independently reproducible. Changing level 2 layout does not affect level 1. The global lcg_state is reset per-level by scrambleCoins, so each level starts from a known state.
+
+## Elite Insight
+Hades uses a single RNG stream for all gameplay randomness — loot, enemy behavior, room layout — seeded at the start of each run. One source means one seed reproduces the entire run. Your no-rand rule enforces the same single-source discipline.
+
+## Systems Thinking Connection
+The RPG enforces the same no-rand rule (L22). The Shooter channels all randomness through a seeded generator. Every path converges on the same constraint: rand() and random() are banned, only the seeded RNG is allowed.`,
     starterCode: `#include <iostream>
 using namespace std;
 

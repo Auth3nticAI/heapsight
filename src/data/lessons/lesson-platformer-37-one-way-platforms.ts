@@ -7,7 +7,7 @@ const lessonPlatformer37: Lesson = {
   order: 37,
   xpReward: 100,
   tier: "pro",
-  concepts: [],
+  concepts: ["one-way-platforms", "directional-collision", "platform-types"],
   part1: {
     title: "Concept: One-Way Platforms",
     type: "concept",
@@ -22,7 +22,16 @@ Tile 4 = one-way platform. In \`checkTileCollisionV\`, only block when \`p.vy >=
 
 ## Your Task
 Print the one-way platform behavior:
-`,
+
+
+## Beginner Trap
+**Blocking the player from passing through a one-way platform from below.** The whole point is that the player can jump up through it and land on top. Only resolve collision when the player is moving downward and their feet are above the platform top edge.
+
+## Elite Insight
+Super Mario Bros, Donkey Kong Country, and Celeste all implement one-way platforms with the same rule: collide only when velocity.y > 0 and player.bottom <= platform.top + epsilon. The directional check is always velocity-based, never position-based.
+
+## Systems Thinking Connection
+The RPG has no vertical movement — all collision is grid-based. The Shooter has no platforms. One-way platforms are a platformer-specific mechanic, but the concept of directional collision filtering applies to any game with selective collision rules.`,
     starterCode: `
 #include <iostream>
 using namespace std;

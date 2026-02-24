@@ -55,7 +55,16 @@ Print collision direction labels for a wall hit simulation.
 
 ## Mastery Check
 **Q:** Why check two corners per side instead of one?
-**A:** A player can be between two tile rows. Checking only the top corner misses a wall that occupies the lower corner. Both corners must be clear for the player to pass through.`,
+**A:** A player can be between two tile rows. Checking only the top corner misses a wall that occupies the lower corner. Both corners must be clear for the player to pass through.
+
+## Beginner Trap
+**Resolving horizontal and vertical collision in the same step.** If you move diagonally into a corner and resolve both axes at once, the player teleports to the wrong side. Resolve X first, then Y (or vice versa). Two separate passes prevent corner-case tunneling.
+
+## Elite Insight
+Separating collision resolution into X and Y passes is the standard approach in every 2D physics engine. Box2D resolves constraints iteratively per axis. Your split-axis resolution is the tile-based equivalent of the same principle.
+
+## Systems Thinking Connection
+The RPG resolves collision on a grid — movement is always axis-aligned, so the problem does not arise. The Shooter resolves overlap by pushing entities apart along the shortest axis. Split-axis resolution is a 2D platformer essential that other genres handle differently.`,
     starterCode: `#include <iostream>
 using namespace std;
 
@@ -439,11 +448,11 @@ int main() {
     return 0;
 }`,
     tests: [
-      { id: "p2-t1", description: "Player position printed", expectedOutput: "Player: (388, 100)" },
-      { id: "p2-t2", description: "FSM active printed", expectedOutput: "FSM: active" },
-      { id: "p2-t3", description: "Grid collision active", expectedOutput: "Collision: grid" },
-      { id: "p2-t4", description: "H-collision active", expectedOutput: "H-collision: active" },
-      { id: "p2-t5", description: "Accel printed", expectedOutput: "Accel: 600" },
+      { id: "g1", description: "Player position printed", expectedOutput: "Player: (388, 100)" },
+      { id: "g2", description: "FSM active printed", expectedOutput: "FSM: active" },
+      { id: "g3", description: "Grid collision active", expectedOutput: "Collision: grid" },
+      { id: "g4", description: "H-collision active", expectedOutput: "H-collision: active" },
+      { id: "g5", description: "Accel printed", expectedOutput: "Accel: 600" },
     ],
     hints: [
       "Add checkTileCollisionH() after checkTileCollisionV(). Check right_col when vx > 0, check left_col when vx < 0. Push player_x out on hit.",

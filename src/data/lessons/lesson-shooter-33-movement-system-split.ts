@@ -5,7 +5,7 @@ export const lessonShooter33: Lesson = {
   title: "Movement System Split",
   description: "Movement System Split — building the modular game architecture.",
   order: 33,
-  xpReward: 150,
+  xpReward: 100,
   tier: "pro",
   concepts: ["system extraction", "movementSystem", "physics loop", "entity movement"],
   part1: {
@@ -35,7 +35,16 @@ System[0]: input
 System[1]: movement
 System[2]: render
 Pattern: movement-module
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Updating positions with raw frame delta inside the movement system.** If frame rate varies, entities move faster on faster machines. Use a fixed timestep delta for movement calculations inside the system.
+
+## Elite Insight
+Separating movement into its own system enables "physics-only" updates for replay, prediction, and testing. You can run movementSystem() without rendering to simulate the game headlessly.
+
+## Systems Thinking Connection
+RPG (L17) isolates its resolve pass. Platformer (L33) isolates physics. Each path extracts movement into a standalone system — the name differs (resolve, physics, movement) but the isolation principle is identical.`,
     starterCode: `#include <iostream>
 #include <string>
 using namespace std;

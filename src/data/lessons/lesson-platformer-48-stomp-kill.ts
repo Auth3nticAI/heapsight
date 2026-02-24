@@ -7,7 +7,7 @@ const lessonPlatformer48: Lesson = {
   order: 48,
   xpReward: 100,
   tier: "pro",
-  concepts: [],
+  concepts: ["stomp-kill", "directional-combat", "collision-response"],
   part1: {
     title: "Concept: Stomp Kill",
     type: "concept",
@@ -30,7 +30,13 @@ The stomp check is a form of directional collision — the same AABB but with a 
 
 ## Your Task
 Print the stomp parameters:
-`,
+
+
+## Beginner Trap
+**Checking only the player Y position without checking velocity direction.** A player moving upward through an enemy from below is not a stomp. Check that the player is falling (velocity.y > 0) AND the player bottom is above the enemy top. Both conditions are required.
+
+## Systems Thinking Connection
+The Shooter kills enemies with bullets (collision + deactivate). The RPG kills enemies with combat resolution. The Crawler uses melee attacks. Stomp is uniquely platformer, but the pattern of "specific collision condition triggers enemy defeat" is universal.`,
     starterCode: `
 #include <iostream>
 using namespace std;

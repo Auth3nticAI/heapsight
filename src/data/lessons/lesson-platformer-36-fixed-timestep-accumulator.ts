@@ -7,7 +7,7 @@ const lessonPlatformer36: Lesson = {
   order: 36,
   xpReward: 100,
   tier: "pro",
-  concepts: [],
+  concepts: ["fixed-timestep", "accumulator", "framerate-independence"],
   part1: {
     title: "Concept: Fixed Timestep",
     type: "concept",
@@ -30,7 +30,13 @@ Every shipping engine uses this. Valve, Epic, Nintendo — all tick physics at a
 
 ## Your Task
 Print the accumulator behavior for a single 60Hz frame (dt=0.016s):
-`,
+
+
+## Beginner Trap
+**Using GetFrameTime() directly for physics calculations.** Variable frame delta means physics runs differently on 30fps and 144fps monitors. A fixed timestep accumulator runs physics at a constant rate (e.g., 1/60s) regardless of frame rate, consuming accumulated time in fixed-size bites.
+
+## Systems Thinking Connection
+The Shooter does not implement fixed timestep (entity movement is simpler). The RPG is turn-based (no physics timing). Fixed timestep is most critical in platformers where gravity, jump arcs, and collision resolution must be frame-rate independent.`,
     starterCode: `
 #include <iostream>
 using namespace std;

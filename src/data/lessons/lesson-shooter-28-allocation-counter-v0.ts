@@ -43,7 +43,16 @@ Pool spawns: 5
 Pool recycles: 3
 Heap allocs in loop: 0
 Pattern: alloc-counter
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Ignoring allocations that happen "only once per wave."** Even one allocation per wave is a stall that can cause a frame spike during gameplay. The goal is zero — no exceptions, no excuses.
+
+## Elite Insight
+Carmack set the standard: zero heap allocations during gameplay. Every Doom and Quake title pre-allocates all memory at startup. Your allocation counter makes this discipline measurable and enforceable.
+
+## Systems Thinking Connection
+RPG (L29) and Crawler (L29) track the same metric. The Platformer (L28) does too. Allocation counting is the universal health check — every path must prove zero heap activity during the game loop.`,
     starterCode: `#include <iostream>
 using namespace std;
 
@@ -648,7 +657,6 @@ int main() {
     hints: [
       "TODO 1: add the line int pool_spawns = 0; before the Particle struct definition.",
       "TODO 2: inside spawnEnemy, after w.enemy_active[id] = true; add pool_spawns++;",
-      "TODO 3: inside spawnBullet, after w.shots_fired++ add pool_spawns++;",
       "TODO 4: change the startup cout line to print pool_spawns instead of the literal 0.",
     ],
     estimatedMinutes: 15,

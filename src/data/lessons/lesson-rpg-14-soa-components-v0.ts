@@ -45,7 +45,16 @@ Expected output:
 AoS: entity[0].hp = 20
 SoA: hp[0] = 20
 SoA: OK
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Storing all entity data in one big struct (Array of Structs) when you only need to iterate positions.** AoS loads HP, inventory, and AI data into cache just to read x and y. SoA keeps positions contiguous for fast iteration.
+
+## Elite Insight
+Data-oriented design (DOD) powers every modern ECS engine — EnTT, flecs, Unity DOTS all use SoA layouts internally. Cache-friendly data access is the single biggest performance win in entity-heavy games.
+
+## Systems Thinking Connection
+Shooter L14 formalizes the same SoA split for bullets: position[], velocity[], active[] as parallel arrays. Both paths discover the same truth — memory layout determines iteration speed more than algorithm choice.`,
     starterCode: `#include <iostream>
 using namespace std;
 

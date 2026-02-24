@@ -5,7 +5,7 @@ export const lessonShooter32: Lesson = {
   title: "Render Module Split",
   description: "Render Module Split — building the modular game architecture.",
   order: 32,
-  xpReward: 150,
+  xpReward: 100,
   tier: "pro",
   concepts: ["system extraction", "renderSystem", "fixed timestep", "render pass"],
   part1: {
@@ -36,7 +36,16 @@ Systems: 2
 System[0]: input
 System[1]: render
 Pattern: render-module
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Calling DrawRectangle inside the update loop.** Rendering mixed with game logic means you cannot change the draw order without changing the update order. Separate update and render into distinct passes that run in sequence.
+
+## Elite Insight
+Every game engine separates update from render. The update pass modifies state. The render pass reads state and draws. This separation enables double-buffering, fixed timestep, and headless testing (update without render).
+
+## Systems Thinking Connection
+RPG (L32) and Platformer (L32) split render the same way. The Crawler renders in a separate BeginMode3D block. Update-then-render is the universal game loop pattern, discovered independently by every engine developer.`,
     starterCode: `#include <iostream>
 #include <string>
 using namespace std;

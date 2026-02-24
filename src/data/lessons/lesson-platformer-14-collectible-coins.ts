@@ -48,7 +48,16 @@ Simulate coin collection: set up a score, collect two coins, print the score.
 
 ## Mastery Check
 **Q:** Why set \`tilemap[r][c] = 0\` when collecting a coin?
-**A:** Setting to 0 removes the coin from the grid so it cannot be collected again. Without this, the score would increment every frame the player stands on that tile.`,
+**A:** Setting to 0 removes the coin from the grid so it cannot be collected again. Without this, the score would increment every frame the player stands on that tile.
+
+## Beginner Trap
+**Removing a coin from the tile grid by setting it to 0 and forgetting to increment the score.** Always pair state changes: remove the coin AND update the counter in the same function. Separating them creates bugs where one happens without the other.
+
+## Elite Insight
+Super Mario Bros uses the same pattern: coin tile becomes empty tile, coin counter increments, and a particle spawns — all in one function call. Atomic state transitions (all-or-nothing) prevent desynchronized game state.
+
+## Systems Thinking Connection
+The RPG collects items by removing them from the entity array and adding to inventory — the same atomic removal + counter update. The Shooter deactivates bullet entities on hit and increments score. Collect-and-count is universal.`,
     starterCode: `#include <iostream>
 using namespace std;
 
@@ -488,11 +497,11 @@ int main() {
     return 0;
 }`,
     tests: [
-      { id: "p2-t1", description: "Player position printed", expectedOutput: "Player: (388, 100)" },
-      { id: "p2-t2", description: "FSM active printed", expectedOutput: "FSM: active" },
-      { id: "p2-t3", description: "Grid collision active", expectedOutput: "Collision: grid" },
-      { id: "p2-t4", description: "Initial score printed", expectedOutput: "Score: 0" },
-      { id: "p2-t5", description: "Coins active printed", expectedOutput: "Coins: active" },
+      { id: "g1", description: "Player position printed", expectedOutput: "Player: (388, 100)" },
+      { id: "g2", description: "FSM active printed", expectedOutput: "FSM: active" },
+      { id: "g3", description: "Grid collision active", expectedOutput: "Collision: grid" },
+      { id: "g4", description: "Initial score printed", expectedOutput: "Score: 0" },
+      { id: "g5", description: "Coins active printed", expectedOutput: "Coins: active" },
     ],
     hints: [
       "Add int score = 0; at file scope. Add cout << \"Score: \" << score << endl; and cout << \"Coins: active\" << endl; after H-collision.",

@@ -7,7 +7,7 @@ const lessonPlatformer46: Lesson = {
   order: 46,
   xpReward: 100,
   tier: "pro",
-  concepts: [],
+  concepts: ["hazard-tiles", "death-respawn", "checkpoint"],
   part1: {
     title: "Concept: Hazard Tiles",
     type: "concept",
@@ -28,7 +28,16 @@ if(w.tilemap[r][c] == 5){
 
 ## Your Task
 Print the hazard tile status:
-`,
+
+
+## Beginner Trap
+**Killing the player instantly on hazard contact without any feedback.** The player needs to understand what killed them. Flash the screen, play a sound cue, and show where the hazard is. Instant death without visual feedback feels unfair and teaches nothing.
+
+## Elite Insight
+Super Meat Boy uses instant-death hazards but provides immediate respawn and a death replay. Celeste shows a death particle burst at the exact contact point. Visual feedback on death is what separates "hard but fair" from "frustrating."
+
+## Systems Thinking Connection
+The RPG uses damage numbers to communicate HP loss. The Shooter flashes the player ship on hit. Every path needs clear damage feedback — the implementation differs (tile flash, particle burst, screen shake) but the UX principle is universal: show the player what happened.`,
     starterCode: `
 #include <iostream>
 using namespace std;

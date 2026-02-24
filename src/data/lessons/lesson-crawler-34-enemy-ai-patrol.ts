@@ -44,7 +44,16 @@ Enemy AI v0 (Patrol) is a core 3D engine concept. Doom, Quake, and modern engine
 ## Mastery Check
 Question: Why does enemy ai v0 (patrol) matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Checking arrival with exact equality (pos == target) instead of distance threshold.** Floating-point positions rarely land exactly on the target. Check if distance < threshold (e.g., 0.1). Exact equality causes enemies to overshoot and never stop.
+
+## Elite Insight
+Waypoint-based patrol is the simplest AI behavior in every game genre. Professional engines implement it as a state machine: move toward current waypoint, on arrival switch to next waypoint. Your lerp-based approach is the same pattern with smooth interpolation.
+
+## Systems Thinking Connection
+The RPG moves enemies one grid cell per turn — no interpolation needed. The Shooter enemies move continuously in 2D. Your 3D patrol interpolates between waypoints in world space, adding smooth motion that grid-based movement does not require.`,
     starterCode: `#include <iostream>
 using namespace std;
 

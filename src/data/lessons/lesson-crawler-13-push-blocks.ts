@@ -765,6 +765,6 @@ int main() {
       "Push logic (before AABB): compute player_gx/gz. For X movement, check ahead_gx = pgx + sign. If dungeon[pgz][agx]==3 and behind cell is 0, swap them. Same for Z.",
       "Add == 3 to all 4 AABB collision checks. Add else if(dungeon[z][x]==3) DrawCube PURPLE. Update minimap color and look_name to include block case.",
     ],
-    estimatedMinutes: 30,
+    estimatedMinutes: 25,
   },
 };

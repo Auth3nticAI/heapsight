@@ -26,7 +26,16 @@ System[0]: input
 ...
 GATE B: PASSED
 Pattern: modular-gate
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Declaring "modular" without listing every system and its order.** Print the system inventory: inputSystem, movementSystem, collisionSystem, waveSystem, hudSystem, renderSystem. If you cannot list them all, your architecture is not fully modular.
+
+## Elite Insight
+System inventories are a standard architecture document in professional game development. "What systems exist, and in what order do they run?" answers most architecture questions. Your milestone verifies this documentation.
+
+## Systems Thinking Connection
+RPG (L40) and Platformer (L40) validate the same modularity milestone. Every path must demonstrate that all systems are isolated, named, and ordered. The module list is the architecture specification.`,
     starterCode: `#include <iostream>
 using namespace std;
 void modularAudit() {
@@ -61,7 +70,9 @@ int main() { modularAudit(); return 0; }`,
       { id: "t4", description: "pattern", expectedOutput: "Pattern: modular-gate" },
     ],
     hints: [
-      "Print all 5 system lines between 'Systems: 5' and 'Grid: 8x5'. Then WaveSystem, HudSystem, ErrHandler, GATE B: PASSED.",
+      "This audit prints a full inventory of everything the modular shooter has built so far.",
+      "Between the GATE B header and PASSED lines, print Systems: 5, all 5 system names, Grid: 8x5, and the three subsystem statuses.",
+      "The full sequence is: Systems: 5, System[0]-[4], Grid: 8x5, WaveSystem: active, HudSystem: active, ErrHandler: active, GATE B: PASSED.",
     ],
     estimatedMinutes: 10,
   },

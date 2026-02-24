@@ -54,7 +54,16 @@ This lets you slide along walls — if only X is blocked, you still move in Z.
 
 ## Your Task
 
-Test collision logic: try moving into a wall cell and an open cell. Print whether each is blocked.`,
+Test collision logic: try moving into a wall cell and an open cell. Print whether each is blocked.
+
+## Beginner Trap
+**Testing collision with the final position instead of each axis separately.** Moving diagonally into a corner should slide along the wall, not stop dead. Check X movement first, resolve, then check Z movement. Axis-separated collision enables wall sliding.
+
+## Elite Insight
+Doom and Quake both use axis-separated collision for wall sliding. Check X, clip X, then check Z, clip Z. This simple approach handles corners, doorways, and narrow passages without complex swept-volume math.
+
+## Systems Thinking Connection
+The RPG checks tiles[new_y][new_x] for wall collision — same grid lookup, but in 2D. The Platformer separates horizontal and vertical collision the same way. Axis-separated resolution is the standard pattern across all tile-based games.`,
     starterCode: `#include <iostream>
 #include <cmath>
 using namespace std;

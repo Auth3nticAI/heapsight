@@ -60,7 +60,16 @@ In ECS, structs become components. Each entity has a Position component, a Veloc
 - Structs can be stored in arrays: \`Position positions[100];\`
 
 ## Your Task
-Define the three component structs. Create one of each, set values, and print them.`,
+Define the three component structs. Create one of each, set values, and print them.
+
+## Beginner Trap
+**Adding methods to component structs.** Components should be plain data (POD types) — no constructors, no methods, no inheritance. Behavior belongs in systems, not in data. If your Position struct has a move() method, you have mixed data and logic.
+
+## Elite Insight
+Every ECS framework enforces "components are data, systems are behavior." EnTT, flecs, and Unity DOTS all use plain structs for components. Methods on components create hidden dependencies between data and logic.
+
+## Systems Thinking Connection
+The RPG uses plain structs for entities too — no methods, just fields. The Crawler stores entities as position + sprite data. POD component structs are the foundation of data-oriented design across all game architectures.`,
     starterCode: `#include <iostream>
 using namespace std;
 

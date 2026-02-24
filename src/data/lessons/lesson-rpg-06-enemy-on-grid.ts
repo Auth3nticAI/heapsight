@@ -71,7 +71,10 @@ Enemy: (9, 7)
 Enemies: 1
 Enemy moves to: (8, 7)
 Turn done
-\`\`\``,
+\`\`\`
+
+## Systems Thinking Connection
+The Platformer places enemies at grid-aligned positions too (Lesson 47), but converts to pixel coordinates for smooth movement. Your RPG keeps enemies in grid space permanently. Both approaches work — the key is consistency within your coordinate system.`,
     starterCode: `#include <iostream>
 using namespace std;
 
@@ -543,7 +546,6 @@ int main() {
       "Add int enemy_x = 9, enemy_y = 7; bool enemy_alive = true; at file scope after turn_count.",
       "phaseWorld() computes dx = player_x - enemy_x, dy = player_y - enemy_y, then moves 1 step along the dominant axis.",
       "Call phaseWorld() between phaseResolve() and phaseCleanup() inside the intent check.",
-      "Draw enemy with DrawRectangle(enemy_x * TILE, enemy_y * TILE, TILE-1, TILE-1, RED) inside if (enemy_alive).",
     ],
     estimatedMinutes: 12
   }

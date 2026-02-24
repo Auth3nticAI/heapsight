@@ -5,7 +5,7 @@ const lessonPlatformer15: Lesson = {
   title: "Milestone: Mini Level",
   description: "Phase 2 complete. A fully playable mini level with tilemap collision, coins, and score. Design your own layout.",
   order: 15,
-  xpReward: 150,
+  xpReward: 300,
   tier: "pro",
   concepts: ["milestone", "level design", "phase 2 integration", "complete game loop"],
   part1: {
@@ -37,7 +37,16 @@ The code is complete from Lesson 14. Your job is to **design a new level** by ed
 
 ## Mastery Check
 **Q:** What is the minimum number of lines of code needed to add a new platform to this game?
-**A:** One line — change a \`0\` to a \`1\` in the tilemap. That is the power of data-driven design.`,
+**A:** One line — change a \`0\` to a \`1\` in the tilemap. That is the power of data-driven design.
+
+## Beginner Trap
+**Declaring the milestone complete without testing edge cases.** Walk into every wall corner, jump at every ledge edge, collect every coin. If even one collision fails or one coin is missed, the tile system has a bug.
+
+## Elite Insight
+Nintendo playtests every Mario level by having testers try to break every surface. The QA phrase is "walk every wall." Your milestone requires the same discipline: systematic verification of every collidable tile.
+
+## Systems Thinking Connection
+RPG L15 and Shooter L15 hit the same data layout milestone. The foundation is identical: stable state, correct collision, functional pickups. Genre-specific features build on this shared architecture.`,
     starterCode: `#include <iostream>
 using namespace std;
 
@@ -503,11 +512,11 @@ int main() {
     return 0;
 }`,
     tests: [
-      { id: "p2-t1", description: "Player position printed", expectedOutput: "Player: (48, 350)" },
-      { id: "p2-t2", description: "FSM active printed", expectedOutput: "FSM: active" },
-      { id: "p2-t3", description: "Coins active printed", expectedOutput: "Coins: active" },
-      { id: "p2-t4", description: "Score printed", expectedOutput: "Score: 0" },
-      { id: "p2-t5", description: "Mini level ready", expectedOutput: "Mini level: ready" },
+      { id: "g1", description: "Player position printed", expectedOutput: "Player: (48, 350)" },
+      { id: "g2", description: "FSM active printed", expectedOutput: "FSM: active" },
+      { id: "g3", description: "Coins active printed", expectedOutput: "Coins: active" },
+      { id: "g4", description: "Score printed", expectedOutput: "Score: 0" },
+      { id: "g5", description: "Mini level ready", expectedOutput: "Mini level: ready" },
     ],
     hints: [
       "Replace the tilemap with the new mini level layout from the instructions. The player starts at (48, 350).",

@@ -28,7 +28,16 @@ for(int i=0;i<N;i++) total += lights[i]; // add each light
 ## Your Task
 
 Sum ambient=0.15 plus lights[3]={0.3,0.5,0.2}. Print Lights, Total, and Blend.
-`,
+
+
+## Beginner Trap
+**Replacing the current light value instead of accumulating.** If two torches illuminate the same tile, the second torch overwrites the first. Accumulate: tile_light = max(tile_light, new_light) or tile_light += new_light (clamped to 1.0).
+
+## Elite Insight
+Forward rendering accumulates light contributions per pixel — each light adds its contribution. Deferred rendering stores surface data first, then applies all lights in a screen-space pass. Your per-tile accumulation is the grid-based forward approach.
+
+## Systems Thinking Connection
+The RPG could add torch lighting to its dungeon grid using the same per-cell accumulation. Light accumulation is a spatial problem: "how much light reaches this position?" The data structure (grid cell vs pixel) changes, but the algorithm is the same.`,
     starterCode: `
 #include <iostream>
 using namespace std;
@@ -63,6 +72,8 @@ int main() {
       { id: "t3", description: "Prints blend type", expectedOutput: "Blend: accumulate" },
     ],
     hints: [
+      "Think about how multiple light sources combine their brightness into one value.",
+      "Start with an ambient base and loop through each light, adding its contribution to a running total.",
       "ambient=0.15, lights sum=1.0, total=1.15. Print as Total: 1.15 (hardcoded).",
     ],
     estimatedMinutes: 5,

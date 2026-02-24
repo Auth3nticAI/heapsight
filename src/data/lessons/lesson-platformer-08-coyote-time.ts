@@ -6,7 +6,7 @@ const lessonPlatformer8: Lesson = {
   description: "Give players a grace window to jump after walking off a ledge. This single technique makes every platformer feel more fair.",
   order: 8,
   xpReward: 50,
-  tier: "pro",
+  tier: "free",
   concepts: ["coyote time", "grace window", "forgiveness mechanics", "timer variables"],
   part1: {
     title: "Concept: Coyote Time",
@@ -46,7 +46,16 @@ Simulate a coyote timer: print the initial timer value, print after consuming it
 
 ## Mastery Check
 **Q:** Why must you set \`coyote_timer = 0\` after jumping?
-**A:** Without it, the player could jump again immediately if still in the air with timer > 0. Setting to 0 consumes the grace window — it can only be used once per ledge exit.`,
+**A:** Without it, the player could jump again immediately if still in the air with timer > 0. Setting to 0 consumes the grace window — it can only be used once per ledge exit.
+
+## Beginner Trap
+**Starting the coyote timer when the player presses jump instead of when they leave the ground.** Coyote time is the grace period AFTER leaving a ledge where a jump is still allowed. If you start it on jump press, you have implemented a jump buffer instead.
+
+## Elite Insight
+The term "coyote time" comes from Wile E. Coyote running off cliffs and not falling immediately. Celeste, Hollow Knight, and nearly every modern platformer grants 6-10 frames of coyote time. Players perceive it as "the game is fair" rather than noticing the mechanic.
+
+## Systems Thinking Connection
+The RPG path has no jump mechanic — movement is grid-based. The Shooter has no gravity. But input forgiveness is universal: the RPG queues movement commands, and the Shooter buffers rapid-fire input. Every path forgives imprecise timing in its own way.`,
     starterCode: `#include <iostream>
 using namespace std;
 
@@ -311,11 +320,11 @@ int main() {
     return 0;
 }`,
     tests: [
-      { id: "p2-t1", description: "Player position printed", expectedOutput: "Player: (388, 100)" },
-      { id: "p2-t2", description: "FSM active printed", expectedOutput: "FSM: active" },
-      { id: "p2-t3", description: "Air accel printed", expectedOutput: "AirAccel: 300" },
-      { id: "p2-t4", description: "Coyote time printed", expectedOutput: "Coyote: 0.1" },
-      { id: "p2-t5", description: "Accel printed", expectedOutput: "Accel: 600" },
+      { id: "g1", description: "Player position printed", expectedOutput: "Player: (388, 100)" },
+      { id: "g2", description: "FSM active printed", expectedOutput: "FSM: active" },
+      { id: "g3", description: "Air accel printed", expectedOutput: "AirAccel: 300" },
+      { id: "g4", description: "Coyote time printed", expectedOutput: "Coyote: 0.1" },
+      { id: "g5", description: "Accel printed", expectedOutput: "Accel: 600" },
     ],
     hints: [
       "Add const float COYOTE_TIME = 0.1f; and float coyote_timer = 0.0f; at file scope. Add cout << \"Coyote: \" << COYOTE_TIME << endl; in startup prints.",

@@ -6,7 +6,7 @@ export const lessonShooter9: Lesson = {
   description: "Track kills with a score variable and display it on the HUD — observable game state.",
   order: 9,
   xpReward: 50,
-  tier: "pro",
+  tier: "free",
   concepts: ["game state variable", "DrawText", "integer formatting", "HUD"],
   part1: {
     title: "Concept: Observable Game State",
@@ -51,7 +51,16 @@ DrawText(TextFormat("Score: %d", score), 10, 40, 20, WHITE);
 - Observable state: the player sees it change, learns cause and effect
 
 ## Your Task
-Simulate scoring: start at 0, add 100 for 3 kills. Print the score after each kill.`,
+Simulate scoring: start at 0, add 100 for 3 kills. Print the score after each kill.
+
+## Beginner Trap
+**Incrementing the score inside the collision loop without guarding against double-counting.** If a bullet overlaps two enemies in the same frame, you might count one kill as two. Deactivate the bullet after the first hit to prevent double scoring.
+
+## Elite Insight
+Game state variables like score, lives, and wave number are "observable state" — the HUD reads them every frame. Keeping all observable state in one place (the World struct) makes HUD rendering a pure read operation.
+
+## Systems Thinking Connection
+The RPG tracks kills, gold, and XP as observable state. The Crawler tracks floor depth and keys. Every game needs a small set of player-facing counters — the HUD pattern is universal.`,
     starterCode: `#include <iostream>
 using namespace std;
 

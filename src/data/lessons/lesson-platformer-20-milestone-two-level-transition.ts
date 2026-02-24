@@ -50,7 +50,16 @@ Pattern: level-transition
 
 ## Mastery Check
 **Q:** Why store level data as LEVEL_DATA[2][ROWS][COLS] instead of loading from files?
-**A:** The WASM/browser environment cannot read files from disk at runtime. Hardcoded arrays are the compile-time equivalent of level files. Later (Lesson 61) you will implement file parsing for non-browser environments. For now, inline data is the pragmatic choice.`,
+**A:** The WASM/browser environment cannot read files from disk at runtime. Hardcoded arrays are the compile-time equivalent of level files. Later (Lesson 61) you will implement file parsing for non-browser environments. For now, inline data is the pragmatic choice.
+
+## Beginner Trap
+**Loading the next level without resetting transient state.** If enemy positions, particle effects, or physics state from level 1 bleed into level 2, the transition is broken. Reset all per-level state, preserve only persistent state (score, lives).
+
+## Elite Insight
+Mega Man clears all enemy and projectile data on room transition, keeping only player HP and weapon energy. The clean-slate approach prevents ghost entities from previous rooms appearing in the new room.
+
+## Systems Thinking Connection
+The RPG transitions between rooms with a similar clean-slate approach. The Crawler transitions between dungeon floors. Every path faces the same challenge: cleanly separate per-level state from persistent state during transitions.`,
     starterCode: `#include <iostream>
 using namespace std;
 

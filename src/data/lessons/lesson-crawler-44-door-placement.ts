@@ -44,7 +44,16 @@ Door Placement is a core 3D engine concept. Doom, Quake, and modern engines all 
 ## Mastery Check
 Question: Why does door placement matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Placing doors at every room boundary instead of only where corridors connect.** A room with doors on all four walls when only one corridor leads in looks wrong. Detect where corridors actually touch the room boundary and place doors only there.
+
+## Elite Insight
+Diablo places doors at corridor-room intersections by scanning the boundary tiles of each room. If a boundary tile is adjacent to a corridor tile, it becomes a door. Your detection algorithm follows the same spatial query pattern.
+
+## Systems Thinking Connection
+The RPG places exit tiles manually in room data. The Platformer does not have doors — levels transition by screen edge. Your automated door placement is the procedural version of what other paths do by hand.`,
     starterCode: `#include <iostream>
 using namespace std;
 

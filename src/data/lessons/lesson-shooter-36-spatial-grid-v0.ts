@@ -5,7 +5,7 @@ export const lessonShooter36: Lesson = {
   title: "Spatial Grid v0",
   description: "Spatial Grid v0 — expanding the modular game architecture.",
   order: 36,
-  xpReward: 150,
+  xpReward: 100,
   tier: "pro",
   concepts: ["spatial grid", "broadphase", "grid hash", "O(n) collision"],
   part1: {
@@ -28,7 +28,16 @@ int row = (int)(y / CELL_H);
 Grid: 8x5
 Cells: 40
 Pattern: spatial-grid
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Using a grid cell size smaller than the largest entity.** If a bullet is smaller than the cell, it fits in one cell. If an enemy is larger, it spans multiple cells and requires checking all neighboring cells. Size the grid to the entity that matters most.
+
+## Elite Insight
+The spatial grid (uniform grid acceleration structure) trades memory for speed: O(1) cell lookup instead of O(n) linear scan. Every physics engine uses spatial acceleration — grids for uniform entity sizes, BVH for mixed sizes.
+
+## Systems Thinking Connection
+The RPG uses direct grid lookup (grid[y][x]). The Crawler uses spatial hashing (L54). Your uniform grid is the 2D-optimized version — same goal (fast neighbor queries), different data structures tuned to different entity distributions.`,
     starterCode: `#include <iostream>
 using namespace std;
 const int SCREEN_W=800, SCREEN_H=450;
@@ -69,7 +78,9 @@ int main() {
       { id: "t3", description: "prints pattern", expectedOutput: "Pattern: spatial-grid" },
     ],
     hints: [
-      "Total cells = GRID_COLS * GRID_ROWS. Print it with cout<<\"Cells: \"<<GRID_COLS*GRID_ROWS<<endl;",
+      "Think about how a grid's total cell count relates to its dimensions.",
+      "Total cells in a grid equals columns multiplied by rows. Use the constants already defined.",
+      "Add cout<<\"Cells: \"<<GRID_COLS*GRID_ROWS<<endl; after the Grid line.",
     ],
     estimatedMinutes: 10,
   },

@@ -44,7 +44,16 @@ BSP Dungeon v0 is a core 3D engine concept. Doom, Quake, and modern engines all 
 ## Mastery Check
 Question: Why does bsp dungeon v0 matter for a 3D dungeon crawler?
 Answer: Because it transforms static geometry into a living, interactive 3D world that responds to the player.
-`,
+
+
+## Beginner Trap
+**Splitting too many times and creating rooms smaller than the minimum size.** BSP recursion should stop when the partition is below a minimum width or height. Without a base case, you generate unusable 1x1 "rooms."
+
+## Elite Insight
+Binary Space Partitioning was invented for Doom to solve 3D rendering order, but it works equally well for dungeon generation. Split space recursively, place rooms in leaf nodes, connect siblings. The same data structure serves two very different purposes.
+
+## Systems Thinking Connection
+The RPG and Platformer use hand-authored or simple random room placement. BSP generation is the most algorithmically sophisticated level generation across all four paths — a technique borrowed from 3D rendering to solve a 2D layout problem.`,
     starterCode: `#include <iostream>
 using namespace std;
 

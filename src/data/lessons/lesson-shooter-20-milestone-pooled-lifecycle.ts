@@ -69,7 +69,10 @@ Feeds into: L21 Deterministic RNG — the next layer of correctness above alloca
 
 ## Mastery Check
 *Question:* How do you verify an entity pool is sound without a debugger?
-*Answer:* Assert that (active_count + inactive_count) == pool_capacity for every pool, every frame. If any count drifts, you have a bug in spawn or despawn.`,
+*Answer:* Assert that (active_count + inactive_count) == pool_capacity for every pool, every frame. If any count drifts, you have a bug in spawn or despawn.
+
+## Beginner Trap
+**Not verifying that pool recycling actually works.** Spawn 100 bullets, destroy them all, spawn 100 more. If the second batch uses different memory than the first, the pool is leaking. Track alloc count to verify zero-allocation recycling.`,
     starterCode: `#include <iostream>
 #include <cassert>
 using namespace std;

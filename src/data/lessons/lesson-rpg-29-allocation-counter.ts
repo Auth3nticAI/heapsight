@@ -34,7 +34,16 @@ Alloc: tracked
 Counter: active
 Alloc/tick: 0
 Pattern: alloc-counter
-\`\`\``,
+\`\`\`
+
+## Beginner Trap
+**Allocating inside the game loop without realizing it.** One new/malloc per frame means 3600 allocations per minute at 60fps. Each allocation is a potential stall. Count allocations per frame and drive the number to zero.
+
+## Elite Insight
+Doom and Quake pre-allocate all memory at startup — zero heap allocations during gameplay. John Carmack called heap allocation in the hot path "a bug." Your allocation counter makes this discipline measurable.
+
+## Systems Thinking Connection
+Shooter L28 tracks the same metric — allocations per frame must be zero for consistent frame times. Platformer L28 does the same. Heap discipline is a cross-path gate that every path must pass.`,
     starterCode: `#include <iostream>
 using namespace std;
 
