@@ -7,12 +7,16 @@ import { ALL_RPG_LESSONS } from "@/data/lessons/rpg-index";
 import { ALL_PLATFORMER_LESSONS } from "@/data/lessons/platformer-index";
 import { ALL_CRAWLER_LESSONS } from "@/data/lessons/crawler-index";
 import { ALL_SHOOTER_LESSONS } from "@/data/lessons/shooter-index";
+import { ALL_ROGUELIKE_LESSONS } from "@/data/lessons/roguelike-index";
+import { ALL_AISANDBOX_LESSONS } from "@/data/lessons/aisandbox-index";
 
 const TEMPLATE_LESSON_COUNTS: Record<string, number> = {
   space_shooter: ALL_SHOOTER_LESSONS.length,
   platformer: ALL_PLATFORMER_LESSONS.length,
   simple_rpg: ALL_RPG_LESSONS.length,
   dungeon_crawler: ALL_CRAWLER_LESSONS.length,
+  roguelike: ALL_ROGUELIKE_LESSONS.length,
+  aisandbox: ALL_AISANDBOX_LESSONS.length,
 };
 import PaywallModal from "@/components/PaywallModal";
 import { getPathDifficulty } from "@/data/templates-info";

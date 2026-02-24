@@ -41,6 +41,26 @@ export const GAME_TEMPLATES: GameTemplateInfo[] = [
     icon: "castle",
     category: "crawler",
   },
+  {
+    id: "roguelike",
+    name: "Roguelike",
+    description: "Procedural generation, BSP dungeons, loot tables, permadeath.",
+    difficulty: "advanced",
+    difficultyLevel: 3,
+    difficultyLabel: "Advanced",
+    icon: "skull",
+    category: "game",
+  },
+  {
+    id: "aisandbox",
+    name: "AI Sandbox",
+    description: "Autonomous agents, flocking, behavior trees, genetic evolution.",
+    difficulty: "advanced",
+    difficultyLevel: 4,
+    difficultyLabel: "Expert",
+    icon: "brain",
+    category: "game",
+  },
 ];
 
 export function getTemplateInfo(id: string): GameTemplateInfo | undefined {

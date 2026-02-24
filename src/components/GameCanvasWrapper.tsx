@@ -2,12 +2,14 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import WasmGameCanvas from "./WasmGameCanvas";
+import GameStartOverlay from "./GameStartOverlay";
 
-type LearningPath = "rpg" | "platformer" | "shooter" | "crawler";
+type LearningPath = "rpg" | "platformer" | "shooter" | "crawler" | "roguelike" | "aisandbox";
 
 interface CompileResult {
   js?: string;
   wasm?: string;
+  data?: string | null;
 }
 
 interface GameCanvasWrapperProps {
@@ -22,6 +24,8 @@ const CANVAS_SIZES: Record<LearningPath, { width: number; height: number }> = {
   platformer: { width: 800, height: 450 },
   shooter: { width: 800, height: 450 },
   crawler: { width: 800, height: 600 },
+  roguelike: { width: 640, height: 480 },
+  aisandbox: { width: 800, height: 600 },
 };
 
 function useIsMobile() {
@@ -48,6 +52,7 @@ export default function GameCanvasWrapper({
   const [consoleLines, setConsoleLines] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [showConsole, setShowConsole] = useState(false);
+  const [audioUnlocked, setAudioUnlocked] = useState(false);
   const isMobile = useIsMobile();
 
   const { width, height } = CANVAS_SIZES[path];
@@ -162,17 +167,26 @@ export default function GameCanvasWrapper({
           justifyContent: "center",
         }}
       >
-        <WasmGameCanvas
-          js={compiled.js}
-          wasm={compiled.wasm}
-          width={width}
-          height={height}
-          displayWidth={displayWidth}
-          displayHeight={displayHeight}
-          onConsoleOutput={handleConsoleOutput}
-          onError={handleError}
-          onReady={handleReady}
-        />
+        {!audioUnlocked ? (
+          <GameStartOverlay
+            onStart={() => setAudioUnlocked(true)}
+            width={displayWidth}
+            height={displayHeight}
+          />
+        ) : (
+          <WasmGameCanvas
+            js={compiled.js}
+            wasm={compiled.wasm}
+            data={compiled.data || undefined}
+            width={width}
+            height={height}
+            displayWidth={displayWidth}
+            displayHeight={displayHeight}
+            onConsoleOutput={handleConsoleOutput}
+            onError={handleError}
+            onReady={handleReady}
+          />
+        )}
       </div>
 
       {/* Bottom section — pinned, never pushes canvas */}

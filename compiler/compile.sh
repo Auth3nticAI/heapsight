@@ -1,11 +1,12 @@
 #!/bin/bash
 # compile.sh — Compiles student C++ to WebAssembly using Emscripten + raylib.
 #
-# Usage: compile.sh <student.cpp> <output_dir> <path> <lesson>
+# Usage: compile.sh <student.cpp> <output_dir> <path> <lesson> [debug]
 #   $1 — Path to student .cpp file
 #   $2 — Output directory for game.js + game.wasm
 #   $3 — Learning path name (rpg, platformer, shooter, robotics)
 #   $4 — Lesson number (1-100)
+#   $5 — Optional: "1" to enable ASan debug mode (-fsanitize=address -g -O0)
 #
 # Exit codes:
 #   0 — Success
@@ -20,6 +21,7 @@ STUDENT_CPP="$1"
 OUTPUT_DIR="$2"
 PATH_NAME="$3"
 LESSON_NUM="$4"
+DEBUG_MODE="${5:-0}"
 
 # Validate arguments
 if [ -z "$STUDENT_CPP" ] || [ -z "$OUTPUT_DIR" ] || [ -z "$PATH_NAME" ] || [ -z "$LESSON_NUM" ]; then
@@ -48,6 +50,21 @@ if [ -d "$HEADER_DIR" ]; then
     INCLUDE_FLAGS="$INCLUDE_FLAGS -I$HEADER_DIR"
 fi
 
+# Build asset preload flags — if per-path asset directory exists, bundle it
+ASSET_FLAGS=""
+ASSET_DIR="/opt/heapsight/assets/${PATH_NAME}"
+if [ -d "$ASSET_DIR" ] && [ "$(ls -A "$ASSET_DIR" 2>/dev/null)" ]; then
+    ASSET_FLAGS="--preload-file ${ASSET_DIR}@/assets"
+fi
+
+# Build debug flags — ASan mode uses -O0 -g -fsanitize=address instead of -O1
+DEBUG_FLAGS=""
+OPT_LEVEL="-O1"
+if [ "$DEBUG_MODE" = "1" ]; then
+    DEBUG_FLAGS="-fsanitize=address -g"
+    OPT_LEVEL="-O0"
+fi
+
 # Ensure output directory exists
 mkdir -p "$OUTPUT_DIR"
 
@@ -61,7 +78,8 @@ timeout 15 em++ "$STUDENT_CPP" \
     -o "${OUTPUT_DIR}/game.js" \
     $INCLUDE_FLAGS \
     -L/opt/heapsight/lib -lraylib \
-    -O1 \
+    $OPT_LEVEL \
+    $DEBUG_FLAGS \
     -std=c++17 \
     -DPLATFORM_WEB \
     -DGRAPHICS_API_OPENGL_ES2 \
@@ -71,7 +89,8 @@ timeout 15 em++ "$STUDENT_CPP" \
     -sMODULARIZE=1 \
     -sEXPORT_ES6=1 \
     -sGL_ENABLE_GET_PROC_ADDRESS \
-    "-sEXPORTED_RUNTIME_METHODS=['print','printErr']"
+    "-sEXPORTED_RUNTIME_METHODS=['print','printErr']" \
+    $ASSET_FLAGS
 
 COMPILE_EXIT=$?
 

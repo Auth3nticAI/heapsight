@@ -5,6 +5,7 @@ import { useRef, useEffect, useState, useCallback } from "react";
 interface WasmGameCanvasProps {
   js: string;
   wasm: string;
+  data?: string;
   width: number;
   height: number;
   displayWidth?: number;
@@ -19,6 +20,7 @@ type LoadState = "loading" | "running" | "error";
 export default function WasmGameCanvas({
   js,
   wasm,
+  data,
   width,
   height,
   displayWidth,
@@ -95,7 +97,16 @@ export default function WasmGameCanvas({
         });
         const wasmBlobUrl = URL.createObjectURL(wasmBlob);
 
-        blobUrlsRef.current = [jsBlobUrl, wasmBlobUrl];
+        // Asset data file (from --preload-file) — optional
+        let dataBlobUrl: string | null = null;
+        if (data) {
+          const dataBytes = Uint8Array.from(atob(data), (c) => c.charCodeAt(0));
+          const dataBlob = new Blob([dataBytes], { type: "application/octet-stream" });
+          dataBlobUrl = URL.createObjectURL(dataBlob);
+          blobUrlsRef.current = [jsBlobUrl, wasmBlobUrl, dataBlobUrl];
+        } else {
+          blobUrlsRef.current = [jsBlobUrl, wasmBlobUrl];
+        }
 
         if (cancelled) return;
 
@@ -115,6 +126,7 @@ export default function WasmGameCanvas({
           printErr: onPrintErr,
           locateFile: (path: string) => {
             if (path.endsWith(".wasm")) return wasmBlobUrl;
+            if (path.endsWith(".data") && dataBlobUrl) return dataBlobUrl;
             return path;
           },
         });
@@ -146,7 +158,7 @@ export default function WasmGameCanvas({
       flushConsole();
       cleanup();
     };
-  }, [js, wasm, cleanup]);
+  }, [js, wasm, data, cleanup]);
 
   const cssWidth = displayWidth || width;
   const cssHeight = displayHeight || height;

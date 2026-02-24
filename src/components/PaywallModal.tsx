@@ -93,31 +93,30 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
             You Completed the Free Lessons!
           </h2>
           <p className="text-sm text-[#AFBCD5]/70 mt-2">
-            Unlock the full experience: 25 lessons, complete game projects,
-            export to GitHub, lifetime access.
+            Unlock the full experience: 100 lessons per path, AI tutor,
+            export projects, and more.
           </p>
         </div>
 
-        <div className="bg-primary/5 border border-primary/20 rounded-lg p-5 mb-6">
-          <div className="text-xl font-bold text-primary mb-3 text-center">
-            Project Saver &mdash; $67
+        <div className="bg-[#a855f7]/5 border border-[#a855f7]/20 rounded-lg p-5 mb-6">
+          <div className="text-xl font-bold text-[#a855f7] mb-3 text-center">
+            Pro &mdash; from $17/mo
           </div>
           <ul className="text-sm text-[#ccc] space-y-2 font-mono">
             <li className="flex items-center gap-2">
-              <span className="text-primary">&#10003;</span> All 25 lessons &amp; challenges
+              <span className="text-[#a855f7]">&#10003;</span> 100 lessons per path, 400+ total
             </li>
             <li className="flex items-center gap-2">
-              <span className="text-primary">&#10003;</span> Build &amp; export real 2D games
+              <span className="text-[#a855f7]">&#10003;</span> Build &amp; export real games
             </li>
             <li className="flex items-center gap-2">
-              <span className="text-primary">&#10003;</span> Full memory visualization
+              <span className="text-[#a855f7]">&#10003;</span> AI Tutor &mdash; instant error help
             </li>
             <li className="flex items-center gap-2">
-              <span className="text-primary">&#10003;</span> Lifetime access, no subscription
+              <span className="text-[#a855f7]">&#10003;</span> All paths unlocked
             </li>
             <li className="flex items-center gap-2">
-              <span className="text-warning">&#9733;</span>
-              <span className="text-warning">Early bird: first 300 at $49</span>
+              <span className="text-[#a855f7]">&#10003;</span> Cancel anytime
             </li>
           </ul>
         </div>
@@ -125,9 +124,9 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
         <button
           onClick={handleUpgrade}
           disabled={loading}
-          className="w-full py-3.5 bg-gradient-to-r from-[#246BFD] to-[#0040C3] text-white font-bold rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm min-h-[44px] touch-manipulation"
+          className="w-full py-3.5 bg-gradient-to-r from-[#a855f7] to-[#6366f1] hover:from-[#9333ea] hover:to-[#4f46e5] text-white font-bold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm min-h-[44px] touch-manipulation shadow-lg shadow-[#a855f7]/20"
         >
-          {loading ? "Redirecting to checkout..." : "Unlock Everything \u2014 $67"}
+          {loading ? "Redirecting to checkout..." : "Upgrade to Pro"}
         </button>
 
         <button

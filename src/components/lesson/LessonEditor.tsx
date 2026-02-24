@@ -3,6 +3,8 @@
 import { useCallback, useState, useEffect } from "react";
 import Editor from "@monaco-editor/react";
 import { useLessonStore } from "@/store/lesson-store";
+import FileTabBar from "@/components/lesson/FileTabBar";
+import CompilerOutput from "@/components/lesson/CompilerOutput";
 
 interface LessonEditorProps {
   readOnly?: boolean;
@@ -14,9 +16,14 @@ export default function LessonEditor({ readOnly = false }: LessonEditorProps) {
   const part2Code = useLessonStore((s) => s.part2Code);
   const setPart1Code = useLessonStore((s) => s.setPart1Code);
   const setPart2Code = useLessonStore((s) => s.setPart2Code);
+  const activeFilePath = useLessonStore((s) => s.activeFilePath);
+  const part1Files = useLessonStore((s) => s.part1Files);
+  const part2Files = useLessonStore((s) => s.part2Files);
 
   const code = currentPart === 1 ? part1Code : part2Code;
   const setCode = currentPart === 1 ? setPart1Code : setPart2Code;
+  const files = currentPart === 1 ? part1Files : part2Files;
+  const isMultiFile = Object.keys(files).length > 1;
 
   // Larger font on mobile (14px) to prevent iOS zoom and improve readability
   const [isMobile, setIsMobile] = useState(false);
@@ -37,12 +44,16 @@ export default function LessonEditor({ readOnly = false }: LessonEditorProps) {
 
   return (
     <div className="h-full w-full rounded-2xl overflow-hidden border border-white/[0.08] flex flex-col">
-      <div className="shrink-0 flex items-center justify-between px-3 py-1.5 bg-[#040B10] border-b border-white/[0.05]">
-        <span className="text-[10px] font-mono text-[#AFBCD5]/50 uppercase tracking-wider">
-          {currentPart === 2 ? "game.cpp" : "main.cpp"}
-        </span>
-        <span className="text-[10px] font-mono text-[#AFBCD5]/40">C++</span>
-      </div>
+      {/* Single-file: static label. Multi-file: tab bar rendered below this header. */}
+      {!isMultiFile && (
+        <div className="shrink-0 flex items-center justify-between px-3 py-1.5 bg-[#040B10] border-b border-white/[0.05]">
+          <span className="text-[10px] font-mono text-[#AFBCD5]/50 uppercase tracking-wider">
+            {activeFilePath}
+          </span>
+          <span className="text-[10px] font-mono text-[#AFBCD5]/40">C++</span>
+        </div>
+      )}
+      {isMultiFile && <FileTabBar />}
       <div className="flex-1 min-h-0">
       <Editor
         height="100%"
@@ -67,6 +78,7 @@ export default function LessonEditor({ readOnly = false }: LessonEditorProps) {
         }}
       />
       </div>
+      <CompilerOutput />
     </div>
   );
 }

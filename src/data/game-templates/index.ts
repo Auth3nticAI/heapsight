@@ -9,6 +9,8 @@ const allVariants: Record<GameTemplate, Record<string, GameLessonVariant>> = {
   platformer: platformerVariants,
   simple_rpg: simpleRpgVariants,
   dungeon_crawler: dungeonCrawlerVariants,
+  roguelike: {},
+  aisandbox: {},
 };
 
 export function getGameVariant(

@@ -8,6 +8,8 @@ import { getShooterLessonById, getNextShooterLesson } from "@/data/lessons/shoot
 import { getRPGLessonById, getNextRPGLesson } from "@/data/lessons/rpg-index";
 import { getPlatformerLessonById, getNextPlatformerLesson } from "@/data/lessons/platformer-index";
 import { getCrawlerLessonById, getNextCrawlerLesson } from "@/data/lessons/crawler-index";
+import { getRoguelikeLessonById, getNextRoguelikeLesson } from "@/data/lessons/roguelike-index";
+import { getAISandboxLessonById, getNextAISandboxLesson } from "@/data/lessons/aisandbox-index";
 import { getGameVariant } from "@/data/game-templates";
 import { useLessonStore } from "@/store/lesson-store";
 import { compileWithWasm, parseLessonId, lessonDbPath, runTests, runCppCode } from "@/lib/cpp-runner";
@@ -19,6 +21,7 @@ import { getTemplateInfo } from "@/data/templates-info";
 import { CRAWLER_LESSON_TITLES } from "@/data/game-templates/dungeon-crawler/lesson-titles";
 import type { GameTemplate } from "@/types/game";
 import type { LessonPart } from "@/types/lesson";
+import { resolveCode, getCodeFiles, resolveFullProject, resolveFullProjectFromSolution } from "@/lib/lesson-code";
 // import dynamic from "next/dynamic";
 import LessonEditor from "@/components/lesson/LessonEditor";
 import LessonInstructions from "@/components/lesson/LessonInstructions";
@@ -50,19 +53,23 @@ import type { Achievement } from "@/lib/achievements";
 export default function LessonPage() {
   const params = useParams();
   const lessonId = params.id as string;
-  const lesson = getShooterLessonById(lessonId) ?? getSpaceShooterLessonById(lessonId) ?? getRPGLessonById(lessonId) ?? getPlatformerLessonById(lessonId) ?? getCrawlerLessonById(lessonId);
+  const lesson = getShooterLessonById(lessonId) ?? getSpaceShooterLessonById(lessonId) ?? getRPGLessonById(lessonId) ?? getPlatformerLessonById(lessonId) ?? getCrawlerLessonById(lessonId) ?? getRoguelikeLessonById(lessonId) ?? getAISandboxLessonById(lessonId);
 
   const currentPart = useLessonStore((s) => s.currentPart);
   const part1Code = useLessonStore((s) => s.part1Code);
   const part2Code = useLessonStore((s) => s.part2Code);
+  const part1Files = useLessonStore((s) => s.part1Files);
+  const part2Files = useLessonStore((s) => s.part2Files);
   const setPart1Code = useLessonStore((s) => s.setPart1Code);
   const setPart2Code = useLessonStore((s) => s.setPart2Code);
   const setOutput = useLessonStore((s) => s.setOutput);
   const setErrors = useLessonStore((s) => s.setErrors);
+  const setWarnings = useLessonStore((s) => s.setWarnings);
   const setTestResults = useLessonStore((s) => s.setTestResults);
   const isRunning = useLessonStore((s) => s.isRunning);
   const setIsRunning = useLessonStore((s) => s.setIsRunning);
   const testResults = useLessonStore((s) => s.testResults);
+  const setPartFiles = useLessonStore((s) => s.setPartFiles);
   const resetLesson = useLessonStore((s) => s.resetLesson);
   const part1Completed = useLessonStore((s) => s.part1Completed);
   const part2Completed = useLessonStore((s) => s.part2Completed);
@@ -74,6 +81,7 @@ export default function LessonPage() {
   // const setCrawlerFrames = useLessonStore((s) => s.setCrawlerFrames);
   const wasmJs = useLessonStore((s) => s.wasmJs);
   const wasmWasm = useLessonStore((s) => s.wasmWasm);
+  const wasmData = useLessonStore((s) => s.wasmData);
   const setWasmOutput = useLessonStore((s) => s.setWasmOutput);
 
   const [xpEarned, setXpEarned] = useState(0);
@@ -94,6 +102,9 @@ export default function LessonPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [showBonusXP, setShowBonusXP] = useState(false);
   const [bonusXPAmount, setBonusXPAmount] = useState(0);
+
+  // Debug mode (ASan)
+  const [debugMode, setDebugMode] = useState(false);
 
   // Milestone sharing modal
   const [showMilestoneModal, setShowMilestoneModal] = useState(false);
@@ -136,7 +147,9 @@ export default function LessonPage() {
   };
 
   const activePart = getActivePart();
-  const activeCode = currentPart === 1 ? part1Code : part2Code;
+  // For compilation/saving: headers first, strip local includes
+  const activeFiles = currentPart === 1 ? part1Files : part2Files;
+  const activeCode = resolveCode(activeFiles);
 
   // Load saved code or starter code
   useEffect(() => {
@@ -179,7 +192,7 @@ export default function LessonPage() {
 
         // Look up variant starter code (crawler or game) for Part 2 fallback
         const variant = template ? getGameVariant(lesson.id, template) : null;
-        const part2Starter = variant?.starterCode || lesson.part2.starterCode;
+        const p2StarterCode = variant?.starterCode || lesson.part2.starterCode;
 
         // Load saved progress (path-isolated, derived from lesson ID)
         const dbPath = lessonDbPath(lesson.id);
@@ -192,10 +205,21 @@ export default function LessonPage() {
           .maybeSingle();
 
         if (data) {
-          const p1Code = data.part1_user_code || lesson.part1.starterCode;
-          const p2Code = data.part2_user_code || part2Starter;
-          setPart1Code(p1Code);
-          setPart2Code(p2Code);
+          // Initialize file maps from lesson structure (resolved for delta lessons)
+          const p1Files = resolveFullProject(lesson, "part1");
+          const p2Files = variant
+            ? getCodeFiles(variant.starterCode)
+            : resolveFullProject(lesson, "part2");
+
+          // Override with saved user code (stored as single string → first file)
+          if (data.part1_user_code) {
+            p1Files[Object.keys(p1Files)[0] || "main.cpp"] = data.part1_user_code;
+          }
+          if (data.part2_user_code) {
+            p2Files[Object.keys(p2Files)[0] || "main.cpp"] = data.part2_user_code;
+          }
+
+          resetLesson(p1Files, p2Files);
 
           if (data.part1_status === "completed") markPart1Complete();
           if (data.part2_status === "completed") markPart2Complete();
@@ -208,10 +232,15 @@ export default function LessonPage() {
         }
       }
 
-      // No saved data — use starter codes (variant-aware for Part 2)
+      // No saved data — use starter codes (variant-aware for Part 2, resolved for delta lessons)
       const initTemplate = userTemplate;
       const initVariant = initTemplate ? getGameVariant(lesson.id, initTemplate) : null;
-      resetLesson(lesson.part1.starterCode, initVariant?.starterCode || lesson.part2.starterCode);
+      resetLesson(
+        resolveFullProject(lesson, "part1"),
+        initVariant
+          ? getCodeFiles(initVariant.starterCode)
+          : resolveFullProject(lesson, "part2"),
+      );
     };
 
     loadSavedCode();
@@ -242,22 +271,25 @@ export default function LessonPage() {
     if (lesson) track.codeCompiled(lesson.id);
     setIsRunning(true);
     setErrors([]);
+    setWarnings([]);
     setTestResults([]);
-    setWasmOutput(null, null, null);
+    setWasmOutput(null, null, null, null);
 
     if (currentPart === 2) {
       // Part 2: WASM compilation via Cloud Run
-      const result = await compileWithWasm(activeCode, lessonPath, lessonNumber);
+      const result = await compileWithWasm(activeCode, lessonPath, lessonNumber, debugMode);
 
       if (result.errors.length > 0) {
         setErrors(result.errors);
+        setWarnings(result.warnings);
         setIsRunning(false);
         setLeftTab("output");
         return;
       }
 
       // Store WASM artifacts — WasmGameCanvas will load and run them
-      setWasmOutput(result.js, result.wasm, result.compileTimeMs);
+      setWarnings(result.warnings);
+      setWasmOutput(result.js, result.wasm, result.data, result.compileTimeMs);
       setIsRunning(false);
 
       // Auto-switch to game tab to see the compiled game
@@ -322,19 +354,22 @@ export default function LessonPage() {
         // Need to compile first, then wait for console output
         setIsRunning(true);
         setErrors([]);
+        setWarnings([]);
         setTestResults([]);
-        setWasmOutput(null, null, null);
+        setWasmOutput(null, null, null, null);
 
-        const result = await compileWithWasm(activeCode, lessonPath, lessonNumber);
+        const result = await compileWithWasm(activeCode, lessonPath, lessonNumber, debugMode);
 
         if (result.errors.length > 0) {
           setErrors(result.errors);
+          setWarnings(result.warnings);
           setIsRunning(false);
           setLeftTab("output");
           return;
         }
 
-        setWasmOutput(result.js, result.wasm, result.compileTimeMs);
+        setWarnings(result.warnings);
+        setWasmOutput(result.js, result.wasm, result.data, result.compileTimeMs);
         pendingSubmitRef.current = true;
         setIsRunning(false);
         setLeftTab("game");
@@ -593,6 +628,8 @@ export default function LessonPage() {
         lessonPath === "platformer" ? getNextPlatformerLesson(lesson.id) :
         lessonPath === "crawler" ? getNextCrawlerLesson(lesson.id) :
         lessonPath === "shooter" ? (getNextShooterLesson(lesson.id) ?? getNextSpaceShooterLesson(lesson.id)) :
+        lessonPath === "roguelike" ? getNextRoguelikeLesson(lesson.id) :
+        lessonPath === "aisandbox" ? getNextAISandboxLesson(lesson.id) :
         undefined;
       if (next && next.tier === "pro" && userTier === "free") {
         setShowPaywall(true);
@@ -604,13 +641,14 @@ export default function LessonPage() {
   }, [activePart, activeCode, currentPart, lesson, isRunning, userTemplate, userTier, gameVariant, lessonPath, lessonNumber, setIsRunning, setOutput, setErrors, setTestResults, setWasmOutput, markPart1Complete, markPart2Complete, setCurrentPart]);
 
   const handleReset = useCallback(() => {
-    if (!activePart) return;
-    if (currentPart === 1) {
-      setPart1Code(activePart.starterCode);
+    if (!activePart || !lesson) return;
+    // For variant overrides, use variant starterCode; otherwise resolve delta chain
+    if (currentPart === 2 && gameVariant) {
+      setPartFiles(currentPart, getCodeFiles(gameVariant.starterCode));
     } else {
-      setPart2Code(activePart.starterCode);
+      setPartFiles(currentPart, resolveFullProject(lesson, currentPart === 1 ? "part1" : "part2"));
     }
-  }, [activePart, currentPart, setPart1Code, setPart2Code]);
+  }, [activePart, lesson, currentPart, gameVariant, setPartFiles]);
 
   // Handle console output from WasmGameCanvas (Part 2)
   // This fires when the WASM game prints to cout — used for test validation
@@ -635,6 +673,37 @@ export default function LessonPage() {
     setErrors([error]);
   }, [setErrors]);
 
+  const [exporting, setExporting] = useState(false);
+  const handleExport = useCallback(async () => {
+    if (!lesson || exporting) return;
+    setExporting(true);
+    try {
+      const res = await fetch("/api/export", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          files: activeFiles,
+          path: lessonPath,
+          lessonTitle: lesson.title,
+        }),
+      });
+      if (!res.ok) throw new Error("Export failed");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = res.headers.get("Content-Disposition")?.match(/filename="(.+)"/)?.[1] || "heapsight-export.zip";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      // Silent fail — non-critical
+    } finally {
+      setExporting(false);
+    }
+  }, [lesson, exporting, activeFiles, lessonPath]);
+
   if (!lesson) {
     return (
       <main className="min-h-screen bg-background flex items-center justify-center">
@@ -657,6 +726,7 @@ export default function LessonPage() {
     lessonPath === "platformer" ? getNextPlatformerLesson(lesson.id) :
     lessonPath === "crawler" ? getNextCrawlerLesson(lesson.id) :
     lessonPath === "shooter" ? (getNextShooterLesson(lesson.id) ?? getNextSpaceShooterLesson(lesson.id)) :
+    lessonPath === "roguelike" ? getNextRoguelikeLesson(lesson.id) :
     undefined;
   const lessonFullyComplete = part1Completed && part2Completed;
 
@@ -787,7 +857,7 @@ export default function LessonPage() {
             {leftTab === "game" && currentPart === 2 && (
               <div className="h-full">
                 <GameCanvasWrapper
-                  compiled={wasmJs && wasmWasm ? { js: wasmJs, wasm: wasmWasm } : null}
+                  compiled={wasmJs && wasmWasm ? { js: wasmJs, wasm: wasmWasm, data: wasmData } : null}
                   path={lessonPath as "rpg" | "platformer" | "shooter" | "crawler"}
                   onConsoleOutput={handleWasmConsoleOutput}
                   onError={handleWasmError}
@@ -875,6 +945,29 @@ export default function LessonPage() {
             >
               Reset
             </button>
+            {currentPart === 2 && (
+              <button
+                onClick={() => setDebugMode((d) => !d)}
+                title={debugMode ? "Debug mode ON (ASan enabled)" : "Enable debug mode (ASan)"}
+                className={`hidden sm:flex items-center gap-1 px-2 py-2 text-[10px] font-mono rounded transition-colors min-h-[44px] ${
+                  debugMode
+                    ? "text-amber-400 bg-amber-400/10 border border-amber-400/30"
+                    : "text-[#AFBCD5]/40 hover:text-[#AFBCD5]/60"
+                }`}
+              >
+                {debugMode ? "\uD83D\uDC1B On" : "\uD83D\uDC1B"}
+              </button>
+            )}
+            {lessonFullyComplete && (
+              <button
+                onClick={handleExport}
+                disabled={exporting}
+                title="Download project as zip (CMake + GitHub Actions)"
+                className="hidden sm:flex items-center gap-1 px-2 py-2 text-[10px] font-mono text-[#AFBCD5]/40 hover:text-[#AFBCD5]/60 rounded transition-colors min-h-[44px]"
+              >
+                {exporting ? "..." : "\u2B07 Export"}
+              </button>
+            )}
           </div>
 
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">

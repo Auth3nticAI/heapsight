@@ -9,6 +9,7 @@ import { ALL_RPG_LESSONS } from "@/data/lessons/rpg-index";
 import { ALL_PLATFORMER_LESSONS } from "@/data/lessons/platformer-index";
 import { ALL_CRAWLER_LESSONS } from "@/data/lessons/crawler-index";
 import { ALL_SHOOTER_LESSONS } from "@/data/lessons/shooter-index";
+import { ALL_ROGUELIKE_LESSONS } from "@/data/lessons/roguelike-index";
 import Link from "next/link";
 
 
@@ -118,6 +119,7 @@ export default function ProgressPage() {
                 stats.template === "simple_rpg" ? ALL_RPG_LESSONS.length :
                 stats.template === "platformer" ? ALL_PLATFORMER_LESSONS.length :
                 stats.template === "dungeon_crawler" ? ALL_CRAWLER_LESSONS.length :
+                stats.template === "roguelike" ? ALL_ROGUELIKE_LESSONS.length :
                 ALL_SHOOTER_LESSONS.length
               }`,
               icon: <span className="text-xl">{"\u2713"}</span>,

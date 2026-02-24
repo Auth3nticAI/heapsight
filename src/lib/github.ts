@@ -261,6 +261,146 @@ ${progressRows}
 }
 
 // ---------------------------------------------------------------------------
+// CI scaffolding — added on first repo creation
+// ---------------------------------------------------------------------------
+
+const CANVAS_SIZES: Record<string, { width: number; height: number }> = {
+  rpg: { width: 640, height: 640 },
+  platformer: { width: 800, height: 450 },
+  shooter: { width: 800, height: 450 },
+  crawler: { width: 800, height: 600 },
+};
+
+const PATH_DISPLAY_NAMES: Record<string, string> = {
+  rpg: "RPG",
+  platformer: "Platformer",
+  shooter: "Space Shooter",
+  crawler: "Dungeon Crawler",
+  roguelike: "Roguelike",
+  aisandbox: "AI Sandbox",
+};
+
+function generateCMakeLists(path: string): string {
+  const { width, height } = CANVAS_SIZES[path] || { width: 800, height: 600 };
+  return `cmake_minimum_required(VERSION 3.15)
+project(heapsight_${path} LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# ---- raylib (auto-downloaded via FetchContent) ----
+include(FetchContent)
+FetchContent_Declare(
+  raylib
+  GIT_REPOSITORY https://github.com/raysan5/raylib.git
+  GIT_TAG 5.5
+  GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(raylib)
+
+# ---- Gather all source files ----
+file(GLOB_RECURSE SOURCES "src/*.cpp")
+add_executable(\${PROJECT_NAME} \${SOURCES})
+target_link_libraries(\${PROJECT_NAME} PRIVATE raylib)
+
+target_compile_definitions(\${PROJECT_NAME} PRIVATE
+  WINDOW_WIDTH=${width}
+  WINDOW_HEIGHT=${height}
+)
+
+if(APPLE)
+  target_link_libraries(\${PROJECT_NAME} PRIVATE "-framework IOKit" "-framework Cocoa" "-framework OpenGL")
+elseif(UNIX)
+  target_link_libraries(\${PROJECT_NAME} PRIVATE m pthread dl GL X11)
+endif()
+`;
+}
+
+function generateBuildWorkflow(path: string): string {
+  const displayName = PATH_DISPLAY_NAMES[path] || path;
+  return `name: Build ${displayName}
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: \${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-\${{ matrix.os }}
+          path: |
+            build/Release/*
+            build/heapsight_${path}*
+            !build/**/*.dir
+`;
+}
+
+function generateGitignore(): string {
+  return `build/
+cmake-build-*/
+.cache/
+.vscode/
+*.exe
+*.out
+`;
+}
+
+/**
+ * Commit CI scaffolding files to a newly-created repo.
+ * Best-effort — failures are swallowed.
+ */
+export async function commitCIScaffolding(
+  token: string,
+  repoFullName: string,
+  path: string,
+  branch: string = "main"
+): Promise<void> {
+  const files: Array<{ path: string; content: string; message: string }> = [
+    {
+      path: "CMakeLists.txt",
+      content: generateCMakeLists(path),
+      message: "ci: add CMakeLists.txt for local builds",
+    },
+    {
+      path: ".github/workflows/build.yml",
+      content: generateBuildWorkflow(path),
+      message: "ci: add GitHub Actions build workflow",
+    },
+    {
+      path: ".gitignore",
+      content: generateGitignore(),
+      message: "ci: add .gitignore",
+    },
+  ];
+
+  for (const file of files) {
+    try {
+      await commitFile(token, repoFullName, file.path, file.content, file.message, branch);
+    } catch (e) {
+      console.warn(`[GitHub] CI scaffold commit failed for ${file.path}:`, e);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Tagged releases at milestones
 // ---------------------------------------------------------------------------
 

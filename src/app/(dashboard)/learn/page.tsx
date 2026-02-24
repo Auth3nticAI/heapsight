@@ -5,6 +5,7 @@ import { ALL_RPG_LESSONS } from "@/data/lessons/rpg-index";
 import { ALL_PLATFORMER_LESSONS } from "@/data/lessons/platformer-index";
 import { ALL_CRAWLER_LESSONS } from "@/data/lessons/crawler-index";
 import { ALL_SHOOTER_LESSONS } from "@/data/lessons/shooter-index";
+import { ALL_ROGUELIKE_LESSONS } from "@/data/lessons/roguelike-index";
 import { createClient } from "@/lib/supabase-browser";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -56,6 +57,7 @@ const TEMPLATE_LABELS: Record<string, string> = {
   platformer: "Platformer",
   simple_rpg: "Simple RPG",
   dungeon_crawler: "Dungeon Crawler",
+  roguelike: "Roguelike",
 };
 
 // ─── Component ──────────────────────────────────────────────────────────────
@@ -140,6 +142,7 @@ export default function LearnPage() {
         tmpl === "platformer" ? ALL_PLATFORMER_LESSONS :
         tmpl === "dungeon_crawler" ? ALL_CRAWLER_LESSONS :
         tmpl === "space_shooter" ? ALL_SHOOTER_LESSONS :
+        tmpl === "roguelike" ? ALL_ROGUELIKE_LESSONS :
         ALL_SHOOTER_LESSONS;
 
       const cards: PathLesson[] = activeLessons.map((lesson, i) => {

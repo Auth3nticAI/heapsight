@@ -5,6 +5,7 @@ import { ALL_RPG_LESSONS } from "@/data/lessons/rpg-index";
 import { ALL_PLATFORMER_LESSONS } from "@/data/lessons/platformer-index";
 import { ALL_CRAWLER_LESSONS } from "@/data/lessons/crawler-index";
 import { ALL_SHOOTER_LESSONS } from "@/data/lessons/shooter-index";
+import { ALL_ROGUELIKE_LESSONS } from "@/data/lessons/roguelike-index";
 
 function getServiceClient() {
   return createClient(
@@ -19,6 +20,7 @@ const PATH_LESSONS: Record<string, { length: number; dbPath: string }> = {
   platformer: { length: ALL_PLATFORMER_LESSONS.length, dbPath: "platformer" },
   crawler: { length: ALL_CRAWLER_LESSONS.length, dbPath: "crawler" },
   shooter: { length: ALL_SHOOTER_LESSONS.length, dbPath: "shooter" },
+  roguelike: { length: ALL_ROGUELIKE_LESSONS.length, dbPath: "roguelike" },
 };
 
 const PATH_NAMES: Record<string, string> = {
@@ -26,6 +28,7 @@ const PATH_NAMES: Record<string, string> = {
   platformer: "Platformer",
   crawler: "Dungeon Crawler",
   shooter: "Space Shooter",
+  roguelike: "Roguelike",
 };
 
 export async function POST(

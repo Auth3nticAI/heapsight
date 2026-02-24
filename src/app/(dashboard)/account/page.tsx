@@ -8,6 +8,7 @@ import { ALL_RPG_LESSONS } from "@/data/lessons/rpg-index";
 import { ALL_PLATFORMER_LESSONS } from "@/data/lessons/platformer-index";
 import { ALL_CRAWLER_LESSONS } from "@/data/lessons/crawler-index";
 import { ALL_SHOOTER_LESSONS } from "@/data/lessons/shooter-index";
+import { ALL_ROGUELIKE_LESSONS } from "@/data/lessons/roguelike-index";
 import { getLevelInfo } from "@/lib/lesson-metadata";
 
 // ─── Inline SVG Icons ──────────────────────────────────────────────────────
@@ -146,6 +147,7 @@ export default function AccountPage() {
     profile.template === "simple_rpg" ? ALL_RPG_LESSONS :
     profile.template === "platformer" ? ALL_PLATFORMER_LESSONS :
     profile.template === "dungeon_crawler" ? ALL_CRAWLER_LESSONS :
+    profile.template === "roguelike" ? ALL_ROGUELIKE_LESSONS :
     ALL_SHOOTER_LESSONS;
   const freeCount = pathLessons.filter((l) => l.tier === "free").length;
   const isCrawlerPath = profile.template === "dungeon_crawler";
@@ -279,7 +281,7 @@ export default function AccountPage() {
                   <span className="text-xs text-white font-semibold">All lessons unlocked</span>
                 </div>
                 <p className="text-[10px] font-mono text-[#AFBCD5]/50">
-                  Lifetime access &middot; No subscription
+                  Pro subscription &middot; All lessons unlocked
                 </p>
               </div>
             </div>
@@ -293,13 +295,13 @@ export default function AccountPage() {
               </div>
               <Link
                 href="/upgrade"
-                className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-[#246BFD] to-[#0040C3] hover:from-[#246BFD]/90 hover:to-[#0040C3]/90 text-white font-semibold text-sm rounded-xl transition-all min-h-[44px] touch-manipulation"
+                className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-[#a855f7] to-[#6366f1] hover:from-[#9333ea] hover:to-[#4f46e5] text-white font-semibold text-sm rounded-xl transition-all min-h-[44px] touch-manipulation shadow-lg shadow-[#a855f7]/20"
               >
                 <SparklesIcon className="h-4 w-4" />
-                Upgrade to Pro &mdash; $67
+                Upgrade to Pro
               </Link>
               <p className="text-[10px] font-mono text-[#AFBCD5]/50 text-center">
-                One-time payment &middot; Lifetime access
+                From $17/mo &middot; Cancel anytime
               </p>
             </div>
           )}

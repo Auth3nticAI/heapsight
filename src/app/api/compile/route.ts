@@ -7,7 +7,7 @@ const rateLimits = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT = 10; // max compilations per window
 const RATE_WINDOW_MS = 60_000; // 1 minute
 
-const VALID_PATHS = ["rpg", "platformer", "shooter", "crawler"] as const;
+const VALID_PATHS = ["rpg", "platformer", "shooter", "crawler", "roguelike", "aisandbox"] as const;
 const MAX_CODE_SIZE = 50 * 1024; // 50KB
 const COMPILE_TIMEOUT_MS = 20_000; // 20s fetch timeout
 
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
   }
 
   // 2. Parse body
-  let body: { code?: unknown; path?: unknown; lesson?: unknown };
+  let body: { code?: unknown; path?: unknown; lesson?: unknown; debug?: unknown };
   try {
     body = await request.json();
   } catch {
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
   }
 
   // 3. Validate inputs
-  const { code, path, lesson } = body;
+  const { code, path, lesson, debug } = body;
 
   if (typeof code !== "string" || code.length === 0) {
     return NextResponse.json(
@@ -106,7 +106,7 @@ export async function POST(request: Request) {
       headers: { "Content-Type": "application/json" },
       // Map "crawler" → "robotics" for the deployed compiler service
       // TODO: remove this mapping after redeploying the compiler Docker image
-      body: JSON.stringify({ code, path: path === "crawler" ? "robotics" : path, lesson: lessonNum }),
+      body: JSON.stringify({ code, path: path === "crawler" ? "robotics" : path, lesson: lessonNum, debug: !!debug }),
       signal: controller.signal,
     });
 

@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import {
   createOrGetRepo,
   commitFile,
+  commitCIScaffolding,
   buildCommitMessage,
   generateReadme,
   createRelease,
@@ -80,6 +81,10 @@ export async function POST(req: NextRequest) {
         .from("profiles")
         .update({ github_repos: repos })
         .eq("id", user.id);
+
+      // Scaffold CI files on first repo creation (best-effort)
+      commitCIScaffolding(token, repoInfo.full_name, path, repoInfo.default_branch)
+        .catch((e) => console.warn("[GitHub] CI scaffolding failed:", e));
     }
 
     // Commit the lesson file

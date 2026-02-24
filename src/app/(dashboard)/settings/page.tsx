@@ -8,6 +8,7 @@ import { ALL_RPG_LESSONS } from "@/data/lessons/rpg-index";
 import { ALL_PLATFORMER_LESSONS } from "@/data/lessons/platformer-index";
 import { ALL_CRAWLER_LESSONS } from "@/data/lessons/crawler-index";
 import { ALL_SHOOTER_LESSONS } from "@/data/lessons/shooter-index";
+import { ALL_ROGUELIKE_LESSONS } from "@/data/lessons/roguelike-index";
 
 // ─── Inline SVG Icons ──────────────────────────────────────────────────────
 
@@ -352,6 +353,7 @@ export default function SettingsPage() {
     template === "simple_rpg" ? ALL_RPG_LESSONS.length :
     template === "platformer" ? ALL_PLATFORMER_LESSONS.length :
     template === "dungeon_crawler" ? ALL_CRAWLER_LESSONS.length :
+    template === "roguelike" ? ALL_ROGUELIKE_LESSONS.length :
     ALL_SHOOTER_LESSONS.length;
 
   return (
@@ -778,13 +780,13 @@ export default function SettingsPage() {
                   </div>
                   <Link
                     href="/upgrade"
-                    className="flex items-center justify-center gap-2 w-full py-2.5 bg-gradient-to-r from-[#246BFD] to-[#0040C3] hover:from-[#246BFD]/90 hover:to-[#0040C3]/90 text-white font-semibold text-xs rounded-xl transition-all min-h-[40px] touch-manipulation"
+                    className="flex items-center justify-center gap-2 w-full py-2.5 bg-gradient-to-r from-[#a855f7] to-[#6366f1] hover:from-[#9333ea] hover:to-[#4f46e5] text-white font-semibold text-xs rounded-xl transition-all min-h-[40px] touch-manipulation shadow-lg shadow-[#a855f7]/20"
                   >
                     <SparklesIcon className="h-4 w-4" />
                     Upgrade to Pro
                   </Link>
                   <p className="text-[9px] font-mono text-[#AFBCD5]/50 text-center">
-                    $67 one-time &middot; Lifetime access
+                    From $17/mo &middot; Cancel anytime
                   </p>
                 </div>
               )}

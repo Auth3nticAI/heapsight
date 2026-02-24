@@ -1,10 +1,12 @@
-import type { LessonTest } from "./lesson";
+import type { LessonTest, LessonCode } from "./lesson";
 
 export type GameTemplate =
   | "space_shooter"
   | "platformer"
   | "simple_rpg"
-  | "dungeon_crawler";
+  | "dungeon_crawler"
+  | "roguelike"
+  | "aisandbox";
 
 export type TemplateCategory = "game" | "crawler";
 
@@ -22,8 +24,8 @@ export interface GameTemplateInfo {
 export interface GameLessonVariant {
   lessonId: string;
   instructions?: string;
-  starterCode: string;
-  solutionCode: string;
+  starterCode: LessonCode;
+  solutionCode: LessonCode;
   tests: LessonTest[];
   hints: string[];
   accumulatedCode: string;

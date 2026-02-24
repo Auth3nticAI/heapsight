@@ -18,9 +18,11 @@ export interface RunResult {
 export interface CompileResult {
   js: string | null;
   wasm: string | null;
+  data: string | null;
   compileTimeMs: number | null;
   output: string;
   errors: string[];
+  warnings: string[];
 }
 
 // ---------------------------------------------------------------------------
@@ -45,6 +47,8 @@ const LESSON_PATH_TO_DB: Record<string, string> = {
   rpg: "simple_rpg",
   platformer: "platformer",
   crawler: "dungeon_crawler",
+  roguelike: "roguelike",
+  aisandbox: "aisandbox",
 };
 
 export function lessonDbPath(lessonId: string): string {
@@ -58,30 +62,31 @@ export function lessonDbPath(lessonId: string): string {
 export async function compileWithWasm(
   code: string,
   path: string,
-  lesson: number
+  lesson: number,
+  debug = false
 ): Promise<CompileResult> {
   const res = await fetch("/api/compile", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ code, path, lesson }),
+    body: JSON.stringify({ code, path, lesson, debug }),
   });
 
   if (res.status === 401) {
-    return { js: null, wasm: null, compileTimeMs: null, output: "", errors: ["Please sign in to run code."] };
+    return { js: null, wasm: null, data: null, compileTimeMs: null, output: "", errors: ["Please sign in to run code."], warnings: [] };
   }
   if (res.status === 429) {
     const data = await res.json().catch(() => ({}));
     const retryMsg = data.retryAfter ? ` Try again in ${data.retryAfter}s.` : "";
-    return { js: null, wasm: null, compileTimeMs: null, output: "", errors: [`Rate limit reached.${retryMsg}`] };
+    return { js: null, wasm: null, data: null, compileTimeMs: null, output: "", errors: [`Rate limit reached.${retryMsg}`], warnings: [] };
   }
   if (res.status === 504) {
-    return { js: null, wasm: null, compileTimeMs: null, output: "", errors: ["Compilation timed out. Simplify your code and try again."] };
+    return { js: null, wasm: null, data: null, compileTimeMs: null, output: "", errors: ["Compilation timed out. Simplify your code and try again."], warnings: [] };
   }
   if (res.status === 502) {
-    return { js: null, wasm: null, compileTimeMs: null, output: "", errors: ["Compiler service unavailable. Please try again later."] };
+    return { js: null, wasm: null, data: null, compileTimeMs: null, output: "", errors: ["Compiler service unavailable. Please try again later."], warnings: [] };
   }
   if (!res.ok) {
-    return { js: null, wasm: null, compileTimeMs: null, output: "", errors: ["Compilation service unavailable. Please try again later."] };
+    return { js: null, wasm: null, data: null, compileTimeMs: null, output: "", errors: ["Compilation service unavailable. Please try again later."], warnings: [] };
   }
 
   const data = await res.json();
@@ -90,18 +95,22 @@ export async function compileWithWasm(
     return {
       js: null,
       wasm: null,
+      data: null,
       compileTimeMs: data.compileTimeMs ?? null,
       output: "",
       errors: data.errors ?? ["Compilation failed"],
+      warnings: data.warnings ?? [],
     };
   }
 
   return {
     js: data.js,
     wasm: data.wasm,
+    data: data.data ?? null,
     compileTimeMs: data.compileTimeMs ?? null,
     output: "",
     errors: [],
+    warnings: data.warnings ?? [],
   };
 }
 

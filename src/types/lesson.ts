@@ -5,15 +5,22 @@ export interface LessonTest {
   isPattern?: boolean;
 }
 
+/** Single-file: string. Multi-file: Record<filename, content>. */
+export type LessonCode = string | Record<string, string>;
+
 export interface LessonPart {
   title: string;
   type: "concept" | "game_builder";
   instructions: string;
-  starterCode: string;
-  solutionCode: string;
+  starterCode: LessonCode;
+  solutionCode: LessonCode;
   tests: LessonTest[];
   hints: string[];
   estimatedMinutes: number;
+  /** Optional base lesson ID for delta inheritance. When set, starterCode/solutionCode
+   *  only contain changed files — unchanged files are inherited from the base lesson's
+   *  solutionCode. Milestone lessons (every 10th) should be full snapshots (no baseLesson). */
+  baseLesson?: string;
 }
 
 export interface Lesson {

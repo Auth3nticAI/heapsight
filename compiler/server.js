@@ -16,7 +16,7 @@ const COMPILE_TIMEOUT_MS = 16_000; // slightly above the 15s bash timeout
 
 // ---------- POST /compile ----------
 app.post("/compile", async (req, res) => {
-  const { code, path: learningPath, lesson } = req.body;
+  const { code, path: learningPath, lesson, debug } = req.body;
 
   // --- Validate inputs ---
   if (typeof code !== "string" || code.length === 0) {
@@ -60,29 +60,45 @@ app.post("/compile", async (req, res) => {
       studentFile,
       outputDir,
       learningPath,
-      String(lessonNum)
+      String(lessonNum),
+      debug ? "1" : "0"
     );
 
     const compileTimeMs = Date.now() - startTime;
 
     if (exitCode !== 0) {
       const errors = parseCompileErrors(stderr, jobId);
-      return res.json({ success: false, errors, compileTimeMs });
+      return res.json({ success: false, errors, warnings: [], compileTimeMs });
     }
+
+    // Capture warnings from successful compilations
+    const warnings = parseCompileWarnings(stderr, jobId);
 
     // Read output artifacts
     const jsFile = path.join(outputDir, "game.js");
     const wasmFile = path.join(outputDir, "game.wasm");
+    const dataFile = path.join(outputDir, "game.data");
 
     const [jsBuffer, wasmBuffer] = await Promise.all([
       fs.readFile(jsFile),
       fs.readFile(wasmFile),
     ]);
 
+    // Asset data file is optional (only when --preload-file was used)
+    let dataBase64 = null;
+    try {
+      const dataBuffer = await fs.readFile(dataFile);
+      dataBase64 = dataBuffer.toString("base64");
+    } catch {
+      // No asset data — normal for lessons without preloaded assets
+    }
+
     return res.json({
       success: true,
       js: jsBuffer.toString("base64"),
       wasm: wasmBuffer.toString("base64"),
+      data: dataBase64,
+      warnings,
       compileTimeMs,
     });
   } catch (err) {
@@ -110,11 +126,11 @@ app.get("/health", (_req, res) => {
  * Runs compile.sh and returns { stdout, stderr, exitCode }.
  * Never rejects — always resolves with the exit code.
  */
-function runCompile(studentFile, outputDir, learningPath, lessonNum) {
+function runCompile(studentFile, outputDir, learningPath, lessonNum, debugMode) {
   return new Promise((resolve) => {
     const child = execFile(
       COMPILE_SCRIPT,
-      [studentFile, outputDir, learningPath, lessonNum],
+      [studentFile, outputDir, learningPath, lessonNum, debugMode],
       { timeout: COMPILE_TIMEOUT_MS, maxBuffer: 1024 * 1024 },
       (err, stdout, stderr) => {
         const exitCode = err ? err.code ?? 1 : 0;
@@ -167,6 +183,24 @@ function parseCompileErrors(stderr, jobId) {
 
   // Cap at 20 error lines to avoid overwhelming the student
   return lines.slice(0, 20);
+}
+
+/**
+ * Extracts warning lines from successful compilation stderr.
+ * Same path-cleaning as parseCompileErrors.
+ */
+function parseCompileWarnings(stderr, jobId) {
+  if (!stderr || stderr.trim().length === 0) return [];
+
+  const jobPathPattern = new RegExp(`/tmp/jobs/${jobId}/`, "g");
+  let cleaned = stderr.replace(jobPathPattern, "");
+  cleaned = cleaned.replace(/\/tmp\/jobs\/[a-f0-9-]+\//g, "");
+
+  return cleaned
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.includes("warning:"))
+    .slice(0, 10);
 }
 
 // ---------- Start ----------
