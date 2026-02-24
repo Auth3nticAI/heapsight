@@ -7,6 +7,63 @@ interface PaywallModalProps {
   onClose: () => void;
 }
 
+function PaywallEmailCapture() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setStatus("loading");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), source: "paywall" }),
+      });
+      setStatus(res.ok ? "success" : "error");
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  if (status === "success") {
+    return (
+      <div className="flex items-center gap-2 mt-4 p-3 rounded-lg bg-[#9CD323]/10 border border-[#9CD323]/20">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CD323" strokeWidth="2.5">
+          <path d="M5 13l4 4L19 7" />
+        </svg>
+        <span className="text-[#9CD323] text-xs font-mono">Got it — watch your inbox for C++ tips!</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-4 pt-4 border-t border-white/[0.05]">
+      <p className="text-[11px] font-mono text-[#AFBCD5]/50 text-center mb-2">
+        Not ready to upgrade? Get tips on mastering C++ →
+      </p>
+      <form onSubmit={handleSubmit} className="flex gap-2">
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="your@email.com"
+          required
+          className="flex-1 px-3 py-2 bg-[#040B10] border border-white/[0.08] rounded-lg text-white text-xs font-mono placeholder:text-[#AFBCD5]/30 focus:outline-none focus:border-[#246BFD]/50 transition-colors min-w-0"
+        />
+        <button
+          type="submit"
+          disabled={status === "loading"}
+          className="px-3 py-2 bg-[#071528] border border-white/[0.08] hover:border-white/[0.15] text-[#AFBCD5]/70 hover:text-white text-xs font-mono rounded-lg transition-colors whitespace-nowrap disabled:opacity-50"
+        >
+          {status === "loading" ? "..." : "Subscribe"}
+        </button>
+      </form>
+    </div>
+  );
+}
+
 export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
   const [loading, setLoading] = useState(false);
 
@@ -79,6 +136,8 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
         >
           Maybe later
         </button>
+
+        <PaywallEmailCapture />
       </div>
     </div>
   );

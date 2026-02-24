@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useCallback, useState, useRef } from "react";
+import { track } from "@/lib/analytics";
 import { useParams } from "next/navigation";
 import { getSpaceShooterLessonById, getNextSpaceShooterLesson } from "@/data/lessons";
 import { getShooterLessonById, getNextShooterLesson } from "@/data/lessons/shooter-index";
@@ -92,6 +93,10 @@ export default function LessonPage() {
   const [showBonusXP, setShowBonusXP] = useState(false);
   const [bonusXPAmount, setBonusXPAmount] = useState(0);
 
+  // Milestone sharing modal
+  const [showMilestoneModal, setShowMilestoneModal] = useState(false);
+  const [milestoneCount, setMilestoneCount] = useState(0);
+
   // Ref to track if we're waiting for console output to run submit validation
   const pendingSubmitRef = useRef(false);
 
@@ -139,7 +144,7 @@ export default function LessonPage() {
         // Load user's template and tier
         const { data: profile } = await supabase
           .from("profiles")
-          .select("selected_game_template, tier")
+          .select("selected_game_template, tier, pro_trial_until")
           .eq("id", user.id)
           .single();
 
@@ -148,11 +153,16 @@ export default function LessonPage() {
           setUserTemplate(template);
         }
 
-        const tier = (profile?.tier as "free" | "pro") || "free";
+        const baseTier = (profile?.tier as "free" | "pro") || "free";
+        const trialActive = profile?.pro_trial_until
+          ? new Date(profile.pro_trial_until) > new Date()
+          : false;
+        const tier = baseTier === "pro" || trialActive ? "pro" : "free";
         setUserTier(tier);
 
         // Block free users from pro lessons
         if (lesson.tier === "pro" && tier === "free") {
+          track.paywallHit(lesson.id, lesson.order, lesson.id.split('-')[0]);
           setShowPaywall(true);
           return;
         }
@@ -201,6 +211,7 @@ export default function LessonPage() {
   // Create session record on lesson start
   useEffect(() => {
     if (!lesson || !userId) return;
+    track.lessonStarted(lesson.id, lesson.id.split('-')[0], lesson.order, lesson.tier);
     const supabase = createClient();
     supabase
       .from("lesson_sessions")
@@ -218,6 +229,7 @@ export default function LessonPage() {
 
   const handleRun = useCallback(async () => {
     if (!activePart || isRunning) return;
+    if (lesson) track.codeCompiled(lesson.id);
     setIsRunning(true);
     setErrors([]);
     setTestResults([]);
@@ -351,6 +363,7 @@ export default function LessonPage() {
         .eq("id", user.id)
         .single();
       if ((freshProfile?.tier || "free") === "free") {
+        track.paywallHit(lesson.id, lesson.order, lesson.id.split('-')[0]);
         setShowPaywall(true);
         return;
       }
@@ -421,6 +434,13 @@ export default function LessonPage() {
 
       const isFirstCompletion = xpResult?.[0]?.is_first_completion ?? true;
 
+      track.lessonCompleted(
+        lesson.id,
+        lesson.id.split('-')[0],
+        Math.floor((Date.now() - sessionStartTime) / 1000),
+        lesson.order,
+        isFirstCompletion ? lesson.xpReward : 0,
+      );
       markPart2Complete();
       setXpEarned(isFirstCompletion ? lesson.xpReward : 0);
       setLeftTab("output"); // Show completion results
@@ -502,6 +522,32 @@ export default function LessonPage() {
       if (newLevel.level > oldLevel) {
         const delay = newAchievements.length > 0 ? 9000 : showCelebration ? 4500 : 500;
         setTimeout(() => setLevelUpInfo({ level: newLevel.level, title: newLevel.title }), delay);
+      }
+
+      // Check lesson milestone for sharing (10, 25, 50, 75, 100 total completed)
+      if (isFirstCompletion) {
+        const { count: totalCompleted } = await supabase
+          .from("lesson_progress")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", user.id)
+          .eq("status", "completed");
+        const MILESTONES = [10, 25, 50, 75, 100];
+        const hitMilestone = MILESTONES.find((m) => (totalCompleted || 0) === m);
+        if (hitMilestone) {
+          try {
+            const shown = JSON.parse(
+              localStorage.getItem("hs_milestones_shown") || "[]"
+            ) as number[];
+            if (!shown.includes(hitMilestone)) {
+              setTimeout(() => {
+                setMilestoneCount(hitMilestone);
+                setShowMilestoneModal(true);
+              }, 12000);
+            }
+          } catch {
+            // localStorage may be unavailable in some browser configurations
+          }
+        }
       }
 
       // Show paywall after completing last free lesson (when next is pro)
@@ -877,6 +923,66 @@ export default function LessonPage() {
               className="bg-warning/20 hover:bg-warning/30 text-warning font-mono text-sm px-6 py-2 rounded-lg transition-colors border border-warning/30"
             >
               Awesome!
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Milestone Sharing Modal */}
+      {showMilestoneModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-[#071528] border border-white/[0.10] rounded-2xl p-6 max-w-sm w-full text-center">
+            <div className="text-5xl mb-3">{"\uD83C\uDFC6"}</div>
+            <h3 className="text-xl font-bold text-white mb-1">
+              {milestoneCount} Lessons Complete!
+            </h3>
+            <p className="text-sm text-[#AFBCD5]/70 font-mono mb-5">
+              You&apos;ve hit a milestone. Share your progress with the world!
+            </p>
+            <div className="flex gap-3 mb-3">
+              {userId && (
+                <a
+                  href={`https://heapsight.com/share/${userId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => {
+                    try {
+                      const shown = JSON.parse(
+                        localStorage.getItem("hs_milestones_shown") || "[]"
+                      ) as number[];
+                      if (!shown.includes(milestoneCount)) {
+                        localStorage.setItem(
+                          "hs_milestones_shown",
+                          JSON.stringify([...shown, milestoneCount])
+                        );
+                      }
+                    } catch { /* ignore */ }
+                    setShowMilestoneModal(false);
+                  }}
+                  className="flex-1 py-2.5 bg-gradient-to-r from-[#246BFD] to-[#0040C3] text-white text-sm font-semibold rounded-lg hover:opacity-90 transition-opacity"
+                >
+                  Share This Achievement
+                </a>
+              )}
+            </div>
+            <button
+              onClick={() => {
+                try {
+                  const shown = JSON.parse(
+                    localStorage.getItem("hs_milestones_shown") || "[]"
+                  ) as number[];
+                  if (!shown.includes(milestoneCount)) {
+                    localStorage.setItem(
+                      "hs_milestones_shown",
+                      JSON.stringify([...shown, milestoneCount])
+                    );
+                  }
+                } catch { /* ignore */ }
+                setShowMilestoneModal(false);
+              }}
+              className="w-full py-2 text-[#AFBCD5]/50 text-xs font-mono hover:text-[#AFBCD5] transition-colors"
+            >
+              Maybe later
             </button>
           </div>
         </div>

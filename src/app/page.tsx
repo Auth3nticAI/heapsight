@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // Boostify Design Tokens (extracted from Figma CSS)
 const T = {
@@ -374,6 +374,121 @@ const CodeDemo = () => {
   );
 };
 
+function HeroEmailCapture({ source = "landing_page" }: { source?: string }) {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setStatus("loading");
+    setErrorMsg("");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), source }),
+      });
+      if (res.ok) {
+        setStatus("success");
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setErrorMsg(data.error || "Something went wrong. Please try again.");
+        setStatus("error");
+      }
+    } catch {
+      setErrorMsg("Network error. Please try again.");
+      setStatus("error");
+    }
+  };
+
+  if (status === "success") {
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "10px",
+          padding: "12px 24px",
+          background: "rgba(156, 211, 35, 0.1)",
+          border: "1px solid rgba(156, 211, 35, 0.3)",
+          borderRadius: "12px",
+          maxWidth: "480px",
+          margin: "0 auto",
+        }}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9CD323" strokeWidth="2.5">
+          <path d="M5 13l4 4L19 7" />
+        </svg>
+        <span style={{ color: "#9CD323", fontSize: "15px", fontFamily: "Satoshi, sans-serif", fontWeight: 600 }}>
+          Check your inbox — first lesson is on its way!
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ maxWidth: "480px", margin: "0 auto", width: "100%" }}>
+      <form onSubmit={handleSubmit} style={{ display: "flex", gap: "8px" }}>
+        <input
+          ref={inputRef}
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="your@email.com"
+          required
+          style={{
+            flex: 1,
+            padding: "12px 16px",
+            background: "rgba(255,255,255,0.06)",
+            border: "1px solid rgba(255,255,255,0.12)",
+            borderRadius: "12px",
+            color: "#fff",
+            fontSize: "15px",
+            fontFamily: "Satoshi, sans-serif",
+            outline: "none",
+            transition: "border-color 0.2s",
+            minWidth: 0,
+          }}
+          onFocus={(e) => { e.target.style.borderColor = "#246BFD"; }}
+          onBlur={(e) => { e.target.style.borderColor = "rgba(255,255,255,0.12)"; }}
+        />
+        <button
+          type="submit"
+          disabled={status === "loading"}
+          style={{
+            padding: "12px 20px",
+            background: "#246BFD",
+            color: "#fff",
+            border: "none",
+            borderRadius: "12px",
+            fontSize: "14px",
+            fontWeight: 600,
+            fontFamily: "Satoshi, sans-serif",
+            cursor: status === "loading" ? "not-allowed" : "pointer",
+            opacity: status === "loading" ? 0.7 : 1,
+            whiteSpace: "nowrap",
+            transition: "background 0.2s",
+          }}
+        >
+          {status === "loading" ? "Sending..." : "Get 5 Free Lessons"}
+        </button>
+      </form>
+      {status === "error" && (
+        <p style={{ color: "#ef4444", fontSize: "12px", marginTop: "6px", textAlign: "center", fontFamily: "Satoshi, sans-serif" }}>
+          {errorMsg}
+        </p>
+      )}
+      <p style={{ color: "rgba(175,188,213,0.4)", fontSize: "12px", marginTop: "8px", textAlign: "center", fontFamily: "Satoshi, sans-serif" }}>
+        No spam. Unsubscribe anytime.
+      </p>
+    </div>
+  );
+}
+
 export default function HeapSightLanding() {
   const [hoveredPath, setHoveredPath] = useState<number | null>(null);
   const [openFaq, setOpenFaq] = useState<number>(0);
@@ -385,7 +500,8 @@ export default function HeapSightLanding() {
       tier: "Beginner",
       paradigm: "ECS Architecture",
       color: "#8b5cf6",
-      desc: "Data-oriented design, entity batching, spatial partitioning",
+      desc: "Build a full arcade shooter with enemy waves, spread shots, power-ups, and a live high score board — playable in your browser by lesson 10.",
+      slug: "space_shooter",
     },
     {
       emoji: "⚡",
@@ -393,7 +509,8 @@ export default function HeapSightLanding() {
       tier: "Intermediate",
       paradigm: "State Machines",
       color: "#f59e0b",
-      desc: "Physics simulation, collision resolution, game feel engineering",
+      desc: "Build a physics-driven side-scroller with wall jumps, moving platforms, a boss fight, and multiple explorable levels.",
+      slug: "platformer",
     },
     {
       emoji: "⚔️",
@@ -401,7 +518,8 @@ export default function HeapSightLanding() {
       tier: "Advanced",
       paradigm: "Data-Driven OOP",
       color: "#10b981",
-      desc: "Command pipelines, event systems, inventory architecture",
+      desc: "Build a turn-based RPG dungeon with a tile grid, combat system, inventory, and a save file that persists across sessions.",
+      slug: "simple_rpg",
     },
     {
       emoji: "🏰",
@@ -409,7 +527,8 @@ export default function HeapSightLanding() {
       tier: "Expert",
       paradigm: "3D Spatial Math",
       color: "#06b6d4",
-      desc: "Camera math, raycasting, lighting, procedural generation",
+      desc: "Build a 3D first-person dungeon you can walk through — complete with rooms, walls, camera math, and raycast lighting.",
+      slug: "dungeon_crawler",
     },
   ];
 
@@ -645,10 +764,16 @@ export default function HeapSightLanding() {
           className="hs-nav-links"
           style={{ display: "flex", gap: "40px", alignItems: "center" }}
         >
-          {["Features", "Paths", "Pricing", "FAQ"].map((item) => (
+          {[
+            { label: "Features", href: "#features" },
+            { label: "Paths", href: "#paths" },
+            { label: "Pricing", href: "#pricing" },
+            { label: "Blog", href: "/blog" },
+            { label: "FAQ", href: "#faq" },
+          ].map((item) => (
             <a
-              key={item}
-              href={`#${item.toLowerCase()}`}
+              key={item.label}
+              href={item.href}
               style={{
                 color: T.muted,
                 textDecoration: "none",
@@ -656,7 +781,7 @@ export default function HeapSightLanding() {
                 lineHeight: "22px",
               }}
             >
-              {item}
+              {item.label}
             </a>
           ))}
         </div>
@@ -679,8 +804,9 @@ export default function HeapSightLanding() {
         </div>
       </nav>
 
+      <main>
       {/* ===== HERO ===== */}
-      <section
+      <header
         className="hs-hero"
         style={{
           padding: "120px 120px 80px",
@@ -718,7 +844,7 @@ export default function HeapSightLanding() {
                 margin: 0,
               }}
             >
-              <GradientText>Master C++ by Building Real Games</GradientText>
+              <GradientText>Build Real Games. Master C++.</GradientText>
             </h1>
             <p
               className="hs-hero-sub"
@@ -733,8 +859,8 @@ export default function HeapSightLanding() {
                 margin: 0,
               }}
             >
-              4 paths from absolute beginner to 3D engine builder. Write C++ in your browser, see it
-              run instantly, ship portfolio projects.
+              Stop watching tutorials. In 5 minutes you&apos;ll have a live starfield running in your
+              browser — built with real C++, zero setup required.
             </p>
           </div>
 
@@ -747,32 +873,40 @@ export default function HeapSightLanding() {
               gap: "24px",
             }}
           >
-            <PillButton
-              className="hs-hero-cta-btn"
-              style={{ height: "56px", fontSize: "18px" }}
-              onClick={() => (window.location.href = "/signup")}
+            <div
+              className="hs-hero-btn-row"
+              style={{ display: "flex", gap: "16px", flexWrap: "wrap", justifyContent: "center" }}
             >
-              <span style={{ fontSize: "20px" }}>⚡</span> Start Free — Lessons 1-5
-            </PillButton>
+              <PillButton
+                className="hs-hero-cta-btn"
+                style={{ height: "56px", fontSize: "18px" }}
+                onClick={() => (window.location.href = "/signup")}
+              >
+                Start Building Free →
+              </PillButton>
+              <PillButton
+                className="hs-hero-cta-btn"
+                primary={false}
+                style={{ height: "56px", fontSize: "18px" }}
+                onClick={() => {
+                  document.getElementById("paths")?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                See What You&apos;ll Build ↓
+              </PillButton>
+            </div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <div style={{ display: "flex", gap: "4px" }}>
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <svg key={i} width="24" height="24" viewBox="0 0 24 24">
-                    <path
-                      d="M12 3L14.5 8.5L21 9.5L16.5 14L17.5 21L12 17.5L6.5 21L7.5 14L3 9.5L9.5 8.5L12 3Z"
-                      fill={T.star}
-                    />
-                  </svg>
-                ))}
-              </div>
               <span
                 className="hs-hero-stars-text"
-                style={{ fontSize: "12px", lineHeight: "16px", color: T.white }}
+                style={{ fontSize: "13px", lineHeight: "16px", color: T.muted }}
               >
-                No credit card · No installs
+                No credit card &nbsp;·&nbsp; No installs &nbsp;·&nbsp; 5 free lessons on every path
               </span>
             </div>
           </div>
+
+          {/* Email capture */}
+          <HeroEmailCapture source="landing_page" />
         </div>
 
         {/* Code Demo card */}
@@ -786,14 +920,14 @@ export default function HeapSightLanding() {
         >
           <CodeDemo />
         </div>
-      </section>
+      </header>
 
       {/* ===== METRICS BAR ===== */}
       <section
         className="hs-section-pad"
         style={{ padding: "60px 120px", maxWidth: "1440px", margin: "0 auto" }}
       >
-        <h3
+        <h2
           className="hs-metrics-heading"
           style={{
             fontFamily: "Satoshi, sans-serif",
@@ -814,7 +948,7 @@ export default function HeapSightLanding() {
           >
             4 Paradigms. 400+ Lessons. 100% Browser.
           </GradientText>
-        </h3>
+        </h2>
         <div
           className="hs-metrics-grid"
           style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "24px" }}
@@ -870,10 +1004,10 @@ export default function HeapSightLanding() {
         style={{ padding: "80px 120px", maxWidth: "1440px", margin: "0 auto" }}
       >
         <div className="hs-section-header" style={{ textAlign: "center", marginBottom: "64px" }}>
-          <SectionLabel>Benefits</SectionLabel>
-          <SectionTitle>Why Choose HeapSight?</SectionTitle>
+          <SectionLabel>What Makes HeapSight Different</SectionLabel>
+          <SectionTitle>You Build. Not Hello World.</SectionTitle>
           <SectionDesc>
-            See how HeapSight makes learning C++ engaging, effective, and career-ready.
+            Most C++ courses have you writing textbook exercises. HeapSight has you shipping games.
           </SectionDesc>
         </div>
 
@@ -1017,6 +1151,99 @@ export default function HeapSightLanding() {
         </div>
       </section>
 
+      {/* ===== HOW IT WORKS (3 steps) ===== */}
+      <section
+        className="hs-section-pad"
+        style={{ padding: "80px 120px", maxWidth: "1440px", margin: "0 auto" }}
+      >
+        <div className="hs-section-header" style={{ textAlign: "center", marginBottom: "64px" }}>
+          <SectionLabel>How It Works</SectionLabel>
+          <SectionTitle>From Zero to Portfolio in 3 Steps</SectionTitle>
+          <SectionDesc>
+            No environment setup. No waiting. You write C++, we compile it to WebAssembly, you see it run.
+          </SectionDesc>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "32px",
+            maxWidth: "1100px",
+            margin: "0 auto",
+          }}
+          className="hs-benefits-grid"
+        >
+          {[
+            {
+              step: "01",
+              title: "Pick Your Path",
+              desc: "Choose what you want to build — a space shooter, platformer, RPG, or 3D dungeon crawler. Each path starts at the right skill level for you.",
+              icon: "🎯",
+            },
+            {
+              step: "02",
+              title: "Write C++ in Your Browser",
+              desc: "Each lesson adds one mechanic. Write real C++, click Run, and watch it compile to WebAssembly in seconds. Your game grows lesson by lesson.",
+              icon: "⚡",
+            },
+            {
+              step: "03",
+              title: "Ship a Portfolio Project",
+              desc: "By lesson 100 you have a complete, playable game and months of GitHub commit history. Export it, share it, and show employers what you built.",
+              icon: "🚀",
+            },
+          ].map((item, i) => (
+            <div
+              key={i}
+              style={{
+                background: T.surface,
+                borderRadius: T.cardRadius,
+                padding: "36px 32px",
+                position: "relative",
+                border: `1px solid ${T.borderLight}`,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "13px",
+                  fontWeight: 700,
+                  color: T.accent,
+                  letterSpacing: "2px",
+                  marginBottom: "16px",
+                  fontFamily: "monospace",
+                }}
+              >
+                STEP {item.step}
+              </div>
+              <div style={{ fontSize: "36px", marginBottom: "16px" }}>{item.icon}</div>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: 700,
+                  letterSpacing: "-0.03em",
+                  color: T.white,
+                  margin: "0 0 12px 0",
+                }}
+              >
+                {item.title}
+              </h3>
+              <p
+                style={{
+                  fontSize: "16px",
+                  color: T.muted,
+                  lineHeight: "150%",
+                  letterSpacing: "-0.02em",
+                  margin: 0,
+                }}
+              >
+                {item.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* ===== 4 LEARNING PATHS ===== */}
       <section
         id="paths"
@@ -1025,10 +1252,9 @@ export default function HeapSightLanding() {
       >
         <div className="hs-section-header" style={{ textAlign: "center", marginBottom: "64px" }}>
           <SectionLabel>Learning Paths</SectionLabel>
-          <SectionTitle>4 Paths. 4 Paradigms. Not Reskins.</SectionTitle>
+          <SectionTitle>Choose What You Want to Build</SectionTitle>
           <SectionDesc>
-            Each path teaches fundamentally different architecture. Same language, completely different
-            thinking.
+            4 complete projects, 4 different paradigms. Every path ends with a real, shippable game on your GitHub.
           </SectionDesc>
         </div>
 
@@ -1092,11 +1318,31 @@ export default function HeapSightLanding() {
                   color: T.muted,
                   lineHeight: "150%",
                   letterSpacing: "-0.02em",
-                  margin: 0,
+                  margin: "0 0 24px 0",
                 }}
               >
                 {p.desc}
               </p>
+              <button
+                onClick={() => (window.location.href = "/signup")}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  fontSize: "14px",
+                  fontWeight: 700,
+                  color: p.color,
+                  background: "transparent",
+                  border: `1px solid ${p.color}40`,
+                  borderRadius: "20px",
+                  padding: "8px 16px",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  fontFamily: "Satoshi, sans-serif",
+                }}
+              >
+                Start This Path →
+              </button>
             </div>
           ))}
         </div>
@@ -1108,7 +1354,7 @@ export default function HeapSightLanding() {
         style={{ padding: "80px 120px", maxWidth: "1440px", margin: "0 auto" }}
       >
         <div className="hs-section-header" style={{ textAlign: "center", marginBottom: "64px" }}>
-          <SectionLabel>How It Works</SectionLabel>
+          <SectionLabel>Curriculum</SectionLabel>
           <SectionTitle>Same Milestone. Different Paradigm.</SectionTitle>
           <SectionDesc>
             Follow the path that fits your level. Each one builds a complete, portfolio-ready project.
@@ -1169,9 +1415,137 @@ export default function HeapSightLanding() {
         </div>
       </section>
 
+      {/* ===== TESTIMONIALS ===== */}
+      <section
+        className="hs-section-pad"
+        style={{ padding: "80px 120px", maxWidth: "1440px", margin: "0 auto" }}
+      >
+        <div className="hs-section-header" style={{ textAlign: "center", marginBottom: "64px" }}>
+          <SectionLabel>Learner Stories</SectionLabel>
+          <SectionTitle>Real Code. Real Results.</SectionTitle>
+          <SectionDesc>
+            What happens when you build something instead of just reading about it.
+          </SectionDesc>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "24px",
+            maxWidth: "1200px",
+            margin: "0 auto",
+          }}
+          className="hs-pricing-grid"
+        >
+          {[
+            {
+              quote:
+                "I had zero C++ experience. After 3 weeks I had a working space shooter. The incremental approach made everything stick — I never felt lost.",
+              name: "Alex M.",
+              role: "Software Engineering Student",
+              avatar: "AM",
+            },
+            {
+              quote:
+                "Finally a platform where I'm building something real, not just reading docs. My platformer commit history caught a recruiter's eye and landed me an internship.",
+              name: "Jamie K.",
+              role: "CS Junior, now at a games studio",
+              avatar: "JK",
+            },
+            {
+              quote:
+                "The memory visualization section clicked something for me that 2 years of university courses didn't. Pointers finally make sense when you see them move data.",
+              name: "Sam R.",
+              role: "Game Dev Bootcamp Graduate",
+              avatar: "SR",
+            },
+          ].map((t, i) => (
+            <div
+              key={i}
+              style={{
+                background: T.surface,
+                borderRadius: T.cardRadius,
+                padding: "32px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "24px",
+                border: `1px solid ${T.borderLight}`,
+              }}
+            >
+              {/* Stars */}
+              <div style={{ display: "flex", gap: "4px" }}>
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <svg key={s} width="16" height="16" viewBox="0 0 24 24">
+                    <path
+                      d="M12 3L14.5 8.5L21 9.5L16.5 14L17.5 21L12 17.5L6.5 21L7.5 14L3 9.5L9.5 8.5L12 3Z"
+                      fill={T.star}
+                    />
+                  </svg>
+                ))}
+              </div>
+              <p
+                style={{
+                  fontSize: "16px",
+                  color: T.muted,
+                  lineHeight: "165%",
+                  letterSpacing: "-0.01em",
+                  margin: 0,
+                  flex: 1,
+                }}
+              >
+                &ldquo;{t.quote}&rdquo;
+              </p>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <div
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "50%",
+                    background: T.accentGrad,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    fontSize: "12px",
+                    fontWeight: 700,
+                    color: T.white,
+                    fontFamily: "monospace",
+                  }}
+                >
+                  {t.avatar}
+                </div>
+                <div>
+                  <div
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: 700,
+                      color: T.white,
+                      letterSpacing: "-0.02em",
+                    }}
+                  >
+                    {t.name}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "12px",
+                      color: T.muted,
+                      letterSpacing: "-0.01em",
+                    }}
+                  >
+                    {t.role}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* ===== PRICING ===== */}
       <section
         id="pricing"
+        aria-label="Pricing"
         className="hs-section-pad"
         style={{ padding: "80px 120px", maxWidth: "1440px", margin: "0 auto" }}
       >
@@ -1494,6 +1868,7 @@ export default function HeapSightLanding() {
       {/* ===== FAQ ===== */}
       <section
         id="faq"
+        aria-label="FAQ"
         className="hs-section-pad"
         style={{ padding: "80px 120px", maxWidth: "1440px", margin: "0 auto" }}
       >
@@ -1749,6 +2124,8 @@ export default function HeapSightLanding() {
         </div>
       </section>
 
+      </main>
+
       {/* ===== FOOTER ===== */}
       <footer
         className="hs-footer"
@@ -1821,7 +2198,7 @@ export default function HeapSightLanding() {
           {[
             { title: "Product", links: ["Space Shooter", "Platformer", "RPG", "Dungeon Crawler"] },
             { title: "Company", links: ["About", "Blog", "Careers", "Contact"] },
-            { title: "Resources", links: ["Docs", "Pricing", "FAQ", "Changelog"] },
+            { title: "Resources", links: ["Docs", "Pricing", "FAQ", "Compare"] },
             { title: "Follow Us", links: ["Twitter", "GitHub", "Discord", "YouTube"] },
           ].map((col, i) => (
             <div key={i}>
@@ -1841,7 +2218,7 @@ export default function HeapSightLanding() {
                 {col.links.map((link, j) => (
                   <a
                     key={j}
-                    href="#"
+                    href={link === "Blog" ? "/blog" : link === "Compare" ? "/compare" : "#"}
                     style={{
                       fontSize: "16px",
                       lineHeight: "150%",

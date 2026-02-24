@@ -29,6 +29,26 @@ import lessonPlatformer27 from "./lesson-platformer-27-particle-pool-v0";
 import lessonPlatformer28 from "./lesson-platformer-28-allocation-counter-v0";
 import lessonPlatformer29 from "./lesson-platformer-29-leak-trap-demo";
 import lessonPlatformer30 from "./lesson-platformer-30-gate-a-heap-freeze";
+import lessonPlatformer31 from "./lesson-platformer-31-input-module-split";
+import lessonPlatformer32 from "./lesson-platformer-32-render-module-split";
+import lessonPlatformer33 from "./lesson-platformer-33-physics-module-split";
+import lessonPlatformer34 from "./lesson-platformer-34-collision-module-split";
+import lessonPlatformer35 from "./lesson-platformer-35-system-pipeline-gate";
+import lessonPlatformer36 from "./lesson-platformer-36-fixed-timestep-accumulator";
+import lessonPlatformer37 from "./lesson-platformer-37-one-way-platforms";
+import lessonPlatformer38 from "./lesson-platformer-38-moving-platforms";
+import lessonPlatformer39 from "./lesson-platformer-39-error-handling";
+import lessonPlatformer40 from "./lesson-platformer-40-robust-physics-gate";
+import lessonPlatformer41 from "./lesson-platformer-41-dash-mechanic";
+import lessonPlatformer42 from "./lesson-platformer-42-wall-slide";
+import lessonPlatformer43 from "./lesson-platformer-43-wall-jump";
+import lessonPlatformer44 from "./lesson-platformer-44-double-jump";
+import lessonPlatformer45 from "./lesson-platformer-45-movement-toolkit-gate";
+import lessonPlatformer46 from "./lesson-platformer-46-hazard-tiles";
+import lessonPlatformer47 from "./lesson-platformer-47-enemy-patrol";
+import lessonPlatformer48 from "./lesson-platformer-48-stomp-kill";
+import lessonPlatformer49 from "./lesson-platformer-49-knockback";
+import lessonPlatformer50 from "./lesson-platformer-50-midgame-slice-gate";
 
 export const ALL_PLATFORMER_LESSONS: Lesson[] = ([
   lessonPlatformer1,
@@ -61,6 +81,26 @@ export const ALL_PLATFORMER_LESSONS: Lesson[] = ([
   lessonPlatformer28,
   lessonPlatformer29,
   lessonPlatformer30,
+  lessonPlatformer31,
+  lessonPlatformer32,
+  lessonPlatformer33,
+  lessonPlatformer34,
+  lessonPlatformer35,
+  lessonPlatformer36,
+  lessonPlatformer37,
+  lessonPlatformer38,
+  lessonPlatformer39,
+  lessonPlatformer40,
+  lessonPlatformer41,
+  lessonPlatformer42,
+  lessonPlatformer43,
+  lessonPlatformer44,
+  lessonPlatformer45,
+  lessonPlatformer46,
+  lessonPlatformer47,
+  lessonPlatformer48,
+  lessonPlatformer49,
+  lessonPlatformer50,
 ] as Lesson[]).sort((a, b) => a.order - b.order);
 
 export function getPlatformerLessonById(id: string): Lesson | undefined {

@@ -29,6 +29,26 @@ import { lessonCrawler27 } from "./lesson-crawler-27-color-zones";
 import { lessonCrawler28 } from "./lesson-crawler-28-dynamic-light";
 import { lessonCrawler29 } from "./lesson-crawler-29-alloc-counter";
 import { lessonCrawler30 } from "./lesson-crawler-30-gate-a-heap-freeze";
+import { lessonCrawler31 } from "./lesson-crawler-31-billboard-sprites";
+import { lessonCrawler32 } from "./lesson-crawler-32-enemy-on-grid";
+import { lessonCrawler33 } from "./lesson-crawler-33-enemy-facing";
+import { lessonCrawler34 } from "./lesson-crawler-34-enemy-ai-patrol";
+import { lessonCrawler35 } from "./lesson-crawler-35-milestone-living-dungeon";
+import { lessonCrawler36 } from "./lesson-crawler-36-line-of-sight";
+import { lessonCrawler37 } from "./lesson-crawler-37-chase-behavior";
+import { lessonCrawler38 } from "./lesson-crawler-38-first-person-combat";
+import { lessonCrawler39 } from "./lesson-crawler-39-enemy-attack";
+import { lessonCrawler40 } from "./lesson-crawler-40-milestone-combat-dungeon";
+import { lessonCrawler41 } from "./lesson-crawler-41-room-templates";
+import { lessonCrawler42 } from "./lesson-crawler-42-corridor-generation";
+import { lessonCrawler43 } from "./lesson-crawler-43-bsp-dungeon-v0";
+import { lessonCrawler44 } from "./lesson-crawler-44-door-placement";
+import { lessonCrawler45 } from "./lesson-crawler-45-milestone-random-dungeon";
+import { lessonCrawler46 } from "./lesson-crawler-46-entity-placement";
+import { lessonCrawler47 } from "./lesson-crawler-47-difficulty-scaling";
+import { lessonCrawler48 } from "./lesson-crawler-48-loot-tables";
+import { lessonCrawler49 } from "./lesson-crawler-49-multi-level-dungeon";
+import { lessonCrawler50 } from "./lesson-crawler-50-milestone-roguelike-core";
 
 export const ALL_CRAWLER_LESSONS: Lesson[] = [
   lessonCrawler1,
@@ -61,6 +81,26 @@ export const ALL_CRAWLER_LESSONS: Lesson[] = [
   lessonCrawler28,
   lessonCrawler29,
   lessonCrawler30,
+  lessonCrawler31,
+  lessonCrawler32,
+  lessonCrawler33,
+  lessonCrawler34,
+  lessonCrawler35,
+  lessonCrawler36,
+  lessonCrawler37,
+  lessonCrawler38,
+  lessonCrawler39,
+  lessonCrawler40,
+  lessonCrawler41,
+  lessonCrawler42,
+  lessonCrawler43,
+  lessonCrawler44,
+  lessonCrawler45,
+  lessonCrawler46,
+  lessonCrawler47,
+  lessonCrawler48,
+  lessonCrawler49,
+  lessonCrawler50,
 ].sort((a, b) => a.order - b.order);
 
 export function getCrawlerLessonById(id: string): Lesson | undefined {

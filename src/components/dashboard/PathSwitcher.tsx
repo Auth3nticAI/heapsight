@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase-browser";
+import { track } from "@/lib/analytics";
 
 interface PathOption {
   id: string;
@@ -67,6 +68,7 @@ export default function PathSwitcher({
         { onConflict: "user_id,path_template" }
       );
 
+      track.pathSelected(pathId);
       onPathChange(pathId);
     } finally {
       setSwitching(false);

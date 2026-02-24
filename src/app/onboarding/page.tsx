@@ -55,6 +55,11 @@ export default function OnboardingPage() {
         throw new Error("Not authenticated");
       }
 
+      // Generate a referral code for this user
+      const refCodeRes = await fetch("/api/referral/generate-code", { method: "POST" });
+      const refCodeData = refCodeRes.ok ? await refCodeRes.json() : {};
+      const referralCode = refCodeData.code || null;
+
       const { error: profileError } = await supabase
         .from("profiles")
         .upsert(
@@ -63,12 +68,28 @@ export default function OnboardingPage() {
             email: user.email,
             selected_game_template: selected,
             onboarding_completed: true,
+            ...(referralCode ? { referral_code: referralCode } : {}),
           },
           { onConflict: "id" }
         );
 
       if (profileError) {
         throw new Error(`Profile update failed: ${profileError.message}`);
+      }
+
+      // Process referral cookie if present (best-effort, don't block onboarding)
+      const refCookie = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("hs_ref="))
+        ?.split("=")[1];
+      if (refCookie) {
+        fetch("/api/referral/process", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ referralCode: refCookie }),
+        }).catch(() => {/* ignore */});
+        // Clear the cookie
+        document.cookie = "hs_ref=; max-age=0; path=/";
       }
 
       const { error: gameError } = await supabase

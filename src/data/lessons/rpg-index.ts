@@ -30,6 +30,26 @@ import { lessonRPG27 } from "./lesson-rpg-27-items-as-ids";
 import { lessonRPG28 } from "./lesson-rpg-28-loot-drop-deterministic";
 import { lessonRPG29 } from "./lesson-rpg-29-allocation-counter";
 import { lessonRPG30 } from "./lesson-rpg-30-gate-a-heap-freeze";
+import { lessonRPG31 } from "./lesson-rpg-31-input-module-split";
+import { lessonRPG32 } from "./lesson-rpg-32-render-module-split";
+import { lessonRPG33 } from "./lesson-rpg-33-world-loading";
+import { lessonRPG34 } from "./lesson-rpg-34-enemy-ai-table";
+import { lessonRPG35 } from "./lesson-rpg-35-multi-enemy-arena";
+import { lessonRPG36 } from "./lesson-rpg-36-damage-tables";
+import { lessonRPG37 } from "./lesson-rpg-37-combat-event-log";
+import { lessonRPG38 } from "./lesson-rpg-38-hud-overlay";
+import { lessonRPG39 } from "./lesson-rpg-39-error-handling";
+import { lessonRPG40 } from "./lesson-rpg-40-systems-stable-dungeon";
+import { lessonRPG41 } from "./lesson-rpg-41-item-table-parse";
+import { lessonRPG42 } from "./lesson-rpg-42-equipment-slots";
+import { lessonRPG43 } from "./lesson-rpg-43-consumables";
+import { lessonRPG44 } from "./lesson-rpg-44-gold-economy";
+import { lessonRPG45 } from "./lesson-rpg-45-milestone-inventory-loop";
+import { lessonRPG46 } from "./lesson-rpg-46-shop-state";
+import { lessonRPG47 } from "./lesson-rpg-47-shop-buy-command";
+import { lessonRPG48 } from "./lesson-rpg-48-loot-tables";
+import { lessonRPG49 } from "./lesson-rpg-49-status-effects";
+import { lessonRPG50 } from "./lesson-rpg-50-milestone-midgame-slice";
 
 export const ALL_RPG_LESSONS: Lesson[] = [
   lessonRPG00,
@@ -63,6 +83,26 @@ export const ALL_RPG_LESSONS: Lesson[] = [
   lessonRPG28,
   lessonRPG29,
   lessonRPG30,
+  lessonRPG31,
+  lessonRPG32,
+  lessonRPG33,
+  lessonRPG34,
+  lessonRPG35,
+  lessonRPG36,
+  lessonRPG37,
+  lessonRPG38,
+  lessonRPG39,
+  lessonRPG40,
+  lessonRPG41,
+  lessonRPG42,
+  lessonRPG43,
+  lessonRPG44,
+  lessonRPG45,
+  lessonRPG46,
+  lessonRPG47,
+  lessonRPG48,
+  lessonRPG49,
+  lessonRPG50,
 ].sort((a, b) => a.order - b.order);
 
 export function getRPGLessonById(id: string): Lesson | undefined {

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { track } from "@/lib/analytics";
 
 function SparklesIcon({ className }: { className?: string }) {
   return (
@@ -68,7 +69,12 @@ export default function UpgradePage() {
   const price = billingPeriod === "monthly" ? 29 : 199;
   const monthlyEquivalent = billingPeriod === "yearly" ? Math.round(199 / 12) : 29;
 
+  useEffect(() => {
+    track.upgradeViewed();
+  }, []);
+
   const handleUpgrade = () => {
+    track.upgradeClicked(billingPeriod);
     setIsLoading(true);
     window.location.href = `/api/polar/checkout?billing=${billingPeriod}`;
   };

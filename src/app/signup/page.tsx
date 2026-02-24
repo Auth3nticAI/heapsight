@@ -4,6 +4,7 @@ import { useState, FormEvent, useMemo } from "react";
 import { createClient } from "@/lib/supabase-browser";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { posthog } from "@/lib/posthog";
 
 function getPasswordStrength(pw: string): { score: number; label: string; color: string } {
   let score = 0;
@@ -69,12 +70,18 @@ export default function SignupPage() {
     // If email confirmation is required, Supabase returns a user with
     // identities array empty or the session will be null
     if (data.user && !data.session) {
+      posthog.capture('user_signed_up', { method: 'email' });
+      posthog.identify(data.user.id, { email: data.user.email });
       setEmailSent(true);
       setLoading(false);
       return;
     }
 
     // No email confirmation needed — go straight to onboarding
+    if (data.user) {
+      posthog.capture('user_signed_up', { method: 'email' });
+      posthog.identify(data.user.id, { email: data.user.email });
+    }
     router.push("/onboarding");
     router.refresh();
   };

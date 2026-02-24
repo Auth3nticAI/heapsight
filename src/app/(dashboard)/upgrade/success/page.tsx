@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { track } from "@/lib/analytics";
 
 function CheckIcon({ className }: { className?: string }) {
   return (
@@ -59,6 +60,7 @@ export default function UpgradeSuccessPage() {
           if (res.ok) {
             const data = await res.json();
             if (data.upgraded) {
+              track.paymentCompleted(searchParams.get("billing") || "unknown");
               setVerified(true);
               setIsVerifying(false);
               return;

@@ -1,0 +1,19 @@
+# *
+User-agent: *
+Allow: /
+
+# *
+User-agent: *
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /lesson
+Disallow: /account
+Disallow: /progress
+Disallow: /upgrade
+Disallow: /api
+
+# Host
+Host: https://heapsight.com
+
+# Sitemaps
+Sitemap: https://heapsight.com/sitemap.xml

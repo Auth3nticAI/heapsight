@@ -1,0 +1,102 @@
+---
+title: "Why Building Games Is the Fastest Way to Learn C++"
+description: "Traditional C++ courses bore you with theory. HeapSight teaches through building real games — and the results speak for themselves."
+date: "2026-02-22"
+author: "HeapSight Team"
+tags: ["C++", "game development", "learn to code"]
+image: "/blog/learn-cpp-games.png"
+---
+
+# Why Building Games Is the Fastest Way to Learn C++
+
+Most C++ courses start with "Hello World" and spend three weeks on syntax before you build anything real. By then, 70% of students have dropped out.
+
+What if you could compile a game in your browser from Lesson 1?
+
+That's the idea behind HeapSight.
+
+## The C++ Dropout Problem
+
+Stack Overflow's annual developer survey consistently finds C++ in the top 5 most used programming languages — and the top 5 most dreaded. The gap between "learning C++" and "doing something useful in C++" is enormous.
+
+Traditional C++ courses follow a familiar pattern:
+
+- **Week 1:** Variables and types
+- **Week 2:** Control flow
+- **Week 3:** Functions
+- **Week 4:** Pointers (where roughly 60% of beginners quit)
+- **Week 8:** Maybe a text-based calculator
+
+By the time you reach anything remotely exciting, you've already convinced yourself that C++ isn't for you. The feedback loop is broken: you write code, you run it, you get text output, you wait weeks before seeing anything visual.
+
+Game development changes this completely.
+
+## Why Games Create Better Programmers
+
+Research on skill acquisition consistently shows that **engagement** and **immediate feedback** are the two biggest predictors of learning success. Games deliver both.
+
+When you write `DrawRectangle(400, 300, 50, 50, RED)` and a red square appears on screen, something fires in your brain that no textbook can replicate. The connection between code and consequence is instant and visual.
+
+More importantly, games force you to think like a systems programmer from day one:
+
+- **Memory matters.** A game that allocates memory inefficiently will stutter.
+- **Data layout matters.** Cache misses kill frame rates.
+- **Architecture matters.** Spaghetti code becomes obvious when your game is supposed to run at 60fps.
+
+These aren't abstract concerns you'll "learn about later." They're problems you run into on Lesson 5 — and solving them teaches you more about C++ than three chapters of a textbook.
+
+## HeapSight's Four Paths
+
+HeapSight isn't a single C++ course. It's four parallel curricula, each teaching different industry paradigms through a different genre of game.
+
+### Space Shooter — Entity Component Systems
+
+The Space Shooter path teaches Data-Oriented Design (DOD) and Entity Component Systems (ECS) — the architecture used by AAA engines like Unity (Entities), Unreal (Mass), and custom engines at studios like EA and Riot. You start by drawing a starfield and end up with a full shoot-em-up with wave management, collision detection, and spatial hashing.
+
+### Platformer — State Machines and Physics
+
+This path is for engineers who want to understand character movement at a deep level. Coyote time, variable jump height, one-way platforms, tile-based collision — these are the bread and butter of gameplay programming. The Platformer path teaches state machines, fixed-timestep loops, and RAII through a concrete game you can actually play at the end.
+
+### RPG — Data-Driven Architecture
+
+The RPG path targets system designers and tool developers. You learn how to separate data from logic, how to build turn-based combat resolution, and how to design systems that can be extended without rewriting everything. This path covers component structs, entity managers, and save/load systems through a dungeon RPG.
+
+### Dungeon Crawler — 3D Graphics and Procedural Generation
+
+The newest path goes beyond 2D. Using raylib's `Camera3D`, `BeginMode3D`, and `DrawCube`, you build a first-person dungeon explorer that teaches 3D coordinate systems, raycasting, procedural level generation, and basic rendering pipelines. If you've ever wanted to understand how Wolfenstein 3D worked, this path starts there and goes further.
+
+## What You Actually Learn
+
+Every lesson on HeapSight is structured in two parts.
+
+**Part 1: The Concept**
+
+You learn the core idea through plain C++ output — no graphics, just logic. This forces you to understand what you're building before you see it rendered. Skipping to the visual without understanding the concept is one of the most common ways beginners get stuck.
+
+**Part 2: The Game**
+
+You implement the same concept visually. Your code compiles to WebAssembly right in the browser — no local installation needed. The game runs in a canvas next to your editor in under five seconds.
+
+This dual-output pattern means you never write code you don't understand. Every visual update connects directly to a concept you've already reasoned through in text.
+
+## Why This Approach Works Long-Term
+
+The dirty secret of online coding education is that completion rates are terrible. Platforms that advertise thousands of students rarely mention that fewer than 10% finish a course.
+
+The projects-first approach changes the retention curve because you're always building toward something visible. When you're on Lesson 12 of the Space Shooter path and your bullets are moving across the screen, you don't want to stop. The next lesson isn't "now learn about vectors" — it's "now make those bullets detect collisions." The motivational thread never breaks.
+
+By the end of any HeapSight path, you've shipped a playable game and touched every major C++ concept that comes up in real production code: memory management, templates, data-oriented design, fixed-timestep loops, and more.
+
+## The Toolchain
+
+HeapSight uses raylib — a C library designed for game development education that gives you immediate visual results without the complexity of OpenGL or Vulkan. Code runs through Emscripten to WebAssembly, so you get the same compile-and-run experience as a native app, without installing a compiler or managing project files.
+
+Everything runs in the browser. Your progress is saved automatically. You can pick up from where you left off on any device.
+
+## Start Building Today
+
+HeapSight's free tier includes the first five lessons on every path — enough to compile a working game and decide whether the path is right for you.
+
+No credit card. No local setup. Just C++ that runs.
+
+[Start Building Free →](/signup)

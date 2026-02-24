@@ -118,6 +118,11 @@ export default function SettingsPage() {
   const [template, setTemplate] = useState<string | null>(null);
   const [totalXp, setTotalXp] = useState(0);
   const [completedCount, setCompletedCount] = useState(0);
+  const [referralCode, setReferralCode] = useState<string | null>(null);
+  const [proTrialUntil, setProTrialUntil] = useState<string | null>(null);
+  const [referralCopied, setReferralCopied] = useState(false);
+  const [shareUserId, setShareUserId] = useState<string | null>(null);
+  const [shareProgressCopied, setShareProgressCopied] = useState(false);
 
   // Manage / Cancel modal
   const [showManageModal, setShowManageModal] = useState(false);
@@ -147,7 +152,7 @@ export default function SettingsPage() {
 
       const { data: profileData } = await supabase
         .from("profiles")
-        .select("total_xp, tier, selected_game_template")
+        .select("total_xp, tier, selected_game_template, referral_code, pro_trial_until")
         .eq("id", user.id)
         .single();
 
@@ -164,6 +169,20 @@ export default function SettingsPage() {
       setTemplate(profileData?.selected_game_template || null);
       setTotalXp(profileData?.total_xp || 0);
       setCompletedCount(completed);
+      setProTrialUntil(profileData?.pro_trial_until || null);
+      setShareUserId(user.id);
+
+      // Load or generate referral code
+      if (profileData?.referral_code) {
+        setReferralCode(profileData.referral_code);
+      } else {
+        const res = await fetch("/api/referral/generate-code", { method: "POST" });
+        if (res.ok) {
+          const data = await res.json();
+          setReferralCode(data.code || null);
+        }
+      }
+
       setLoading(false);
     }
 
@@ -255,6 +274,24 @@ export default function SettingsPage() {
     alert("Account deletion is not yet available. Please contact support.");
   };
 
+  const handleCopyReferral = () => {
+    if (!referralCode) return;
+    const link = `https://heapsight.com/ref/${referralCode}`;
+    navigator.clipboard.writeText(link).then(() => {
+      setReferralCopied(true);
+      setTimeout(() => setReferralCopied(false), 2000);
+    });
+  };
+
+  const handleCopyShareProgress = () => {
+    if (!shareUserId) return;
+    const link = `https://heapsight.com/share/${shareUserId}`;
+    navigator.clipboard.writeText(link).then(() => {
+      setShareProgressCopied(true);
+      setTimeout(() => setShareProgressCopied(false), 2000);
+    });
+  };
+
   const closeModal = () => {
     setShowManageModal(false);
     setCancelStep("manage");
@@ -301,6 +338,8 @@ export default function SettingsPage() {
     );
   }
 
+  const trialActive = proTrialUntil ? new Date(proTrialUntil) > new Date() : false;
+  const effectiveTier = tier === "pro" || trialActive ? "pro" : "free";
   const isCrawlerPath = template === "dungeon_crawler";
   const pathLessonCount =
     template === "simple_rpg" ? ALL_RPG_LESSONS.length :
@@ -347,9 +386,9 @@ export default function SettingsPage() {
                     <span className="text-xs font-mono text-[#AFBCD5]/70">{completedCount}/{pathLessonCount} lessons</span>
                   </div>
                 </div>
-                {tier === "pro" && (
+                {effectiveTier === "pro" && (
                   <span className="text-[8px] font-mono font-bold px-1.5 py-0.5 rounded bg-[#a855f7]/20 text-[#a855f7] border border-[#a855f7]/30 shrink-0">
-                    PRO
+                    {trialActive && tier !== "pro" ? "TRIAL" : "PRO"}
                   </span>
                 )}
               </div>
@@ -396,6 +435,95 @@ export default function SettingsPage() {
                 </div>
               ) : (
                 <p className="text-xs text-[#AFBCD5]/50 font-mono">No path selected</p>
+              )}
+            </section>
+
+            {/* Refer a Friend */}
+            <section id="referral" className="p-5 rounded-2xl border border-white/[0.08] bg-[#071528]">
+              <h2 className="text-sm font-semibold text-white mb-1">Invite Friends, Get Pro Free</h2>
+              <p className="text-[10px] font-mono text-[#AFBCD5]/50 mb-4">
+                Share your link. When a friend signs up, you both get 7 days of Pro access.
+              </p>
+
+              {trialActive && tier !== "pro" && (
+                <div className="flex items-center gap-2 mb-4 px-3 py-2.5 bg-[#a855f7]/10 border border-[#a855f7]/20 rounded-lg">
+                  <svg className="h-4 w-4 text-[#a855f7] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z" />
+                  </svg>
+                  <p className="text-[10px] font-mono text-[#a855f7]">
+                    Pro trial active &middot; Expires {new Date(proTrialUntil!).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                  </p>
+                </div>
+              )}
+
+              {referralCode ? (
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <input
+                      readOnly
+                      value={`heapsight.com/ref/${referralCode}`}
+                      className="flex-1 px-3 py-2.5 bg-[#040B10] border border-white/[0.08] rounded-xl text-sm font-mono text-[#AFBCD5]/80 focus:outline-none min-w-0"
+                    />
+                    <button
+                      onClick={handleCopyReferral}
+                      className={`px-4 py-2.5 rounded-xl text-xs font-mono font-semibold transition-all min-w-[64px] ${
+                        referralCopied
+                          ? "bg-[#9CD323]/20 border border-[#9CD323]/30 text-[#9CD323]"
+                          : "bg-[#246BFD] hover:bg-[#0040C3] text-white"
+                      }`}
+                    >
+                      {referralCopied ? "Copied!" : "Copy"}
+                    </button>
+                  </div>
+                  <p className="text-[9px] font-mono text-[#AFBCD5]/40">
+                    Your code: <span className="text-[#AFBCD5]/60">{referralCode}</span>
+                  </p>
+                </div>
+              ) : (
+                <p className="text-[10px] font-mono text-[#AFBCD5]/40 animate-pulse">
+                  Generating your referral link...
+                </p>
+              )}
+            </section>
+
+            {/* Share Progress */}
+            <section id="share" className="p-5 rounded-2xl border border-white/[0.08] bg-[#071528]">
+              <h2 className="text-sm font-semibold text-white mb-1">Share Your Progress</h2>
+              <p className="text-[10px] font-mono text-[#AFBCD5]/50 mb-4">
+                Share a public link showing your XP, lessons completed, and streak. No login required to view.
+              </p>
+              {shareUserId ? (
+                <div className="space-y-3">
+                  <div className="flex gap-2">
+                    <input
+                      readOnly
+                      value={`https://heapsight.com/share/${shareUserId}`}
+                      className="flex-1 px-3 py-2.5 bg-[#040B10] border border-white/[0.08] rounded-xl text-sm font-mono text-[#AFBCD5]/80 focus:outline-none min-w-0"
+                    />
+                    <button
+                      onClick={handleCopyShareProgress}
+                      className={`px-4 py-2.5 rounded-xl text-xs font-mono font-semibold transition-all min-w-[64px] ${
+                        shareProgressCopied
+                          ? "bg-[#9CD323]/20 border border-[#9CD323]/30 text-[#9CD323]"
+                          : "bg-[#246BFD] hover:bg-[#0040C3] text-white"
+                      }`}
+                    >
+                      {shareProgressCopied ? "Copied!" : "Copy"}
+                    </button>
+                  </div>
+                  <div className="flex gap-2">
+                    <a
+                      href={`https://heapsight.com/share/${shareUserId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] font-mono text-primary hover:underline"
+                    >
+                      Preview your share page &rarr;
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-[10px] font-mono text-[#AFBCD5]/40 animate-pulse">Loading...</p>
               )}
             </section>
 
@@ -520,6 +648,8 @@ export default function SettingsPage() {
                 {[
                   { id: "profile", label: "Profile" },
                   { id: "path", label: "Learning Path" },
+                  { id: "referral", label: "Refer a Friend" },
+                  { id: "share", label: "Share Progress" },
                   { id: "security", label: "Security" },
                   { id: "danger", label: "Data & Privacy" },
                 ].map((item) => (
@@ -543,30 +673,32 @@ export default function SettingsPage() {
               <h3 className="text-[10px] font-mono font-bold text-[#AFBCD5]/70 uppercase tracking-wider mb-3">
                 Subscription
               </h3>
-              {tier === "pro" ? (
+              {effectiveTier === "pro" ? (
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#246BFD]/10 text-[#a855f7] border border-[#a855f7]/20 font-bold">
-                      PRO
+                      {trialActive && tier !== "pro" ? "TRIAL" : "PRO"}
                     </span>
                     <span className="text-[10px] font-mono text-[#AFBCD5]/70">Active</span>
                   </div>
                   <p className="text-[9px] font-mono text-[#AFBCD5]/50">
-                    Pro subscription &middot; All lessons unlocked
+                    {trialActive && tier !== "pro"
+                      ? `Referral trial · expires ${new Date(proTrialUntil!).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`
+                      : "Pro subscription · All lessons unlocked"}
                   </p>
                   {cancelEndsAt ? (
                     <p className="text-[9px] font-mono text-orange-400/80 leading-relaxed">
                       Canceling &middot; Pro access until{" "}
                       {new Date(cancelEndsAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                     </p>
-                  ) : (
+                  ) : tier === "pro" ? (
                     <button
                       onClick={() => { setCancelStep("manage"); setShowManageModal(true); }}
                       className="w-full mt-1 py-2 border border-white/[0.16] rounded-xl text-xs font-mono text-[#AFBCD5]/70 hover:bg-white/[0.05] hover:text-white transition-colors min-h-[36px]"
                     >
                       Manage Subscription &rarr;
                     </button>
-                  )}
+                  ) : null}
                 </div>
               ) : (
                 <div className="space-y-3">

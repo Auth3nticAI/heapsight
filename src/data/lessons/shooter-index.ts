@@ -29,6 +29,26 @@ import { lessonShooter27 } from "./lesson-shooter-27-powerup-entities-v0";
 import { lessonShooter28 } from "./lesson-shooter-28-allocation-counter-v0";
 import { lessonShooter29 } from "./lesson-shooter-29-leak-trap-demo";
 import { lessonShooter30 } from "./lesson-shooter-30-gate-a-heap-freeze";
+import { lessonShooter31 } from "./lesson-shooter-31-input-module-split";
+import { lessonShooter32 } from "./lesson-shooter-32-render-module-split";
+import { lessonShooter33 } from "./lesson-shooter-33-movement-system-split";
+import { lessonShooter34 } from "./lesson-shooter-34-collision-system-split";
+import { lessonShooter35 } from "./lesson-shooter-35-gate-b-system-pipeline";
+import { lessonShooter36 } from "./lesson-shooter-36-spatial-grid-v0";
+import { lessonShooter37 } from "./lesson-shooter-37-wave-spawner-v0";
+import { lessonShooter38 } from "./lesson-shooter-38-hud-system-v0";
+import { lessonShooter39 } from "./lesson-shooter-39-error-handling";
+import { lessonShooter40 } from "./lesson-shooter-40-milestone-modular-shooter";
+import { lessonShooter41 } from "./lesson-shooter-41-wave-table-parse";
+import { lessonShooter42 } from "./lesson-shooter-42-enemy-types-v0";
+import { lessonShooter43 } from "./lesson-shooter-43-powerup-system";
+import { lessonShooter44 } from "./lesson-shooter-44-spread-shot";
+import { lessonShooter45 } from "./lesson-shooter-45-milestone-wave-loop";
+import { lessonShooter46 } from "./lesson-shooter-46-score-multiplier";
+import { lessonShooter47 } from "./lesson-shooter-47-difficulty-curve-v0";
+import { lessonShooter48 } from "./lesson-shooter-48-background-scrolling";
+import { lessonShooter49 } from "./lesson-shooter-49-lives-system";
+import { lessonShooter50 } from "./lesson-shooter-50-milestone-midgame-slice";
 
 export const ALL_SHOOTER_LESSONS: Lesson[] = [
   lessonShooter1,
@@ -61,6 +81,26 @@ export const ALL_SHOOTER_LESSONS: Lesson[] = [
   lessonShooter28,
   lessonShooter29,
   lessonShooter30,
+  lessonShooter31,
+  lessonShooter32,
+  lessonShooter33,
+  lessonShooter34,
+  lessonShooter35,
+  lessonShooter36,
+  lessonShooter37,
+  lessonShooter38,
+  lessonShooter39,
+  lessonShooter40,
+  lessonShooter41,
+  lessonShooter42,
+  lessonShooter43,
+  lessonShooter44,
+  lessonShooter45,
+  lessonShooter46,
+  lessonShooter47,
+  lessonShooter48,
+  lessonShooter49,
+  lessonShooter50,
 ].sort((a, b) => a.order - b.order);
 
 export function getShooterLessonById(id: string): Lesson | undefined {

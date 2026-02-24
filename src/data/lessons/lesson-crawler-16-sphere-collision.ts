@@ -46,7 +46,24 @@ Push: 0.2
 Collision: sphere-AABB
 \`\`\`
 `,
-    starterCode: ``,
+    starterCode: `
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+int main() {
+    // Player circle just left of a wall (player at x=3.8, wall cell x=[4.0,8.0])
+    float px = 3.8f, pz = 6.0f;  // player center
+    float r  = 0.4f;              // sphere radius
+    float wall_x = 4.0f;          // nearest wall edge
+    // TODO: find nearest point on wall to player (nx = wall_x since player is left)
+    // TODO: compute dx = px - nx, dist = fabsf(dx), push = r - dist
+    cout << "Method: sphere-AABB" << endl;
+    // TODO: print Dist, Push, and Collision lines
+    cout << "Collision: sphere-AABB" << endl;
+    return 0;
+}
+`,
     solutionCode: `
 #include <iostream>
 #include <cmath>
