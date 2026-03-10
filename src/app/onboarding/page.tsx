@@ -11,6 +11,8 @@ const TEMPLATE_ICONS: Record<string, string> = {
   runner: "\uD83C\uDFC3",
   sword: "\u2694\uFE0F",
   castle: "\uD83C\uDFF0",
+  skull: "\u2620\uFE0F",
+  brain: "\uD83E\uDDE0",
 };
 
 const PATH_DETAILS: Record<string, { tagline: string; bestFor: string }> = {
@@ -29,6 +31,14 @@ const PATH_DETAILS: Record<string, { tagline: string; bestFor: string }> = {
   dungeon_crawler: {
     tagline: "Explore 3D Dungeons & Procedural Worlds",
     bestFor: "3D game devs, graphics programmers",
+  },
+  roguelike: {
+    tagline: "Master Procedural Generation & Permadeath",
+    bestFor: "Systems programmers, algorithm enthusiasts",
+  },
+  aisandbox: {
+    tagline: "Build Autonomous Agent Ecosystems",
+    bestFor: "AI researchers, simulation engineers",
   },
 };
 
@@ -154,7 +164,7 @@ export default function OnboardingPage() {
               </h1>
               <p className="text-base text-[#AFBCD5]/70 max-w-xl mx-auto">
                 Learn C++ by building real games and dungeons. Earn achievements,
-                compete on leaderboards, and master 4 industry paradigms.
+                compete on leaderboards, and master 6 industry paradigms.
               </p>
             </div>
 
@@ -207,7 +217,7 @@ export default function OnboardingPage() {
                 Choose Your First Path
               </h1>
               <p className="text-sm text-[#AFBCD5]/70">
-                Don&apos;t worry &mdash; you can switch between all 4 paths
+                Don&apos;t worry &mdash; you can switch between all 6 paths
                 anytime.
               </p>
             </div>
