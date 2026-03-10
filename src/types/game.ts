@@ -15,7 +15,7 @@ export interface GameTemplateInfo {
   name: string;
   description: string;
   difficulty: "beginner" | "intermediate" | "advanced";
-  difficultyLevel: 1 | 2 | 3 | 4;
+  difficultyLevel: 1 | 2 | 3 | 4 | 5;
   difficultyLabel: string;
   icon: string;
   category: TemplateCategory;

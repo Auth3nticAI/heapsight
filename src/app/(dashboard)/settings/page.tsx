@@ -9,6 +9,7 @@ import { ALL_PLATFORMER_LESSONS } from "@/data/lessons/platformer-index";
 import { ALL_CRAWLER_LESSONS } from "@/data/lessons/crawler-index";
 import { ALL_SHOOTER_LESSONS } from "@/data/lessons/shooter-index";
 import { ALL_ROGUELIKE_LESSONS } from "@/data/lessons/roguelike-index";
+import { ALL_AISANDBOX_LESSONS } from "@/data/lessons/aisandbox-index";
 
 // ─── Inline SVG Icons ──────────────────────────────────────────────────────
 
@@ -93,6 +94,8 @@ const TEMPLATE_LABELS: Record<string, string> = {
   platformer: "Platformer",
   simple_rpg: "Simple RPG",
   dungeon_crawler: "Dungeon Crawler",
+  roguelike: "Roguelike",
+  aisandbox: "AI Sandbox",
 };
 
 const TEMPLATE_ICONS: Record<string, string> = {
@@ -100,6 +103,8 @@ const TEMPLATE_ICONS: Record<string, string> = {
   platformer: "\u{1F3C3}",
   simple_rpg: "\u2694\uFE0F",
   dungeon_crawler: "\u{1F3F0}",
+  roguelike: "\u2694\uFE0F",
+  aisandbox: "\uD83E\uDDEC",
 };
 
 // ─── Component ──────────────────────────────────────────────────────────────
@@ -354,6 +359,7 @@ export default function SettingsPage() {
     template === "platformer" ? ALL_PLATFORMER_LESSONS.length :
     template === "dungeon_crawler" ? ALL_CRAWLER_LESSONS.length :
     template === "roguelike" ? ALL_ROGUELIKE_LESSONS.length :
+    template === "aisandbox" ? ALL_AISANDBOX_LESSONS.length :
     ALL_SHOOTER_LESSONS.length;
 
   return (

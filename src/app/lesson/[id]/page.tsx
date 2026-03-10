@@ -120,6 +120,7 @@ export default function LessonPage() {
 
   // Ref to track if we're waiting for console output to run submit validation
   const pendingSubmitRef = useRef(false);
+  const [pendingSubmit, setPendingSubmit] = useState(false);
 
   const templateInfo = userTemplate ? getTemplateInfo(userTemplate) : null;
   const isCrawlerTemplate = templateInfo?.category === "crawler";
@@ -371,6 +372,7 @@ export default function LessonPage() {
         setWarnings(result.warnings);
         setWasmOutput(result.js, result.wasm, result.data, result.compileTimeMs);
         pendingSubmitRef.current = true;
+        setPendingSubmit(true);
         setIsRunning(false);
         setLeftTab("game");
         return; // Completion flow triggered by handleWasmConsoleOutput when tests pass
@@ -664,6 +666,7 @@ export default function LessonPage() {
     // If this was a submit and all tests pass, trigger the completion flow
     if (pendingSubmitRef.current && allPassed) {
       pendingSubmitRef.current = false;
+      setPendingSubmit(false);
       // Re-trigger handleSubmit — it will see tests already pass and run the completion flow
       setTimeout(() => handleSubmit(), 0);
     }
@@ -727,6 +730,7 @@ export default function LessonPage() {
     lessonPath === "crawler" ? getNextCrawlerLesson(lesson.id) :
     lessonPath === "shooter" ? (getNextShooterLesson(lesson.id) ?? getNextSpaceShooterLesson(lesson.id)) :
     lessonPath === "roguelike" ? getNextRoguelikeLesson(lesson.id) :
+    lessonPath === "aisandbox" ? getNextAISandboxLesson(lesson.id) :
     undefined;
   const lessonFullyComplete = part1Completed && part2Completed;
 
@@ -858,9 +862,10 @@ export default function LessonPage() {
               <div className="h-full">
                 <GameCanvasWrapper
                   compiled={wasmJs && wasmWasm ? { js: wasmJs, wasm: wasmWasm, data: wasmData } : null}
-                  path={lessonPath as "rpg" | "platformer" | "shooter" | "crawler"}
+                  path={lessonPath as "rpg" | "platformer" | "shooter" | "crawler" | "roguelike" | "aisandbox"}
                   onConsoleOutput={handleWasmConsoleOutput}
                   onError={handleWasmError}
+                  autoStart={pendingSubmit}
                 />
               </div>
             )}

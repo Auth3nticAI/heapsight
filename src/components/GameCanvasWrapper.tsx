@@ -17,6 +17,7 @@ interface GameCanvasWrapperProps {
   path: LearningPath;
   onConsoleOutput?: (lines: string[]) => void;
   onError?: (error: string) => void;
+  autoStart?: boolean;
 }
 
 const CANVAS_SIZES: Record<LearningPath, { width: number; height: number }> = {
@@ -24,7 +25,7 @@ const CANVAS_SIZES: Record<LearningPath, { width: number; height: number }> = {
   platformer: { width: 800, height: 450 },
   shooter: { width: 800, height: 450 },
   crawler: { width: 800, height: 600 },
-  roguelike: { width: 640, height: 480 },
+  roguelike: { width: 800, height: 600 },
   aisandbox: { width: 800, height: 600 },
 };
 
@@ -48,6 +49,7 @@ export default function GameCanvasWrapper({
   path,
   onConsoleOutput: externalOnConsoleOutput,
   onError: externalOnError,
+  autoStart = false,
 }: GameCanvasWrapperProps) {
   const [consoleLines, setConsoleLines] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -167,7 +169,7 @@ export default function GameCanvasWrapper({
           justifyContent: "center",
         }}
       >
-        {!audioUnlocked ? (
+        {!audioUnlocked && !autoStart ? (
           <GameStartOverlay
             onStart={() => setAudioUnlocked(true)}
             width={displayWidth}

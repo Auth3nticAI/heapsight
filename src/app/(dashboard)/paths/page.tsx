@@ -21,7 +21,7 @@ const TEMPLATE_LESSON_COUNTS: Record<string, number> = {
 import PaywallModal from "@/components/PaywallModal";
 import { getPathDifficulty } from "@/data/templates-info";
 
-const MAX_STARS = 4;
+const MAX_STARS = 5;
 
 function DifficultyStars({ level }: { level: number }) {
   return (
@@ -112,6 +112,32 @@ const PATHS = [
     progressBarColor: "bg-[#246BFD]",
     progressGlow: "0 0 8px rgba(20,184,166,0.6)",
   },
+  {
+    id: "roguelike",
+    name: "Roguelike",
+    icon: "\u2694\uFE0F",
+    paradigm: "Procedural Generation",
+    description: "Build a procedural roguelike from scratch \u2014 BSP dungeon generation, cellular automata, permadeath, loot tables, and seed-driven determinism.",
+    skills: ["BSP Generation", "Cellular Automata", "Permadeath"],
+    accent: "text-[#a78bfa]",
+    bestFor: "Algorithm-driven game designers",
+    iconBg: "from-violet-500/25 to-purple-700/25",
+    progressBarColor: "bg-violet-500",
+    progressGlow: "0 0 8px rgba(167,139,250,0.6)",
+  },
+  {
+    id: "aisandbox",
+    name: "AI Sandbox",
+    icon: "\uD83E\uDDEC",
+    paradigm: "Agent-Based Systems",
+    description: "Build an autonomous ecosystem simulation \u2014 steering behaviors, flocking, behavior trees, genetic algorithms, and emergent evolution.",
+    skills: ["Steering Behaviors", "Behavior Trees", "Genetic Algorithms"],
+    accent: "text-[#4ade80]",
+    bestFor: "AI engineers & simulation enthusiasts",
+    iconBg: "from-green-600/25 to-emerald-800/25",
+    progressBarColor: "bg-green-600",
+    progressGlow: "0 0 8px rgba(74,222,128,0.6)",
+  },
 ];
 
 export default function PathsPage() {
@@ -198,7 +224,7 @@ export default function PathsPage() {
               Learning Paths
             </h1>
             <p className="text-xs text-[#AFBCD5]/50 font-mono mt-1 hidden lg:block">
-              4 industry paradigms &middot; 100 lessons each &middot; Genuinely different architectures
+              6 industry paradigms &middot; 100 lessons each &middot; Genuinely different architectures
             </p>
             <p className="text-xs text-[#AFBCD5]/50 font-mono mt-1 lg:hidden">Choose your paradigm</p>
           </div>

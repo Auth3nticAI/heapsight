@@ -36,7 +36,7 @@ export default function DashboardLayout({
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("total_xp, tier, selected_game_template")
+        .select("total_xp, tier, selected_game_template, pro_trial_until")
         .eq("id", authUser.id)
         .single();
 
@@ -51,10 +51,16 @@ export default function DashboardLayout({
         .eq("user_id", authUser.id)
         .single();
 
+      const trialActive = profile.pro_trial_until
+        ? new Date(profile.pro_trial_until) > new Date()
+        : false;
+      const effectiveTier =
+        profile.tier === "pro" || trialActive ? "pro" : "free";
+
       setUser({
         email: authUser.email || "",
         totalXp: profile.total_xp ?? 0,
-        tier: profile.tier || "free",
+        tier: effectiveTier,
         streakCount: streakData?.current_streak || 0,
       });
       setLoading(false);
