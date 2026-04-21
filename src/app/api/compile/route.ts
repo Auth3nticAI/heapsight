@@ -97,42 +97,97 @@ export async function POST(request: Request) {
     );
   }
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), COMPILE_TIMEOUT_MS);
+  const payload = JSON.stringify({
+    code,
+    path: path === "crawler" ? "robotics" : path,
+    lesson: lessonNum,
+    debug: !!debug,
+  });
 
-  try {
-    const compilerRes = await fetch(`${compileUrl}/compile`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      // Map "crawler" → "robotics" for the deployed compiler service
-      // TODO: remove this mapping after redeploying the compiler Docker image
-      body: JSON.stringify({ code, path: path === "crawler" ? "robotics" : path, lesson: lessonNum, debug: !!debug }),
-      signal: controller.signal,
-    });
+  // Retry once on 503 (Cloud Run cold-start race where the frontend returns
+  // 503 before the container is ready).
+  const MAX_ATTEMPTS = 2;
+  const RETRY_DELAY_MS = 1500;
 
-    const result = await compilerRes.json();
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), COMPILE_TIMEOUT_MS);
 
-    const headers: Record<string, string> = {};
-    if (result.compileTimeMs != null) {
-      headers["X-Compile-Time-Ms"] = String(result.compileTimeMs);
-    }
+    try {
+      const compilerRes = await fetch(`${compileUrl}/compile`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+        signal: controller.signal,
+      });
 
-    return NextResponse.json(result, { status: 200, headers });
-  } catch (err: unknown) {
-    if (err instanceof Error && err.name === "AbortError") {
+      // Non-2xx from upstream: surface a specific status instead of a blanket 502.
+      if (!compilerRes.ok) {
+        if (compilerRes.status === 503 && attempt < MAX_ATTEMPTS) {
+          clearTimeout(timeout);
+          await new Promise((r) => setTimeout(r, RETRY_DELAY_MS));
+          continue;
+        }
+        const hint =
+          compilerRes.status === 503
+            ? "Compiler is warming up. Try again in a few seconds."
+            : compilerRes.status === 429
+            ? "Compiler is busy. Try again in a moment."
+            : "Compiler returned an error.";
+        console.error(
+          `Compiler upstream ${compilerRes.status} (attempt ${attempt}/${MAX_ATTEMPTS})`
+        );
+        return NextResponse.json(
+          { error: hint, upstreamStatus: compilerRes.status },
+          { status: compilerRes.status === 503 ? 503 : 502 }
+        );
+      }
+
+      // Parse JSON safely — upstream occasionally returns HTML on infra errors.
+      let result: { compileTimeMs?: number; [k: string]: unknown };
+      try {
+        result = await compilerRes.json();
+      } catch {
+        console.error("Compiler returned non-JSON response");
+        return NextResponse.json(
+          { error: "Compiler returned an invalid response." },
+          { status: 502 }
+        );
+      }
+
+      const headers: Record<string, string> = {};
+      if (result.compileTimeMs != null) {
+        headers["X-Compile-Time-Ms"] = String(result.compileTimeMs);
+      }
+
+      return NextResponse.json(result, { status: 200, headers });
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name === "AbortError") {
+        return NextResponse.json(
+          { error: "Compilation timed out. Your code may be too complex, or the compiler is overloaded." },
+          { status: 504 }
+        );
+      }
+      // Network / DNS / TLS failure reaching Cloud Run.
+      console.error(`Compiler fetch failed (attempt ${attempt}/${MAX_ATTEMPTS}):`, err);
+      if (attempt < MAX_ATTEMPTS) {
+        await new Promise((r) => setTimeout(r, RETRY_DELAY_MS));
+        continue;
+      }
       return NextResponse.json(
-        { error: "Compilation timed out" },
-        { status: 504 }
+        { error: "Can't reach the compiler service. Try again in a moment." },
+        { status: 502 }
       );
+    } finally {
+      clearTimeout(timeout);
     }
-    console.error("Compiler service error:", err);
-    return NextResponse.json(
-      { error: "Compiler service unavailable" },
-      { status: 502 }
-    );
-  } finally {
-    clearTimeout(timeout);
   }
+
+  // Unreachable — loop either returns or continues.
+  return NextResponse.json(
+    { error: "Compiler service unavailable." },
+    { status: 502 }
+  );
 }
 
 // ---------------------------------------------------------------------------

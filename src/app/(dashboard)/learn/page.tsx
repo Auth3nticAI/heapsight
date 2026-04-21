@@ -110,7 +110,7 @@ export default function LearnPage() {
         .select("lessons_completed")
         .eq("user_id", user.id)
         .eq("activity_date", today)
-        .single();
+        .maybeSingle();
 
       if (todayActivity && todayActivity.lessons_completed > 0) {
         setCompletedToday(true);
